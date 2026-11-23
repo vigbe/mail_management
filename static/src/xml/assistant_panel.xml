@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="mail_management.AssistantPanel" owl="1">
+        <div class="o_webmail_assistant d-flex flex-column border-start">
+            <div class="o_webmail_assistant_header d-flex align-items-center gap-2 px-2 py-2 border-bottom">
+                <i class="fa fa-robot text-primary" role="img"/>
+                <span class="fw-bold text-truncate">
+                    Asistente
+                    <small class="text-muted d-block text-truncate"
+                           t-out="props.mailboxName || ''"/>
+                </span>
+                <button type="button" class="btn btn-sm btn-link ms-auto p-0"
+                        title="Ocultar panel" t-on-click="() => this.props.onClose()">
+                    <i class="fa fa-chevron-right" role="img"/>
+                </button>
+            </div>
+
+            <div class="o_webmail_assistant_actions d-flex flex-wrap gap-1 px-2 py-1 border-bottom bg-body-secondary">
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        t-on-click="summarizeThread" disabled="state.loading">
+                    <i class="fa fa-list-ul me-1" role="img"/>Resumir hilo
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        t-on-click="draftReply" disabled="state.loading">
+                    <i class="fa fa-pencil me-1" role="img"/>Redactar respuesta
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary"
+                        t-on-click="triage" disabled="state.loading">
+                    <i class="fa fa-filter me-1" role="img"/>Triaje
+                </button>
+            </div>
+
+            <div class="o_webmail_assistant_search d-flex gap-1 px-2 py-1 border-bottom">
+                <input type="search" class="form-control form-control-sm"
+                       placeholder="Buscar con IA…" t-model="state.searchQuery"
+                       t-on-keydown="searchKeydown"/>
+                <button type="button" class="btn btn-sm btn-outline-secondary"
+                        t-on-click="search" disabled="state.loading">
+                    <i class="fa fa-search" role="img"/>
+                </button>
+            </div>
+
+            <div t-if="state.error" class="alert alert-warning m-2 py-1 px-2 small"
+                 t-out="state.error"/>
+
+            <div t-if="state.loading" class="text-center text-muted py-2">
+                <i class="fa fa-spinner fa-spin me-1" role="img"/>Pensando…
+            </div>
+
+            <div t-if="state.mode === 'triage'" class="o_webmail_assistant_body flex-grow-1 overflow-auto p-2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold small">Triaje del buzón</span>
+                    <button type="button" class="btn btn-sm btn-link p-0"
+                            t-on-click="backToChat">Volver al chat</button>
+                </div>
+                <div t-foreach="state.triage" t-as="item" t-key="item.id"
+                     class="o_webmail_triage_item d-flex align-items-center gap-2 p-1 mb-1 rounded cursor-pointer border"
+                     role="button" t-on-click="() => this.openTriageMessage(item)">
+                    <span t-attf-class="badge rounded-pill {{categoryClass(item.categoria)}}">
+                        <t t-out="categoryLabel(item.categoria)"/>
+                    </span>
+                    <span class="text-truncate small flex-grow-1"
+                          t-out="item.razon || ('#' + item.id)"/>
+                </div>
+            </div>
+
+            <div t-elif="state.mode === 'search'" class="o_webmail_assistant_body flex-grow-1 overflow-auto p-2">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold small">Resultados</span>
+                    <button type="button" class="btn btn-sm btn-link p-0"
+                            t-on-click="backToChat">Volver al chat</button>
+                </div>
+                <div t-foreach="state.searchResults" t-as="res" t-key="res.id"
+                     class="p-1 mb-1 rounded cursor-pointer border"
+                     role="button" t-on-click="() => this.openSearchResult(res)">
+                    <div class="text-truncate small fw-bold" t-out="res.subject"/>
+                    <div class="text-muted small text-truncate" t-out="res.email_from"/>
+                </div>
+            </div>
+
+            <div t-else="" t-ref="assistantScroll"
+                 class="o_webmail_assistant_body flex-grow-1 overflow-auto p-2" t-on-click="(ev) => this._onBodyClick(ev)">
+                <div t-if="!state.messages.length" class="text-muted small p-2">
+                    👋 Soy el asistente de este buzón. Puedo buscar correos,
+                    resumir hilos, preparar respuestas (siempre borradores —
+                    nunca envío) y clasificar tu bandeja. ¿En qué te ayudo?
+                </div>
+                <div t-foreach="state.messages" t-as="msg" t-key="msg_index"
+                     t-attf-class="o_webmail_bubble mb-2 p-2 rounded {{msg.role === 'user' ? 'o_webmail_bubble_user bg-primary-subtle' : 'o_webmail_bubble_ai bg-body-secondary'}}">
+                    <div class="small" t-out="formatContent(msg.content)"/>
+                </div>
+            </div>
+
+            <div class="o_webmail_assistant_input d-flex gap-1 p-2 border-top">
+                <textarea class="form-control form-control-sm" rows="2"
+                          placeholder="Escribí tu consulta…"
+                          t-model="state.input" t-on-keydown="onKeydown"/>
+                <button type="button" class="btn btn-sm btn-primary align-self-end"
+                        t-on-click="send" disabled="state.loading || !state.input.trim()">
+                    <i class="fa fa-paper-plane" role="img"/>
+                </button>
+            </div>
+
+            <div class="o_webmail_assistant_footer px-2 py-1 border-top text-muted"
+                 style="font-size: 0.68rem;">
+                ⚠ El asistente nunca envía correos — todo borrador lo revisás vos.
+                El contenido de correos puede traer instrucciones ocultas: las ignora.
+            </div>
+        </div>
+    </t>
+</templates>

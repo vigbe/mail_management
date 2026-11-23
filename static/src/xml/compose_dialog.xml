@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- PR-2c — rich-text compose modal (reply / reply-all / forward / new).
+         The body is the sanctioned Odoo 19 WYSIWYG (@html_editor/wysiwyg —
+         the same embed mail's Composer and website_profile's ProfileDialog
+         use); the signature picker swaps the appended default signature.
+         body_html is sanitized SERVER-SIDE on send — never trusted. -->
+    <t t-name="mail_management.ComposeDialog" owl="1">
+        <Dialog title="title" size="lg">
+            <div class="o_webmail_compose d-flex flex-column gap-2">
+                <div class="row g-2">
+                    <div class="col">
+                        <label class="form-label small fw-bold" for="o_webmail_compose_to">To</label>
+                        <input id="o_webmail_compose_to" type="text" class="form-control"
+                               t-att-value="state.to" t-on-input="setTo"/>
+                    </div>
+                    <div class="col">
+                        <label class="form-label small fw-bold" for="o_webmail_compose_cc">Cc</label>
+                        <input id="o_webmail_compose_cc" type="text" class="form-control"
+                               t-att-value="state.cc" t-on-input="setCc"/>
+                    </div>
+                    <div class="col">
+                        <label class="form-label small fw-bold" for="o_webmail_compose_bcc">Bcc</label>
+                        <input id="o_webmail_compose_bcc" type="text" class="form-control"
+                               t-att-value="state.bcc" t-on-input="setBcc"/>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label small fw-bold" for="o_webmail_compose_subject">Subject</label>
+                    <input id="o_webmail_compose_subject" type="text" class="form-control"
+                           t-att-value="state.subject" t-on-input="setSubject"/>
+                </div>
+                <div class="d-flex justify-content-between align-items-center gap-2">
+                    <label class="form-label small fw-bold mb-0" for="o_webmail_compose_body_wrap">Body</label>
+                    <select id="o_webmail_compose_signature"
+                            class="form-select form-select-sm w-auto o_webmail_compose_signature"
+                            aria-label="Signature"
+                            t-on-change="onSignatureChange">
+                        <option value="">No signature</option>
+                        <option t-foreach="state.signatures" t-as="sig" t-key="sig.id"
+                                t-att-value="sig.id"
+                                t-att-selected="sig.id === state.selectedSignatureId ? 'selected' : undefined"
+                                t-out="signatureLabel(sig)"/>
+                    </select>
+                </div>
+                    <div id="o_webmail_compose_body_wrap" class="o_webmail_compose_body">
+                        <!-- PR-2g: 'plain' compose_editor renders a textarea
+                             (single-part text send, signature as text);
+                             otherwise the sanctioned Wysiwyg.  Both surfaces
+                             carry the spellcheck attribute from the setting. -->
+                        <textarea t-if="isPlainEditor"
+                                  class="form-control o_webmail_compose_plain"
+                                  rows="12"
+                                  t-att-spellcheck="spellcheckAttr"
+                                  t-att-placeholder="placeholderLabel"
+                                  t-att-value="state.bodyText"
+                                  t-on-input="setBodyText"/>
+                        <div t-else="" class="o_webmail_compose_html_wrap"
+                             t-att-spellcheck="spellcheckAttr">
+                            <Wysiwyg class="'o_webmail_compose_wysiwyg w-100'"
+                                     config="wysiwygConfig" onLoad.bind="onLoadWysiwyg"/>
+                        </div>
+                    </div>
+                <div t-if="forwardAttachments.length" class="o_webmail_compose_forward_atts">
+                    <div class="small text-muted">
+                        Forwarded attachments (sent with the message):
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-1">
+                        <div t-foreach="forwardAttachments" t-as="att" t-key="att.id"
+                             class="o_webmail_attachment border rounded p-1 small">
+                            <i class="fa fa-paperclip me-1" role="img"/>
+                            <span t-out="att.name"/>
+                            <small class="text-muted ms-1" t-out="displaySize(att.file_size)"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="o_webmail_compose_uploads">
+                    <label class="btn btn-outline-secondary btn-sm">
+                        <i class="fa fa-paperclip me-1" role="img"/>
+                        Attach files
+                        <input type="file" multiple="1" class="d-none" t-on-change="onFileChange"/>
+                    </label>
+                    <span t-foreach="state.newFiles" t-as="file" t-key="file_index"
+                          class="o_webmail_new_file badge text-bg-light border d-inline-flex align-items-center gap-1 ms-1">
+                        <span t-out="file.name"/>
+                        <small class="text-muted" t-out="displaySize(file.size)"/>
+                        <button type="button" class="btn-close btn-sm"
+                                t-on-click="() => this.removeNewFile(file_index)"
+                                aria-label="Remove"/>
+                    </span>
+                </div>
+            </div>
+            <t t-set-slot="footer">
+                <button type="button" class="btn btn-primary o_webmail_send_btn"
+                        t-on-click="send" t-att-disabled="state.sending ? 'disabled' : undefined"
+                        t-out="sendLabel"/>
+                <button type="button" class="btn btn-secondary o_webmail_cancel_btn"
+                        t-on-click="props.close">Cancel</button>
+            </t>
+        </Dialog>
+    </t>
+</templates>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cron_sync_mailboxes" model="ir.cron">
+        <field name="name">Mail Management: sync mailboxes</field>
+        <field name="model_id" ref="model_mail_management_mailbox"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_sync_mailboxes()</field>
+        <field name="interval_number">5</field>
+        <field name="interval_type">minutes</field>
+        <field name="active" eval="True"/>
+    </record>
+    <!-- PR-2h: daily Trash retention purge — hard-deletes messages that have
+         been in a Trash folder longer than the owner's trash_retention_days
+         setting (default 30).  Best-effort per mailbox (worker-safe). -->
+    <record id="cron_purge_trash" model="ir.cron">
+        <field name="name">Mail Management: purge old trash</field>
+        <field name="model_id" ref="model_mail_management_mailbox"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_purge_trash()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- PR-1b-ii — the read-only webmail client action (OWL 3-pane).     -->
+    <!-- tag ``mail_management.webmail`` is registered in                 -->
+    <!-- static/src/webmail_client.js (registry.category("actions")).     -->
+    <!-- The component declares ``static path = "webmail"`` so the action -->
+    <!-- is reachable at /odoo/webmail.                                   -->
+    <!-- ================================================================ -->
+
+    <record id="action_webmail_client" model="ir.actions.client">
+        <field name="name">Webmail</field>
+        <field name="tag">mail_management.webmail</field>
+    </record>
+
+    <menuitem id="menu_webmail"
+              name="Webmail"
+              parent="menu_mail_management_root"
+              action="action_webmail_client"
+              sequence="10"
+              groups="mail_management.group_mail_management_user"/>
+</odoo>

@@ -1,0 +1,515 @@
+/* PR-1b-ii — read-only webmail client action layout (3 panes).
+ * Odoo 19 / OWL 2 — plain classes consumed by the QWeb templates.
+ *
+ * PR-2g — the palette lives on CSS CUSTOM PROPERTIES scoped to the webmail
+ * root.  The dark theme (root class `.o_webmail_dark`, applied from the
+ * per-user theme setting) ONLY overrides the variables — no rule is ever
+ * re-declared for dark.  Panels therefore read `var(--wmail-*)` everywhere
+ * (the templates dropped their `bg-white` utilities for the same reason:
+ * Bootstrap color utilities would fight the variables).
+ */
+
+.o_webmail_client {
+    // ---- palette (light default) --------------------------------------
+    --wmail-bg: #f5f6f7;
+    --wmail-panel-bg: #ffffff;
+    --wmail-list-head-bg: rgba(0, 0, 0, 0.02);
+    --wmail-hover-bg: rgba(0, 0, 0, 0.04);
+    --wmail-row-hover-bg: rgba(0, 0, 0, 0.03);
+    --wmail-text: #212529;
+    --wmail-muted: #6c757d;
+    --wmail-border: #dee2e6;
+    --wmail-img-block-bg: #f8f9fa;
+    --wmail-img-block-border: #ced4da;
+    --wmail-accent: #0d6efd;
+    --wmail-accent-soft: #dbe8ff;
+    --wmail-selected-bg: #dbe8ff;
+    --wmail-unread-bar: #0d6efd;
+    --wmail-danger: #dc3545;
+    background-color: var(--wmail-bg);
+    color: var(--wmail-text);
+
+
+        // ---- dark palette — variable overrides only ---------------------
+        &.o_webmail_dark {
+            --wmail-bg: #0f1115;
+            --wmail-panel-bg: #161a22;
+            --wmail-panel2-bg: #1c212b;
+            --wmail-list-head-bg: #141820;
+            --wmail-hover-bg: #232a36;
+            --wmail-row-hover-bg: #1c212b;
+            --wmail-text: #e6e9ef;
+            --wmail-muted: #9aa3b2;
+            --wmail-border: #2a303c;
+            --wmail-accent: #4f8cff;
+            --wmail-accent-contrast: #0b0d12;
+            --wmail-accent-soft: #23345c;
+            --wmail-selected-bg: #1f3a5f;
+            --wmail-unread-bar: #4f8cff;
+            --wmail-danger: #ff6b6b;
+            --wmail-img-block-bg: #26292f;
+            --wmail-img-block-border: #4a505a;
+
+            --bs-border-color: var(--wmail-border);
+
+            .text-muted {
+                color: var(--wmail-muted);
+            }
+
+            .form-control,
+            .form-select {
+                background-color: var(--wmail-panel-bg);
+                color: var(--wmail-text);
+                border-color: var(--wmail-border);
+            }
+
+            .text-bg-light {
+                background-color: var(--wmail-hover-bg) !important;
+                color: var(--wmail-text) !important;
+            }
+        }
+
+        // ---- night (OLED) palette — variable overrides only ---------------------
+        &.o_webmail_theme_night {
+            --wmail-bg: #000000;
+            --wmail-panel-bg: #0a0a0c;
+            --wmail-panel2-bg: #121216;
+            --wmail-list-head-bg: #0d0d10;
+            --wmail-hover-bg: #1a1a20;
+            --wmail-row-hover-bg: #121216;
+            --wmail-text: #f2f3f5;
+            --wmail-muted: #8f97a3;
+            --wmail-border: #22222a;
+            --wmail-accent: #6ea8ff;
+            --wmail-accent-contrast: #000000;
+            --wmail-accent-soft: #1b2c52;
+            --wmail-selected-bg: #16233f;
+            --wmail-unread-bar: #6ea8ff;
+            --wmail-danger: #ff7676;
+            --wmail-img-block-bg: #1a1a20;
+            --wmail-img-block-border: #33333c;
+
+            --bs-border-color: var(--wmail-border);
+
+            .text-muted {
+                color: var(--wmail-muted);
+            }
+
+            .form-control,
+            .form-select {
+                background-color: var(--wmail-panel-bg);
+                color: var(--wmail-text);
+                border-color: var(--wmail-border);
+            }
+
+            .text-bg-light {
+                background-color: var(--wmail-hover-bg) !important;
+                color: var(--wmail-text) !important;
+            }
+        }
+
+        // ---- sepia palette — variable overrides only ---------------------
+        &.o_webmail_theme_sepia {
+            --wmail-bg: #f4ecd8;
+            --wmail-panel-bg: #efe5cc;
+            --wmail-panel2-bg: #e8dcbf;
+            --wmail-list-head-bg: #ece2c9;
+            --wmail-hover-bg: #e3d5b3;
+            --wmail-row-hover-bg: #e8dcbf;
+            --wmail-text: #3b3226;
+            --wmail-muted: #7a6c55;
+            --wmail-border: #d8c9a3;
+            --wmail-accent: #9c6b2f;
+            --wmail-accent-contrast: #fdf8ec;
+            --wmail-accent-soft: #e2cfa4;
+            --wmail-selected-bg: #ddd0a8;
+            --wmail-unread-bar: #9c6b2f;
+            --wmail-danger: #b04a3a;
+            --wmail-img-block-bg: #e8dcbf;
+            --wmail-img-block-border: #c9b98d;
+
+            --bs-border-color: var(--wmail-border);
+
+            .text-muted {
+                color: var(--wmail-muted);
+            }
+
+            .form-control,
+            .form-select {
+                background-color: var(--wmail-panel-bg);
+                color: var(--wmail-text);
+                border-color: var(--wmail-border);
+            }
+
+            .text-bg-light {
+                background-color: var(--wmail-hover-bg) !important;
+                color: var(--wmail-text) !important;
+            }
+        }
+
+        // ---- ocean palette — variable overrides only ---------------------
+        &.o_webmail_theme_ocean {
+            --wmail-bg: #0b1e2d;
+            --wmail-panel-bg: #10293c;
+            --wmail-panel2-bg: #143349;
+            --wmail-list-head-bg: #0e2436;
+            --wmail-hover-bg: #1a4058;
+            --wmail-row-hover-bg: #143349;
+            --wmail-text: #dcebf5;
+            --wmail-muted: #8fb0c4;
+            --wmail-border: #1d4a63;
+            --wmail-accent: #35b6d9;
+            --wmail-accent-contrast: #06222e;
+            --wmail-accent-soft: #14425a;
+            --wmail-selected-bg: #14506e;
+            --wmail-unread-bar: #35b6d9;
+            --wmail-danger: #ff7a70;
+            --wmail-img-block-bg: #143349;
+            --wmail-img-block-border: #2a5a74;
+
+            --bs-border-color: var(--wmail-border);
+
+            .text-muted {
+                color: var(--wmail-muted);
+            }
+
+            .form-control,
+            .form-select {
+                background-color: var(--wmail-panel-bg);
+                color: var(--wmail-text);
+                border-color: var(--wmail-border);
+            }
+
+            .text-bg-light {
+                background-color: var(--wmail-hover-bg) !important;
+                color: var(--wmail-text) !important;
+            }
+        }
+
+        // ---- forest palette — variable overrides only ---------------------
+        &.o_webmail_theme_forest {
+            --wmail-bg: #f2f6f1;
+            --wmail-panel-bg: #e8efe6;
+            --wmail-panel2-bg: #dfe9dc;
+            --wmail-list-head-bg: #e6eee4;
+            --wmail-hover-bg: #d8e4d4;
+            --wmail-row-hover-bg: #dfe9dc;
+            --wmail-text: #233027;
+            --wmail-muted: #61756a;
+            --wmail-border: #c6d6c4;
+            --wmail-accent: #2e7d4f;
+            --wmail-accent-contrast: #ffffff;
+            --wmail-accent-soft: #cde8d6;
+            --wmail-selected-bg: #cfe3d3;
+            --wmail-unread-bar: #2e7d4f;
+            --wmail-danger: #c0472f;
+            --wmail-img-block-bg: #dfe9dc;
+            --wmail-img-block-border: #b8ccba;
+
+            --bs-border-color: var(--wmail-border);
+
+            .text-muted {
+                color: var(--wmail-muted);
+            }
+
+            .form-control,
+            .form-select {
+                background-color: var(--wmail-panel-bg);
+                color: var(--wmail-text);
+                border-color: var(--wmail-border);
+            }
+
+            .text-bg-light {
+                background-color: var(--wmail-hover-bg) !important;
+                color: var(--wmail-text) !important;
+            }
+        }
+
+        // PR-2i: Bootstrap outline buttons follow the palette tokens so they
+        // stay legible in every theme.
+        .btn-outline-secondary {
+            color: var(--wmail-text);
+            border-color: var(--wmail-border);
+
+            &:hover {
+                background-color: var(--wmail-hover-bg);
+                color: var(--wmail-text);
+            }
+        }
+
+    // ---- dark palette (PR-2g) — variable overrides only ---------------
+    &.o_webmail_dark {
+        --wmail-bg: #14161a;
+        --wmail-panel-bg: #1d2025;
+        --wmail-list-head-bg: rgba(255, 255, 255, 0.04);
+        --wmail-hover-bg: rgba(255, 255, 255, 0.07);
+        --wmail-row-hover-bg: rgba(255, 255, 255, 0.05);
+        --wmail-text: #e8eaed;
+        --wmail-muted: #9aa3ad;
+        --wmail-border: #3a3f46;
+        --wmail-img-block-bg: #26292f;
+        --wmail-img-block-border: #4a505a;
+
+        // Bootstrap utilities the panes rely on follow the palette.
+        --bs-border-color: var(--wmail-border);
+
+        .text-muted {
+            color: var(--wmail-muted);
+        }
+
+        .form-control,
+        .form-select {
+            background-color: var(--wmail-panel-bg);
+            color: var(--wmail-text);
+            border-color: var(--wmail-border);
+        }
+
+        // Neutral surface for Bootstrap light badges/chips on dark.
+        .text-bg-light {
+            background-color: var(--wmail-hover-bg) !important;
+            color: var(--wmail-text) !important;
+        }
+    }
+
+    .o_webmail_folder_tree {
+        width: 240px;
+        min-width: 200px;
+        flex-shrink: 0;
+        background-color: var(--wmail-panel-bg);
+
+        .o_webmail_mailbox_active {
+            color: var(--wmail-accent) !important;
+            background-color: var(--wmail-hover-bg);
+            border-left: 3px solid var(--wmail-accent);
+        }
+
+        .o_webmail_mailbox_chevron {
+            width: 0.9rem;
+            text-align: center;
+        }
+
+        .o_webmail_mailbox_config {
+            opacity: 0.45;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        .o_webmail_mailbox_label.cursor-pointer {
+            &:hover {
+                background-color: var(--wmail-hover-bg);
+                color: var(--wmail-accent) !important;
+            }
+        }
+
+        .o_webmail_folder_item {
+            position: relative; // anchors the PR-2b overflow dropdown
+
+            &:hover {
+                background-color: var(--wmail-hover-bg);
+            }
+
+            .o_webmail_folder_menu {
+                z-index: 10;
+                min-width: 8rem;
+            }
+
+            .o_webmail_folder_count {
+                font-size: 0.72rem;
+            }
+        }
+    }
+
+        .o_webmail_message_list {
+            flex: 0 1 380px;
+            min-width: 280px;
+            overflow: hidden;
+            background-color: var(--wmail-panel-bg);
+
+            .o_webmail_list_columns {
+                background-color: var(--wmail-list-head-bg);
+            }
+
+            .o_webmail_filter_chips {
+                flex-wrap: nowrap;
+                gap: 0.15rem;
+                padding: 0 0.35rem;
+            }
+
+            .o_webmail_filter_chip {
+                padding: 0 0.35rem;
+                font-size: 0.7rem;
+                line-height: 1.4;
+                white-space: nowrap;
+            }
+
+            .o_webmail_bulk_bar {
+                font-size: 0.78rem;
+                flex-wrap: nowrap;
+                gap: 0.2rem;
+                padding: 0 0.4rem;
+
+                // PR-2j: icon-only buttons — fixed 35px (user request 2026-09).
+                .btn {
+                    width: 35px;
+                    min-width: 35px;
+                    max-width: 35px;
+                    padding: 0;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 0.8rem;
+                }
+
+                .o_webmail_bulk_move {
+                    max-width: 8.5rem;
+                }
+            }
+
+        // PR-2e: the single Sort dropdown menu.
+        .o_webmail_sort_menu {
+            z-index: 10;
+            min-width: 12rem;
+        }
+
+        .o_webmail_star_toggle {
+            border: none;
+            background: none;
+        }
+
+        .o_webmail_message_row {
+            min-height: 52px;
+
+            &:hover {
+                background-color: var(--wmail-row-hover-bg);
+            }
+
+            // PR-2i: colored side bar marks unread messages (no layout shift).
+            &.o_webmail_unread {
+                box-shadow: inset 3px 0 0 var(--wmail-unread-bar);
+            }
+        }
+    }
+
+    .o_webmail_reading_pane {
+        background-color: var(--wmail-panel-bg);
+
+        .o_webmail_reading_body {
+            // Keep untrusted email HTML from breaking the pane layout.
+            overflow-wrap: anywhere;
+
+            img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            .o_webmail_img_blocked {
+                display: inline-block;
+                min-width: 48px;
+                min-height: 24px;
+                border: 1px dashed var(--wmail-img-block-border);
+                background-color: var(--wmail-img-block-bg);
+            }
+
+            // PR-2f: collapsible quoted text (native <details> toggles
+            // injected by utils/message_policy.collapseQuotes).
+            details.o_webmail_quote,
+            details.o_webmail_quote_more {
+                margin: 0.25rem 0;
+
+                > summary {
+                    cursor: pointer;
+                    color: var(--wmail-muted);
+                    font-size: 0.82rem;
+                    user-select: none;
+                }
+
+                > blockquote {
+                    margin: 0.25rem 0 0;
+                }
+            }
+
+            // PR-2f: prefer_html=false renders the plain-text body.
+            .o_webmail_body_plain {
+                font-family: inherit;
+            }
+        }
+
+        // PR-2f: compact attachment list variant.
+        .o_webmail_attachments_simple {
+            .o_webmail_attachment_simple {
+                padding: 0.1rem 0;
+            }
+        }
+
+        // PR-2e: subtle per-message "Images blocked" bar + overflow menu.
+        .o_webmail_images_blocked_bar {
+            font-size: 0.82rem;
+        }
+
+        .o_webmail_msg_menu {
+            z-index: 10;
+            min-width: 10rem;
+            right: 0;
+        }
+    }
+
+    // PR-2j: draggable splitters between the three panes.
+    .o_webmail_splitter {
+        flex: 0 0 5px;
+        width: 5px;
+        cursor: col-resize;
+        background-color: var(--wmail-border);
+        transition: background-color 0.15s ease;
+
+        &:hover {
+            background-color: var(--wmail-accent);
+        }
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+}
+
+body.o_webmail_dragging {
+    user-select: none;
+    cursor: col-resize;
+}
+
+    // PR-3a — 4th column: AI assistant panel.
+    .o_webmail_assistant {
+        width: 340px;
+        min-width: 300px;
+        max-width: 420px;
+        flex: 0 0 340px;
+        background-color: var(--wmail-panel-bg);
+
+        .o_webmail_assistant_header {
+            background-color: var(--wmail-list-head-bg);
+        }
+
+        .o_webmail_bubble {
+            font-size: 0.82rem;
+        }
+
+        .o_webmail_triage_item:hover {
+            background-color: var(--wmail-hover-bg);
+        }
+
+        textarea {
+            resize: none;
+        }
+    }
+    
+    .o_webmail_reading_toolbar {
+        background-color: var(--wmail-list-head-bg);
+        min-height: 32px;
+    }
+    
+        .o_webmail_msg_ref {
+            cursor: pointer;
+            font-size: 0.72rem;
+            padding: 0 0.35rem;
+        }

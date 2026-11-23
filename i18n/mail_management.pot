@@ -1,0 +1,973 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# * mail_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-09 02:00+0000\n"
+"PO-Revision-Date: 2026-09-09 02:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Inbox"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Sent"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Drafts"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Trash"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Junk"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Archive"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "All"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Invalid flag: %s."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/controllers/main.py:0
+msgid "Folder not found."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "The folder name cannot be empty."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "The folder name is too long (max %s characters)."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "A folder named '%s' already exists in this mailbox."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Could not create the folder on the IMAP server: %s"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "The folder does not belong to this mailbox."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Could not rename the folder on the IMAP server: %s"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Could not delete the folder on the IMAP server: %s"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Messages cannot be moved to a folder of another mailbox."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Could not move the messages on the IMAP server: %s"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Could not delete the messages on the IMAP server: %s"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Star"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Unstar"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "No messages match this filter."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "No messages in this folder."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Delete"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Delete permanently"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Permanently delete the selected messages"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Move the selected messages to Trash"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_dialog.js:0
+msgid "Create"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_dialog.js:0
+msgid "Create folder"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_dialog.js:0
+msgid "Rename"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_dialog.js:0
+msgid "Rename folder"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Folder created."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Folder renamed."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Folder deleted."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Message(s) moved."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Message(s) deleted."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Delete folder"
+msgstr ""
+
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Permanently delete the %s selected message(s)? This cannot be undone."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Permanently delete this message? This cannot be undone."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/compose_dialog.js:0
+msgid "%s (%s)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/compose_dialog.js:0
+msgid "%s (all mailboxes)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/compose_dialog.js:0
+msgid "Write your message…"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Search"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Search in mailbox…"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Searching: '%s'"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Clear search"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "No messages match your search."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Add mailbox"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_tree.js:0
+msgid "Refresh all"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "All mailboxes refreshed."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_tree.js:0
+msgid "Manage"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/controllers/main.py:0
+msgid "Invalid signature position."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Settings"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Allow remote images"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Remote images can be used to track you. They are blocked by default."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Signature position"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Below the quote"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Above the quote"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Manage signatures…"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Save"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Close"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_tree.js:0
+msgid "Add folder"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Sort"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Date (newest first)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Date (oldest first)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "From (A→Z)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "From (Z→A)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Subject (A→Z)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Subject (Z→A)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Unread first"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Starred first"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Mark read"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Mark unread"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Move to…"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Show images"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Images blocked"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "More actions"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Mark as unread"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Move to folder"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Settings saved."
+msgstr ""
+
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/controllers/main.py:0
+msgid "Invalid default sort."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "General"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Message list"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Message view"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Accounts & signatures"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Messages per page"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "How many messages the list shows per page (10-200)."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Default sort"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Priority"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "None"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Show checkboxes"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Show the selection checkboxes and the bulk-actions bar in the list."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Mark as read after (seconds)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid ""
+"0 marks the message as read immediately; a positive number waits that many "
+"seconds; -1 never marks it automatically."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Collapse quoted text"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Max quote levels"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Remove message colors"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Remove background and text colors from message bodies."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Prefer HTML over plain text"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Simple attachment list"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Show next message after move/delete"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Trusted senders (images)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid ""
+"One email address per line. Remote images from these senders are always "
+"shown."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Show quoted text"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Show more quote"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "The Inbox role cannot be assigned manually."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "The Inbox role cannot be changed."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Invalid folder role."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_folder.py:0
+msgid "Other"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/controllers/main.py:0
+msgid "Invalid compose editor."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/controllers/main.py:0
+msgid "Invalid reply save folder."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/controllers/main.py:0
+msgid "Invalid theme."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Folders"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Theme"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Light"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Dark"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Show unread count badge"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Default editor"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "HTML editor"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Plain text"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Save replies in"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Sent folder"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Folder of the message being replied to"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Request read confirmation"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Request delivery confirmation"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Use browser spellchecker"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Hidden"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid ""
+"Map which folder is used for Sent, Drafts, Junk, Trash and Archive (the "
+"Inbox is fixed). Hidden folders stay synced but leave the folder tree."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/folder_tree.js:0
+msgid "Hide folder"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "'%s' was demoted to Other (one folder per role)."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "The folder '%s' is a mapped system folder. Remove its role in Settings ▸ Folders before deleting it."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "No Trash folder is mapped for this mailbox. Map one in Settings ▸ Folders first."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Delete the folder '%s' with %s message(s)? Messages will be moved to Trash and automatically deleted after %s days."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "Folder deleted. %s message(s) moved to Trash."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Trash retention (days)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Trashed messages are permanently deleted after this many days (1-365)."
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Mapped system folders cannot be deleted. Unmap the role first."
+msgstr ""
+
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Unread"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Starred"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Attachments"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "From"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Subject"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Date"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "selected"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Reply"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Reply all"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/reading_pane.js:0
+msgid "Forward"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/compose_dialog.js:0
+msgid "Compose"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Night (OLED)"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Sepia"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Ocean"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/settings_dialog.js:0
+msgid "Forest"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/components/message_list.js:0
+msgid "Has attachment"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.ui.menu,name:mail_management.menu_mail_management_root
+msgid "Mail Management"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.ui.menu,name:mail_management.menu_mailboxes
+#: model:ir.actions.act_window,name:mail_management.action_mail_management_mailbox
+msgid "My Mailboxes"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.ui.menu,name:mail_management.menu_signatures
+#: model:ir.actions.act_window,name:mail_management.action_mail_management_signature
+msgid "Signatures"
+msgstr ""
+
+#. module: mail_management
+#. odoo-javascript
+#: code:addons/mail_management/static/src/webmail_client.js:0
+msgid "This mailbox has no folders yet. Run 'Probar conexión' (auto-discovers them) or the gear → 'Buscar carpetas'."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management.py:0
+msgid "Connection successful. %s folders discovered."
+msgstr ""

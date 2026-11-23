@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ai_config_wizard_form" model="ir.ui.view">
+        <field name="name">mail.management.ai.config.wizard.form</field>
+        <field name="model">mail.management.ai.config.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Configurar IA">
+                <sheet>
+                    <group>
+                        <group string="Estado actual">
+                            <field name="key_is_set" readonly="1"
+                                   widget="boolean_toggle"/>
+                            <field name="current_model" readonly="1"/>
+                        </group>
+                        <group string="Configuración">
+                            <field name="api_key" password="1"
+                                   placeholder="AIza…"/>
+                            <field name="model"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_save" type="object"
+                            string="Guardar" class="btn-primary"
+                            icon="fa-save"/>
+                    <button special="cancel" string="Cancelar"
+                            class="btn-secondary ms-2"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ai_config" model="ir.actions.act_window">
+        <field name="name">Configurar IA</field>
+        <field name="res_model">mail.management.ai.config.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_ai_config"
+              name="Configurar IA"
+              parent="menu_mail_management_root"
+              action="action_ai_config"
+              sequence="90"
+              groups="mail_management.group_mail_management_manager"/>
+</odoo>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <!-- PR-1b-ii — WebmailClient root: 3-pane read-only layout.
+         All rendering uses t-out (never t-raw). -->
+        <t t-name="mail_management.WebmailClient" owl="1">
+            <!-- PR-2g: the theme is a root class — the palette lives on CSS
+                 custom properties (webmail.scss); dark only overrides them. -->
+            <div class="o_webmail_client d-flex w-100 h-100 overflow-hidden"
+                 t-ref="root"
+                 t-att-class="themeClass"
+                 t-on-mounted="applySavedWidths">
+                <FolderTree
+                    mailboxes="state.mailboxes"
+                    selectedMailboxId="state.selectedMailboxId"
+                    selectedFolderId="state.selectedFolderId"
+                    loading="state.loadingFolders"
+                    refreshing="state.refreshing"
+                    showUnreadBadge="state.settings.showUnreadBadge"
+                    onSelectFolder.bind="selectFolder"
+                        onSelectMailbox.bind="selectMailbox"
+                    onConfigure.bind="openMailboxConfig"
+                        onConfigureMailbox.bind="configureMailbox"
+                    onAddMailbox.bind="openAddMailbox"
+                    onRefreshAll.bind="refreshAll"
+                    onOpenSettings.bind="openSettings"
+                    onCreateFolder.bind="openCreateFolderDialog"
+                    onRenameFolder.bind="openRenameFolderDialog"
+                    onDeleteFolder.bind="onDeleteFolder"
+                    onHideFolder.bind="hideFolder"/>
+<div class="o_webmail_splitter" role="separator" aria-orientation="vertical"
+                     t-on-pointerdown="ev => this.startSplitterDrag('tree', ev)"/>
+            <MessageList
+                messages="state.messages"
+                loading="state.loadingMessages"
+                selectedMessageId="state.selectedMessageId"
+                sortBy="state.messageSort"
+                priority="state.messagePriority"
+                filter="state.messageFilter"
+                selectedIds="state.selectedIds"
+                folderName="state.selectedFolderName"
+                showCheckboxes="state.settings.showCheckboxes"
+                searchQuery="state.searchQuery"
+                moveTargets="moveTargets"
+                isTrash="viewingTrash"
+                onOpenMessage.bind="openMessage"
+                onSetSort.bind="setSort"
+                onTogglePriority.bind="togglePriority"
+                onSetFilter.bind="setFilter"
+                onToggleStar.bind="toggleStar"
+                onToggleSelect.bind="toggleSelect"
+                onToggleSelectAll.bind="toggleSelectAll"
+                onBulkSetFlags.bind="bulkSetFlags"
+                onMoveToFolder.bind="bulkMoveToFolder"
+                onDeleteMessages.bind="bulkDeleteMessages"
+                onComposeNew.bind="() => this.openCompose('new')"
+                onSearch.bind="applySearch"
+                onClearSearch.bind="clearSearch"/>
+<div class="o_webmail_splitter" role="separator" aria-orientation="vertical"
+                     t-on-pointerdown="ev => this.startSplitterDrag('list', ev)"/>
+            <ReadingPane
+                message="state.selectedMessage"
+                loading="state.loadingMessage"
+                moveTargets="moveTargets"
+                isTrash="viewingTrash"
+                imagesBlocked="imagesBlockedForOpen"
+                simpleAttachmentList="state.settings.simpleAttachmentList"
+                onCompose.bind="openCompose"
+                onToggleStar.bind="toggleStar"
+                onMarkUnread.bind="markUnread"
+                onMoveToFolder.bind="moveOpenMessage"
+                onDeleteMessage.bind="deleteOpenMessage"
+                onShowImages.bind="showImages"
+                onToggleAssistant.bind="toggleAssistant"
+                assistantOpen="state.assistantOpen"/>
+        
+                <AssistantPanel t-if="state.assistantOpen &amp;&amp; state.selectedMailboxId"
+                               mailboxId="state.selectedMailboxId"
+                               mailboxName="state.selectedFolderName || ''"
+                               selectedMessage="state.selectedMessage"
+                               onClose.bind="toggleAssistant"
+                               onOpenMessage="(m) => this.openMessage(m)"
+                               onDraftReady.bind="openAiDraft"/>
+            </div>
+    </t>
+</templates>

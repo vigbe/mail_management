@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- PR-1b-ii — read-only UI wiring: mailbox configuration views.     -->
+    <!-- Odoo 19: <list> (not <tree>), direct invisible=/readonly=/       -->
+    <!-- required= attributes (no attrs=), no jQuery.                     -->
+    <!-- ================================================================ -->
+
+    <!-- ===== -->
+    <!-- Folder / Message mirror views (smart-button targets, read-only)  -->
+    <!-- ===== -->
+    <record id="view_folder_list" model="ir.ui.view">
+        <field name="name">mail.management.folder.list</field>
+        <field name="model">mail.management.folder</field>
+        <field name="arch" type="xml">
+            <list string="Folders" create="false" edit="false" delete="false">
+                <field name="name"/>
+                <field name="imap_name"/>
+                <field name="role"/>
+                <field name="message_count" string="Messages"/>
+                <field name="unread_count" string="Unread"/>
+                <field name="last_uid"/>
+                <field name="last_sync" optional="hide"/>
+                <field name="mailbox_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_message_list" model="ir.ui.view">
+        <field name="name">mail.management.message.list</field>
+        <field name="model">mail.management.message</field>
+        <field name="arch" type="xml">
+            <list string="Messages" create="false" edit="false" delete="false">
+                <field name="date"/>
+                <field name="subject"/>
+                <field name="email_from"/>
+                <field name="flag_seen" widget="boolean" optional="show"/>
+                <field name="flag_flagged" optional="show"/>
+                <field name="has_attachment" optional="show"/>
+                <field name="folder_id"/>
+                <field name="mailbox_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_mail_management_folder" model="ir.actions.act_window">
+        <field name="name">Folders</field>
+        <field name="res_model">mail.management.folder</field>
+        <field name="view_mode">list</field>
+        <field name="views" eval="[(ref('view_folder_list'), 'list')]"/>
+    </record>
+
+    <record id="action_mail_management_message" model="ir.actions.act_window">
+        <field name="name">Messages</field>
+        <field name="res_model">mail.management.message</field>
+        <field name="view_mode">list</field>
+        <field name="views" eval="[(ref('view_message_list'), 'list')]"/>
+    </record>
+
+    <!-- ===== -->
+    <!-- Mailbox configuration: list / form / search                      -->
+    <!-- ===== -->
+    <record id="view_mailbox_list" model="ir.ui.view">
+        <field name="name">mail.management.mailbox.list</field>
+        <field name="model">mail.management.mailbox</field>
+        <field name="arch" type="xml">
+            <list string="Mailboxes" decoration-info="state == 'draft'"
+                  decoration-success="state == 'active'"
+                  decoration-danger="state == 'error'">
+                <field name="name"/>
+                <field name="imap_user"/>
+                <field name="imap_host" optional="hide"/>
+                <field name="provider_type"/>
+                <field name="state" widget="badge"/>
+                <field name="last_sync" optional="show"/>
+                <field name="user_id" groups="mail_management.group_mail_management_manager"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_mailbox_form" model="ir.ui.view">
+        <field name="name">mail.management.mailbox.form</field>
+        <field name="model">mail.management.mailbox</field>
+        <field name="arch" type="xml">
+            <form string="Mailbox">
+                <header>
+                    <button name="action_test_connection" type="object"
+                            string="Probar conexión" class="btn-primary"
+                            icon="fa-plug"/>
+                    <button name="action_discover_folders" type="object"
+                            string="Buscar carpetas" icon="fa-folder"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,configured,active,error"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_mail_management_folder)d"
+                                type="action" class="oe_stat_button"
+                                icon="fa-folder-o"
+                                domain="[('mailbox_id','=',id)]"
+                                context="{'default_mailbox_id': id}">
+                            <div class="o_stat_info">
+                                <field name="folder_ids" widget="statinfo"
+                                       string="Folders"/>
+                            </div>
+                        </button>
+                        <button name="%(action_mail_management_message)d"
+                                type="action" class="oe_stat_button"
+                                icon="fa-envelope-o"
+                                domain="[('mailbox_id','=',id)]"
+                                context="{'default_mailbox_id': id}">
+                            <div class="o_stat_info">
+                                <field name="synced_message_ids" widget="statinfo"
+                                       string="Messages"/>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Alice's Gmail"/></h1>
+                    </div>
+                    <group>
+                        
+                            <group name="identity" string="Tu buzón">
+                                <field name="provider_type" string="Proveedor"/>
+                                <field name="name" string="Nombre"
+                                       placeholder="Se completa solo con tu correo…"/>
+                                <field name="from_email" string="Correo electrónico"
+                                       placeholder="tucorreo@gmail.com"/>
+                                <field name="user_id" readonly="1" string="Dueño"/>
+                            </group>
+                            <group name="credential" string="Contraseña">
+                                <!-- Transient compute+inverse field: typing here
+                                     encrypts to credential_encrypted (Fernet);
+                                     the plaintext is never displayed again. -->
+                                <field name="credential"
+                                       password="1" string="Contraseña de correo"
+                                       placeholder="Tu contraseña (en Gmail: contraseña de aplicación)…"/>
+                                <div colspan="2" class="text-muted small">
+                                    Gmail/Outlook con verificación en 2 pasos: usá una
+                                    «contraseña de aplicación» (myaccount.google.com → Seguridad).
+                                </div>
+                            </group>
+                        </group>
+                    <notebook>
+                        <page string="Servidores (avanzado)" name="servers">
+                                <group>
+                                    <group string="Entrada — IMAP">
+                                        <field name="imap_host" string="Servidor IMAP"/>
+                                        <field name="imap_port" string="Puerto"/>
+                                        <field name="imap_use_ssl" string="SSL/TLS"
+                                               widget="boolean_toggle"/>
+                                    </group>
+                                    <group string="Salida — SMTP">
+                                        <field name="smtp_host" string="Servidor SMTP"/>
+                                        <field name="smtp_port" string="Puerto"/>
+                                        <field name="smtp_use_tls" string="STARTTLS"
+                                               widget="boolean_toggle"/>
+                                    </group>
+                                    <group string="Avanzado">
+                                        <field name="imap_user" string="Usuario (normalmente tu correo)"/>
+                                        <field name="sent_folder_name" string="Carpeta de enviados"/>
+                                        <field name="active" widget="boolean_toggle"/>
+                                        <field name="credential_encrypted" password="1" readonly="1"
+                                               groups="mail_management.group_mail_management_manager"/>
+                                    </group>
+                                </group>
+                            </page>
+                        <page string="Folders" name="folders">
+                            <field name="folder_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="imap_name"/>
+                                    <field name="role"/>
+                                    <field name="message_count" string="Messages"/>
+                                    <field name="unread_count" string="Unread"/>
+                                    <field name="last_uid"/>
+                                    <field name="last_sync"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Sync" name="sync">
+                            <group>
+                                <field name="last_sync" readonly="1"/>
+                                <field name="sync_error" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_mailbox_search" model="ir.ui.view">
+        <field name="name">mail.management.mailbox.search</field>
+        <field name="model">mail.management.mailbox</field>
+        <field name="arch" type="xml">
+            <search string="Search Mailboxes">
+                <field name="name"/>
+                <field name="imap_user"/>
+                <field name="imap_host"/>
+                <separator/>
+                <filter string="Active" name="state_active"
+                        domain="[('state','=','active')]"/>
+                <filter string="Error" name="state_error"
+                        domain="[('state','=','error')]"/>
+                <filter string="Archived" name="inactive"
+                        domain="[('active','=',False)]"/>
+                <separator/>
+                <group name="group_by">
+                    <filter string="State" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Provider" name="group_provider"
+                            context="{'group_by': 'provider_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_mail_management_mailbox" model="ir.actions.act_window">
+        <field name="name">My Mailboxes</field>
+        <field name="res_model">mail.management.mailbox</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_mailbox_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No mailboxes configured yet
+            </p>
+            <p>
+                Create a mailbox to read it in the Webmail client action.
+            </p>
+        </field>
+    </record>
+
+    <!-- ===== -->
+    <!-- Menus                                                            -->
+    <!-- ===== -->
+    <menuitem id="menu_mail_management_root"
+              name="Mail Management"
+              sequence="60"
+              web_icon="mail_management,static/description/icon.png"
+              groups="mail_management.group_mail_management_user"/>
+
+    <menuitem id="menu_mailboxes"
+              name="My Mailboxes"
+              parent="menu_mail_management_root"
+              action="action_mail_management_mailbox"
+              sequence="20"
+              groups="mail_management.group_mail_management_user"/>
+</odoo>

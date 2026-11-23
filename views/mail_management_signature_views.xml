@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================ -->
+    <!-- PR-2c — signature management: minimal list + form + action +     -->
+    <!-- submenu under the Mail Management root.  Odoo 19: <list>, direct -->
+    <!-- attributes, standard html widget for the sanitized body.         -->
+    <!-- ================================================================ -->
+
+    <record id="view_signature_list" model="ir.ui.view">
+        <field name="name">mail.management.signature.list</field>
+        <field name="model">mail.management.signature</field>
+        <field name="arch" type="xml">
+            <list string="Signatures" decoration-info="is_default">
+                <field name="name"/>
+                <field name="mailbox_id" optional="show"/>
+                <field name="is_default" widget="boolean_toggle"/>
+                <field name="user_id" groups="mail_management.group_mail_management_manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_signature_form" model="ir.ui.view">
+        <field name="name">mail.management.signature.form</field>
+        <field name="model">mail.management.signature</field>
+        <field name="arch" type="xml">
+            <form string="Signature">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="e.g. Professional"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="mailbox_id"
+                                   options="{'no_create': True}"
+                                   placeholder="All my mailboxes"/>
+                            <field name="is_default" widget="boolean_toggle"/>
+                            <field name="user_id" readonly="1"
+                                   groups="mail_management.group_mail_management_manager"/>
+                        </group>
+                    </group>
+                    <separator string="Generador de firma" class="mt-2"/>
+                    <div class="row o_webmail_sig_generator">
+                        <div class="col-lg-4 col-md-6 col-12 p-1">
+                            <field name="template_key"/>
+                            <button name="action_generate_signature"
+                                    type="object" string="Generar firma"
+                                    class="btn-primary w-100 mt-2"
+                                    icon="fa-magic"/>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 p-1">
+                            <field name="contact_name"/>
+                            <field name="contact_title"/>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-12 p-1">
+                            <field name="contact_email"/>
+                            <field name="contact_phone"/>
+                        </div>
+                        <div class="col-12 p-1">
+                            <field name="logo" widget="image"/>
+                            <field name="logo_filename" invisible="1"/>
+                        </div>
+                    </div>
+                    <notebook>
+
+                        <page string="Content" name="content">
+                            <!-- Standard html widget (sanitized on write by
+                                 the model's create/write override, and again
+                                 by the field itself — defense in depth). -->
+                            <field name="html_body" widget="html"
+                                   placeholder="Your signature (rich text)…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_mail_management_signature" model="ir.actions.act_window">
+        <field name="name">Firmas</field>
+        <field name="target">new</field>
+        <field name="res_model">mail.management.signature</field>
+        <field name="view_mode">list,form</field>
+        <field name="views" eval="[
+            (ref('view_signature_list'), 'list'),
+            (False, 'form'),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No signatures yet
+            </p>
+            <p>
+                Create an HTML signature, optionally scoped to one mailbox,
+                and mark one as default to auto-insert it when composing.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_signatures"
+              name="Signatures"
+              parent="menu_mail_management_root"
+              action="action_mail_management_signature"
+              sequence="30"
+              groups="mail_management.group_mail_management_user"/>
+</odoo>
