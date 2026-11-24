@@ -63,7 +63,7 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
 | T6 | S7 | 18.0: reapply 59acf0b on the new base, test on `odoo:18.0`, fix | 0399d11 — 922 tests 0 failed + tour green | |
 | T7 | S7 | 17.0: reapply 557aab2, test on `odoo:17.0`, fix | 29019dd — 922 tests 0 failed (tour skip inherited) | |
 | T8 | S7 | 16.0: reapply 387d21c (cumulative), test on `odoo:16.0`, fix | 7dbd039+26824d1 — 922 tests 0 failed (tour skip inherited) | |
-| T9 | S7 | 20.0: reapply 5d9f83c + OWL 3 frontend, test on `odoo:20.0` (suite + tour), fix; `main` := 20.0 | backend 2a1a650+60544c3 — 1314 tests 0 failed; OWL 3 frontend port in progress | |
+| T9 | S7 | 20.0: reapply 5d9f83c + OWL 3 frontend, test on `odoo:20.0` (suite + tour), fix; `main` := 20.0 | backend 2a1a650+60544c3; OWL 3 port 748dd2d (+07e7f6d lint) — 1315 tests 0 failed + tour 52/52 green; `main` := 748dd2d | |
 | T10 | S7 | Close: report, memory, push decision (push is the user's) | — |
 
 ## Log
@@ -156,3 +156,28 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
   escaped the sed — and normalized the selection assertion to tuples); its
   tour is skipped pending the OWL 3 frontend port (the only S7 remainder,
   together with `main` := 20.0 tip).
+- **L14** — T9 OWL 3 frontend port (done inline after three async worker
+  launches died on pi-subagents infra errors: two ENOENT on the session
+  fan-out budget dir, then a budget-root validation failure — zero work
+  lost, the worktree was untouched). Root causes found with in-browser
+  probes and the Odoo 20 sources: (1) OWL 3 removed useState/useRef —
+  state is `proxy(...)`, refs are `signal.ref()` class fields bound by
+  `t-ref="this.x"`; (2) instance members in templates must be `this.`-
+  prefixed (`props.` stays as `this.props.`); `t-model` → `t-custom-model`;
+  (3) `static props` throw under the compat Component — schemas are
+  `props = useProps(t....)` class fields; a client action declares
+  `standardActionServiceProps`; (4) Odoo 20 DROPPED FontAwesome from the
+  webclient (0 `fa fa-` uses in core) — all 51 icons became Material
+  Symbols `oi`/`data-icon` (folder role map included), spinner animated by
+  a module SCSS keyframe; the tour's `.fa-star` selector became
+  `.oi-filled[data-icon='star']`; (5) optimistic flag updates replace
+  array items/objects (useProps may hand children copies — deep mutation
+  does not propagate); (6) wiring tests assert source patterns and were
+  ported to the new idioms. Delegation-infra lesson: the runner needs
+  `…/T/<session>/pi-subagents-uid-501/run-fanout-budgets`; hand-made dirs
+  fail a managed-root validation — if it recurs, prefer inline or a
+  fresh session. Final evidence on `odoo:20.0`: `0 failed, 0 error(s) of
+  1315 tests` + webmail tour real in headless Chrome (52/52, "tour
+  succeeded"); commits 60544c3, 07e7f6d, 748dd2d. `main` := 748dd2d
+  (user decision "main es 20"); `19.0` fast-forwarded to the
+  feat/ai-providers tip (8971dd3+docs).
