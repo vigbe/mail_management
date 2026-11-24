@@ -94,8 +94,8 @@ class TestMailCrypto(TransactionCase):
         env_key = self._key()
         with mock.patch.dict(os.environ, {MASTER_KEY_ENV: env_key}):
             result = FernetCrypto.get_master_key(
-                get_param=lambda _k: "icp-fallback-should-not-be-used",
-                set_param=lambda _k, _v: None,
+                get_str=lambda _k: "icp-fallback-should-not-be-used",
+                set_str=lambda _k, _v: None,
             )
         self.assertEqual(result, env_key)
 
@@ -104,8 +104,8 @@ class TestMailCrypto(TransactionCase):
         icp_key = self._key()
         with self._env_without_master_key():
             result = FernetCrypto.get_master_key(
-                get_param=lambda k: icp_key if k == MASTER_KEY_ICP else None,
-                set_param=lambda _k, _v: None,
+                get_str=lambda k: icp_key if k == MASTER_KEY_ICP else None,
+                set_str=lambda _k, _v: None,
             )
         self.assertEqual(result, icp_key)
 
@@ -120,11 +120,11 @@ class TestMailCrypto(TransactionCase):
             def fake_set(k, v):
                 stored[k] = v
 
-            key_1 = FernetCrypto.get_master_key(get_param=fake_get, set_param=fake_set)
+            key_1 = FernetCrypto.get_master_key(get_str=fake_get, set_str=fake_set)
             self.assertIn(MASTER_KEY_ICP, stored)
             self.assertEqual(stored[MASTER_KEY_ICP], key_1)
 
-            key_2 = FernetCrypto.get_master_key(get_param=fake_get, set_param=fake_set)
+            key_2 = FernetCrypto.get_master_key(get_str=fake_get, set_str=fake_set)
             self.assertEqual(key_1, key_2)
 
     # ------------------------------------------------------------------

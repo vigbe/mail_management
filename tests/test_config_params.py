@@ -5,7 +5,7 @@ from odoo.tests.common import TransactionCase
 
 class TestConfigParams(TransactionCase):
     def _set(self, key, value):
-        self.env["ir.config_parameter"].sudo().set_param(key, value)
+        self.env["ir.config_parameter"].sudo().set_str(key, value)
 
     def test_bad_imap_timeout_falls_back(self):
         self._set("mail_management.imap_timeout", "30s")  # admin typo

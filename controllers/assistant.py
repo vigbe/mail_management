@@ -13,13 +13,13 @@ class MailManagementAssistantController(http.Controller):
     def _mailbox(self, mailbox_id):
         mailbox = request.env["mail.management.mailbox"].browse(mailbox_id).exists()
         if not mailbox:
-            raise UserError(_("Mailbox not found."))
+            raise UserError(request.env._("Mailbox not found."))
         return mailbox
 
     def _message(self, message_id):
         message = request.env["mail.management.message"].browse(message_id).exists()
         if not message:
-            raise UserError(_("Message not found."))
+            raise UserError(request.env._("Message not found."))
         return message
 
     @http.route("/mail_management/assistant/chat", type="jsonrpc", auth="user")

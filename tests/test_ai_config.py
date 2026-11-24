@@ -52,7 +52,7 @@ class TestAiConfig(TransactionCase):
         self.Wizard = self.env["mail.management.ai.config.wizard"]
         self.Assistant = self.env["mail.management.assistant"]
         for key in (*NEW_PARAMS, *LEGACY_PARAMS):
-            self.icp.set_param(key, False)
+            self.icp.set_str(key, False)
 
     # -- helpers -------------------------------------------------------------
 
@@ -61,7 +61,7 @@ class TestAiConfig(TransactionCase):
 
     def _stored_key(self):
         """Decrypt whatever the wizard stored (fails loudly if it is clear)."""
-        return FernetCrypto.decrypt(self.icp.get_param(PARAM_KEY), key=self._master_key())
+        return FernetCrypto.decrypt(self.icp.get_str(PARAM_KEY), key=self._master_key())
 
     def _configure(
         self,
@@ -71,16 +71,16 @@ class TestAiConfig(TransactionCase):
         base_url: str | bool = False,
     ):
         """Write the four parameters directly (encrypted key)."""
-        self.icp.set_param(PARAM_PROVIDER, provider)
-        self.icp.set_param(
+        self.icp.set_str(PARAM_PROVIDER, provider)
+        self.icp.set_str(
             PARAM_KEY, FernetCrypto.encrypt(api_key, key=self._master_key())
         )
-        self.icp.set_param(PARAM_MODEL, model)
-        self.icp.set_param(PARAM_BASE_URL, base_url)
+        self.icp.set_str(PARAM_MODEL, model)
+        self.icp.set_str(PARAM_BASE_URL, base_url)
 
     def _assert_params_untouched(self):
         for key in NEW_PARAMS:
-            self.assertFalse(self.icp.get_param(key), key)
+            self.assertFalse(self.icp.get_str(key), key)
 
     def _mailbox_with_message(self):
         mailbox = self.env["mail.management.mailbox"].create(
@@ -126,11 +126,11 @@ class TestAiConfig(TransactionCase):
             }
         ).action_save()
 
-        self.assertEqual(self.icp.get_param(PARAM_PROVIDER), "custom")
-        self.assertEqual(self.icp.get_param(PARAM_MODEL), "llama-x")
-        self.assertEqual(self.icp.get_param(PARAM_BASE_URL), CUSTOM_URL)
+        self.assertEqual(self.icp.get_str(PARAM_PROVIDER), "custom")
+        self.assertEqual(self.icp.get_str(PARAM_MODEL), "llama-x")
+        self.assertEqual(self.icp.get_str(PARAM_BASE_URL), CUSTOM_URL)
 
-        token = self.icp.get_param(PARAM_KEY)
+        token = self.icp.get_str(PARAM_KEY)
         self.assertTrue(token)
         self.assertNotEqual(token, PLAIN_KEY)
         self.assertEqual(self._stored_key(), PLAIN_KEY)
@@ -139,14 +139,14 @@ class TestAiConfig(TransactionCase):
             lambda p, secret=PLAIN_KEY: secret in (p.value or "")
         )
         self.assertFalse(leaked)
-        self.assertFalse(self.icp.get_param("mail_management.ai_gemini_key_encrypted"))
+        self.assertFalse(self.icp.get_str("mail_management.ai_gemini_key_encrypted"))
 
     def test_save_without_typing_the_key_keeps_the_current_key(self):
         self.Wizard.create({"provider": "google", "api_key": PLAIN_KEY}).action_save()
         self.Wizard.create({"provider": "google", "model": "gemini-ultra"}).action_save()
 
         self.assertEqual(self._stored_key(), PLAIN_KEY)
-        self.assertEqual(self.icp.get_param(PARAM_MODEL), "gemini-ultra")
+        self.assertEqual(self.icp.get_str(PARAM_MODEL), "gemini-ultra")
 
     def test_save_without_any_key_raises_and_writes_nothing(self):
         wizard = self.Wizard.create({"provider": "google"})  # no key typed, none stored
@@ -174,8 +174,8 @@ class TestAiConfig(TransactionCase):
         self.assertEqual(wizard.current_model, "gpt-x")
 
         # The legacy encrypted key is not a configured key anymore.
-        self.icp.set_param(PARAM_KEY, False)
-        self.icp.set_param(
+        self.icp.set_str(PARAM_KEY, False)
+        self.icp.set_str(
             "mail_management.ai_gemini_key_encrypted",
             FernetCrypto.encrypt("legacy-encrypted-key", key=self._master_key()),
         )
@@ -218,9 +218,9 @@ class TestAiConfig(TransactionCase):
 
         self.Wizard.create({"provider": "deepseek", "model": ""}).action_save()
 
-        self.assertEqual(self.icp.get_param(PARAM_PROVIDER), "deepseek")
-        self.assertFalse(self.icp.get_param(PARAM_BASE_URL))
-        self.assertFalse(self.icp.get_param(PARAM_MODEL))  # empty = provider default
+        self.assertEqual(self.icp.get_str(PARAM_PROVIDER), "deepseek")
+        self.assertFalse(self.icp.get_str(PARAM_BASE_URL))
+        self.assertFalse(self.icp.get_str(PARAM_MODEL))  # empty = provider default
         self.assertEqual(self._stored_key(), PLAIN_KEY)
 
     def test_wizard_loads_the_stored_configuration_and_the_provider_default_model(self):
@@ -279,11 +279,11 @@ class TestAiConfig(TransactionCase):
             self.assertIn(name, message)
 
         # A provider without a key, or a key without a provider, is as incomplete.
-        self.icp.set_param(PARAM_PROVIDER, "openai")
+        self.icp.set_str(PARAM_PROVIDER, "openai")
         with self.assertRaises(UserError):
             self.Assistant._get_ai_client()
         self._configure("google")
-        self.icp.set_param(PARAM_PROVIDER, False)
+        self.icp.set_str(PARAM_PROVIDER, False)
         with self.assertRaises(UserError):
             self.Assistant._get_ai_client()
 
@@ -301,16 +301,16 @@ class TestAiConfig(TransactionCase):
 
     def test_factory_raises_a_user_error_when_the_stored_key_cannot_be_decrypted(self):
         self._configure("google")
-        self.icp.set_param(PARAM_KEY, "not-a-fernet-token")
+        self.icp.set_str(PARAM_KEY, "not-a-fernet-token")
 
         with self.assertRaises(UserError) as caught:
             self.Assistant._get_ai_client()
         self.assertIn("Configurar IA", str(caught.exception))
 
     def test_assistant_never_reads_the_legacy_parameters(self):
-        self.icp.set_param("ia_prop.gemini_api_key", "legacy-plain-key")
-        self.icp.set_param("real_estate.ai_gemini_model", "legacy-model")
-        self.icp.set_param(
+        self.icp.set_str("ia_prop.gemini_api_key", "legacy-plain-key")
+        self.icp.set_str("real_estate.ai_gemini_model", "legacy-model")
+        self.icp.set_str(
             "mail_management.ai_gemini_key_encrypted",
             FernetCrypto.encrypt("legacy-encrypted-key", key=self._master_key()),
         )
@@ -392,7 +392,7 @@ class TestAiConfigTermsTranslatedEsCl(TransactionCase):
             [("name", "=", "mail_management")]
         )._update_translations(["es_CL"])
         for key in NEW_PARAMS:
-            self.env["ir.config_parameter"].sudo().set_param(key, False)
+            self.env["ir.config_parameter"].sudo().set_str(key, False)
 
     def test_missing_configuration_error_translated_es_cl(self):
         assistant = self.env["mail.management.assistant"].with_context(lang="es_CL")

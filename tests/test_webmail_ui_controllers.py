@@ -145,7 +145,7 @@ class TestReadControllersUiExtensions(TransactionCase):
         ir_att = self.env["ir.attachment"].create(
             {
                 "name": "inline.png",
-                "datas": base64.b64encode(io.BytesIO(b"png").getvalue()).decode(),
+                "raw": io.BytesIO(b"png").getvalue(),
                 "res_model": "mail.management.message",
                 "res_id": self.msg_new.id,
                 "mimetype": "image/png",

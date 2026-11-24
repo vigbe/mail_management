@@ -343,7 +343,7 @@ class TestSignatureIsolation(TransactionCase):
 
     def test_user_group_has_full_acl_on_signatures(self):
         """The user group can create/write/unlink its OWN signatures."""
-        model_access = self.env["ir.model.access"].search(
+        model_access = self.env["ir.access"].search(
             [
                 ("model_id.model", "=", "mail.management.signature"),
                 (
@@ -354,15 +354,7 @@ class TestSignatureIsolation(TransactionCase):
             ]
         )
         self.assertTrue(model_access)
-        self.assertTrue(
-            all(
-                access.perm_read
-                and access.perm_write
-                and access.perm_create
-                and access.perm_unlink
-                for access in model_access
-            )
-        )
+        self.assertTrue(all(a.operation == "crud" for a in model_access))
 
     def test_user_can_manage_own_signature(self):
         own = self.env_a["mail.management.signature"].create(
@@ -386,11 +378,11 @@ class TestSignatureIsolation(TransactionCase):
     def test_isolation_rules_exist(self):
         user_rule = self.env.ref("mail_management.rule_signature_user_own")
         self.assertEqual(
-            user_rule.domain_force,
+            user_rule.domain,
             "[('user_id', '=', user.id)]",
         )
         manager_rule = self.env.ref("mail_management.rule_signature_manager_all")
-        self.assertEqual(manager_rule.domain_force, "[(1, '=', 1)]")
+        self.assertEqual(manager_rule.domain, "[(1, '=', 1)]")
 
 
 # ===========================================================================
@@ -704,7 +696,7 @@ class TestComposeRichTextWiring(TransactionCase):
     def test_manifest_version_bumped(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
             manifest = ast.literal_eval(fh.read())
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "20.0.17.0.0")
 
     def test_manifest_depends_on_html_editor(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:

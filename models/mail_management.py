@@ -175,7 +175,7 @@ class MailManagementMailbox(models.Model):
     def _encrypt_credential(self, plaintext):
         """Encrypt *plaintext* using the resolved Fernet master key."""
         icp = self.env["ir.config_parameter"].sudo()
-        key = FernetCrypto.get_master_key(icp.get_param, icp.set_param)
+        key = FernetCrypto.get_master_key(icp.get_str, icp.set_str)
         return FernetCrypto.encrypt(plaintext, key=key)
 
     # ------------------------------------------------------------------
@@ -215,7 +215,7 @@ class MailManagementMailbox(models.Model):
         if not token:
             raise UserError(_("No credential is set for this mailbox."))
         icp = self.env["ir.config_parameter"].sudo()
-        key = FernetCrypto.get_master_key(icp.get_param, icp.set_param)
+        key = FernetCrypto.get_master_key(icp.get_str, icp.set_str)
         return FernetCrypto.decrypt(token, key=key)
 
     # ------------------------------------------------------------------
@@ -239,7 +239,7 @@ class MailManagementMailbox(models.Model):
         return self._safe_int(
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("mail_management.imap_timeout", 30),
+            .get_str("mail_management.imap_timeout", 30),
             30,
         )
 
@@ -805,7 +805,7 @@ class MailManagementMailbox(models.Model):
         MIME-ready payload dicts (bytes + mimetype + name)."""
         payloads = []
         for att in original_message.attachment_ids:
-            content = base64.b64decode(att.ir_attachment_id.datas or "")
+            content = bytes(getattr(att.ir_attachment_id.raw, "content", b"") or b"")
             payloads.append(
                 {
                     "name": att.name,
@@ -830,7 +830,7 @@ class MailManagementMailbox(models.Model):
             limit
             or self.env["ir.config_parameter"]
             .sudo()
-            .get_param("mail_management.cron_batch_size", 20),
+            .get_str("mail_management.cron_batch_size", 20),
             20,
         )
         mailboxes = self.search(
@@ -863,7 +863,7 @@ class MailManagementMailbox(models.Model):
         fetch_batch = self._safe_int(
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("mail_management.fetch_batch_size", 50),
+            .get_str("mail_management.fetch_batch_size", 50),
             50,
         )
         now = fields.Datetime.now()
@@ -995,7 +995,7 @@ class MailManagementMailbox(models.Model):
             ir_att = ir_attach_model.sudo().create(
                 {
                     "name": att["name"],
-                    "datas": base64.b64encode(att["content"]).decode(),
+                    "raw": att["content"],
                     "res_model": "mail.management.message",
                     "res_id": message.id,
                     "mimetype": att.get("mimetype", ""),
@@ -1251,7 +1251,7 @@ class MailManagementMailbox(models.Model):
         size = self._safe_int(
             self.env["ir.config_parameter"]
             .sudo()
-            .get_param("mail_management.move_batch_size", 100),
+            .get_str("mail_management.move_batch_size", 100),
             100,
         )
         uids = list(uids)
@@ -1622,7 +1622,7 @@ class MailManagementMailbox(models.Model):
             limit
             or self.env["ir.config_parameter"]
             .sudo()
-            .get_param("mail_management.cron_batch_size", 20),
+            .get_str("mail_management.cron_batch_size", 20),
             20,
         )
         mailboxes = self.search(

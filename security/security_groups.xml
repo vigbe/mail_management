@@ -33,95 +33,107 @@
     <!--   - manager sees ALL mailboxes:      [(1,'=',1)]                 -->
     <!-- A manager (implied into user) gets own OR all = all.             -->
     <!-- ================================================================ -->
-    <record id="rule_mailbox_user_own" model="ir.rule">
+    <record id="rule_mailbox_user_own" model="ir.access">
         <field name="name">Mailbox: user sees own</field>
         <field name="model_id" ref="model_mail_management_mailbox"/>
-        <field name="domain_force">[('user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
     </record>
-    <record id="rule_mailbox_manager_all" model="ir.rule">
+    <record id="rule_mailbox_manager_all" model="ir.access">
         <field name="name">Mailbox: manager sees all</field>
         <field name="model_id" ref="model_mail_management_mailbox"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">crud</field>
+        <field name="domain">[(1, '=', 1)]</field>
     </record>
 
     <!-- ================================================================ -->
     <!-- Folder isolation (PR-1b-i — design B.3)                          -->
     <!-- ================================================================ -->
-    <record id="rule_folder_user_own" model="ir.rule">
+    <record id="rule_folder_user_own" model="ir.access">
         <field name="name">Folder: user sees own</field>
         <field name="model_id" ref="model_mail_management_folder"/>
-        <field name="domain_force">[('user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
     </record>
-    <record id="rule_folder_manager_all" model="ir.rule">
+    <record id="rule_folder_manager_all" model="ir.access">
         <field name="name">Folder: manager sees all</field>
         <field name="model_id" ref="model_mail_management_folder"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">crud</field>
+        <field name="domain">[(1, '=', 1)]</field>
     </record>
 
     <!-- ================================================================ -->
     <!-- Message isolation (PR-1b-i — design B.3)                         -->
     <!-- ================================================================ -->
-    <record id="rule_message_user_own" model="ir.rule">
+    <record id="rule_message_user_own" model="ir.access">
         <field name="name">Message: user sees own</field>
         <field name="model_id" ref="model_mail_management_message"/>
-        <field name="domain_force">[('user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
     </record>
-    <record id="rule_message_manager_all" model="ir.rule">
+    <record id="rule_message_manager_all" model="ir.access">
         <field name="name">Message: manager sees all</field>
         <field name="model_id" ref="model_mail_management_message"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">crud</field>
+        <field name="domain">[(1, '=', 1)]</field>
     </record>
 
     <!-- ================================================================ -->
     <!-- Attachment isolation (PR-1b-i — design B.3)                      -->
     <!-- ================================================================ -->
-    <record id="rule_attachment_user_own" model="ir.rule">
+    <record id="rule_attachment_user_own" model="ir.access">
         <field name="name">Attachment: user sees own</field>
         <field name="model_id" ref="model_mail_management_attachment"/>
-        <field name="domain_force">[('user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
     </record>
-    <record id="rule_attachment_manager_all" model="ir.rule">
+    <record id="rule_attachment_manager_all" model="ir.access">
         <field name="name">Attachment: manager sees all</field>
         <field name="model_id" ref="model_mail_management_attachment"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">cru</field>
+        <field name="domain">[(1, '=', 1)]</field>
     </record>
     <!-- ================================================================
          Signature isolation (PR-2c — same pattern as the mailbox rules)
     ================================================================ -->
-    <record id="rule_signature_user_own" model="ir.rule">
+    <record id="rule_signature_user_own" model="ir.access">
         <field name="name">Signature: user sees own</field>
         <field name="model_id" ref="model_mail_management_signature"/>
-        <field name="domain_force">[('user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">crud</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
     </record>
-        <record id="rule_signature_manager_all" model="ir.rule">
-            <field name="name">Signature: manager sees all</field>
-            <field name="model_id" ref="model_mail_management_signature"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
-        </record>
+        <record id="rule_signature_manager_all" model="ir.access">
+        <field name="name">Signature: manager sees all</field>
+        <field name="model_id" ref="model_mail_management_signature"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">crud</field>
+        <field name="domain">[(1, '=', 1)]</field>
+    </record>
         <!-- ================================================================
              Settings isolation (PR-2e — same pattern: user = own singleton,
              manager = all; the /settings endpoints always pin env.user)
         ================================================================ -->
-        <record id="rule_settings_user_own" model="ir.rule">
-            <field name="name">Webmail settings: user sees own</field>
-            <field name="model_id" ref="model_mail_management_settings"/>
-            <field name="domain_force">[('user_id', '=', user.id)]</field>
-            <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
-        </record>
-        <record id="rule_settings_manager_all" model="ir.rule">
-            <field name="name">Webmail settings: manager sees all</field>
-            <field name="model_id" ref="model_mail_management_settings"/>
-            <field name="domain_force">[(1, '=', 1)]</field>
-            <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
-        </record>
+        <record id="rule_settings_user_own" model="ir.access">
+        <field name="name">Webmail settings: user sees own</field>
+        <field name="model_id" ref="model_mail_management_settings"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
+    </record>
+        <record id="rule_settings_manager_all" model="ir.access">
+        <field name="name">Webmail settings: manager sees all</field>
+        <field name="model_id" ref="model_mail_management_settings"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">cru</field>
+        <field name="domain">[(1, '=', 1)]</field>
+    </record>
     </odoo>

@@ -186,7 +186,7 @@ class TestSettingsIsolation(TransactionCase):
         self.assertEqual(len(visible_manager), 2)
 
     def test_user_group_has_acl(self):
-        access = self.env["ir.model.access"].search(
+        access = self.env["ir.access"].search(
             [
                 ("model_id.model", "=", "mail.management.settings"),
                 (
@@ -197,7 +197,7 @@ class TestSettingsIsolation(TransactionCase):
             ]
         )
         self.assertTrue(access)
-        self.assertTrue(all(a.perm_read and a.perm_write for a in access))
+        self.assertTrue(all("r" in a.operation and "u" in a.operation for a in access))
 
 
 # ===========================================================================
@@ -310,8 +310,8 @@ class TestSettingsController(TransactionCase):
         self.assertIn("security/security_groups.xml", manifest["data"])
         src = _read("security/security_groups.xml")
         self.assertIn("model_mail_management_settings", src)
-        acl = _read("security/ir.model.access.csv")
-        self.assertIn("model_mail_management_settings", acl)
+        acl = _read("security/ir.access.csv")
+        self.assertIn("mail.management.settings", acl)
 
 
 def _read_manifest():
@@ -572,7 +572,7 @@ class TestUiConsolidationWiring(TransactionCase):
         self.assertIn("mail_management/static/src/utils/prepare_body.js", backend)
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(_read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(_read_manifest()["version"], "20.0.17.0.0")
 
 
 # ===========================================================================

@@ -531,7 +531,7 @@ class TestSendAttachments(SendTestMixin, TransactionCase):
         self.assertEqual(len(result["message"].attachment_ids), 1)
         linked = result["message"].attachment_ids[0]
         self.assertEqual(linked.name, "notes.txt")
-        self.assertEqual(linked.ir_attachment_id.datas, base64.b64encode(content))
+        self.assertEqual(bytes(linked.ir_attachment_id.raw.content), content)
 
     def test_attachments_stored_via_ir_attachment_filestore(self):
         smtp = FakeSmtpClient()
@@ -555,14 +555,14 @@ class TestSendAttachments(SendTestMixin, TransactionCase):
         self.assertEqual(ir_att.res_id, sent_rec.id)
         self.assertEqual(ir_att.name, "a.bin")
         # bytes round-trip from the stored payload
-        self.assertEqual(base64.b64decode(ir_att.datas), b"\x00\x01")
+        self.assertEqual(bytes(ir_att.raw.content), b"\x00\x01")
 
     def test_forward_includes_original_attachments(self):
         # Original message carries an attachment (as synced).
         ir_att = self.IrAttachment.sudo().create(
             {
                 "name": "report.pdf",
-                "datas": base64.b64encode(b"%PDF-fake").decode(),
+                "raw": b"%PDF-fake",
                 "res_model": "mail.management.message",
                 "res_id": self.original.id,
                 "mimetype": "application/pdf",
@@ -810,7 +810,7 @@ class TestSendController(SendTestMixin, TransactionCase):
         payload = [
             {
                 "name": "up.txt",
-                "datas": base64.b64encode(b"upload-data").decode(),
+                "raw": b"upload-data",
                 "mimetype": "text/plain",
             }
         ]
@@ -866,7 +866,7 @@ class TestComposeUiWiring(TransactionCase):
     def test_manifest_version_bumped_5(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
             manifest = ast.literal_eval(fh.read())
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "20.0.17.0.0")
 
     def test_reading_pane_has_compose_buttons(self):
         with open(

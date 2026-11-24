@@ -68,7 +68,7 @@ class MailManagementAiConfigWizard(models.TransientModel):
     # ------------------------------------------------------------------
     @api.model
     def _default_param(self, key):
-        return self.env["ir.config_parameter"].sudo().get_param(key) or False
+        return self.env["ir.config_parameter"].sudo().get_str(key) or False
 
     @api.model
     def _default_provider(self):
@@ -84,9 +84,9 @@ class MailManagementAiConfigWizard(models.TransientModel):
     def _compute_status(self):
         icp = self.env["ir.config_parameter"].sudo()
         for wiz in self:
-            wiz.key_is_set = bool(icp.get_param(PARAM_API_KEY))
+            wiz.key_is_set = bool(icp.get_str(PARAM_API_KEY))
             wiz.current_model = self._effective_model(
-                icp.get_param(PARAM_PROVIDER), icp.get_param(PARAM_MODEL)
+                icp.get_str(PARAM_PROVIDER), icp.get_str(PARAM_MODEL)
             )
 
     @api.model
@@ -104,18 +104,18 @@ class MailManagementAiConfigWizard(models.TransientModel):
         self.ensure_one()
         icp = self.env["ir.config_parameter"].sudo()
         # Validate everything before writing a single parameter.
-        self._check_before_save(key_is_set=bool(icp.get_param(PARAM_API_KEY)))
+        self._check_before_save(key_is_set=bool(icp.get_str(PARAM_API_KEY)))
 
         if self.api_key:
             key = FernetCrypto.get_master_key(icp.get_param, icp.set_param)
-            icp.set_param(
+            icp.set_str(
                 PARAM_API_KEY, FernetCrypto.encrypt(self.api_key.strip(), key=key)
             )
-        icp.set_param(PARAM_PROVIDER, self.provider)
-        icp.set_param(PARAM_MODEL, self._param_value(self.model))
+        icp.set_str(PARAM_PROVIDER, self.provider)
+        icp.set_str(PARAM_MODEL, self._param_value(self.model))
         # The base URL belongs to the custom provider only: a stale custom
         # endpoint must never be applied to a stock provider.
-        icp.set_param(
+        icp.set_str(
             PARAM_BASE_URL,
             self._param_value(self.base_url)
             if self.provider == CUSTOM_PROVIDER

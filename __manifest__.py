@@ -1,6 +1,6 @@
 {  # noqa: B018 — Odoo manifests are a top-level dict literal (ast.literal_eval)
     "name": "Mail Management",
-    "version": "19.0.17.0.0",
+    "version": "20.0.17.0.0",
     "category": "Tools",
     "summary": "AI-powered mail management module for Odoo",
     "description": """
@@ -19,7 +19,7 @@
     "data": [
         "security/security_groups.xml",
         "security/chat_security.xml",
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "data/mail_management_cron.xml",
         "views/mail_management_mailbox_views.xml",
         "views/mail_management_signature_views.xml",

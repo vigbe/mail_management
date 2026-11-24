@@ -625,4 +625,4 @@ class TestNewTermTranslatedEsCl(TransactionCase):
                 ln for ln in fh.read().splitlines() if not ln.lstrip().startswith("#")
             )
         manifest = ast.literal_eval(source)
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "20.0.17.0.0")

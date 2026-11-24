@@ -126,9 +126,7 @@ class TestListSorting(TransactionCase):
                 ir_att = self.env["ir.attachment"].create(
                     {
                         "name": f"att{uid}.txt",
-                        "datas": base64.b64encode(
-                            io.BytesIO(f"att{uid}".encode()).getvalue()
-                        ).decode(),
+                        "raw": io.BytesIO(f"att{uid}".encode()).getvalue(),
                         "res_model": "mail.management.message",
                         "res_id": msg.id,
                         "mimetype": "text/plain",

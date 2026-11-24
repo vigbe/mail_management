@@ -610,4 +610,4 @@ class TestFolderUiWiring(TransactionCase):
         import ast
 
         manifest = ast.literal_eval(_read("__manifest__.py"))
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "20.0.17.0.0")

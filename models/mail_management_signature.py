@@ -168,7 +168,9 @@ class MailManagementSignature(models.Model):
         data = self.logo
         if not data:
             return ""
-        raw = base64.b64decode(data)
+        # Odoo 20: Binary fields expose the DECODED content (BinaryValue
+        # proxy); the data URI needs a fresh base64 of it.
+        raw = bytes(getattr(data, "content", data))
         if raw[:8] == b"\x89PNG\r\n\x1a\n":
             mime = "image/png"
         elif raw[:3] == b"\xff\xd8\xff":
@@ -177,7 +179,7 @@ class MailManagementSignature(models.Model):
             mime = "image/gif"
         else:
             mime = "image/png"
-        src = "data:" + mime + ";base64," + data.decode()
+        src = "data:" + mime + ";base64," + base64.b64encode(raw).decode()
         return (
             '<img src="' + src + '" alt="logo" '
             'style="max-width:96px; max-height:96px; '

@@ -50,7 +50,7 @@ class FernetCrypto:
     # Master-key resolution  (env → icp → auto-generate)
     # ------------------------------------------------------------------
     @staticmethod
-    def get_master_key(get_param=None, set_param=None):
+    def get_master_key(get_str=None, set_str=None):
         """Resolve the Fernet master key.
 
         Priority:
@@ -58,11 +58,11 @@ class FernetCrypto:
         1. Environment variable ``MAIL_MGMT_MASTER_KEY``
            (preferred — keeps the key off a database dump).
         2. ``ir.config_parameter`` ``mail_management.master_key``
-           (via the injected *get_param* callable).
+           (via the injected *get_str* callable).
         3. Auto-generate a fresh key and persist it
-           (via the injected *set_param* callable).
+           (via the injected *set_str* callable).
 
-        ``get_param`` / ``set_param`` are injected callables so the
+        ``get_str`` / ``set_str`` are injected callables so the
         method is fully testable without a database.
         """
         # 1. Environment variable (highest priority).
@@ -71,15 +71,15 @@ class FernetCrypto:
             return key
 
         # 2. ir.config_parameter fallback.
-        if get_param:
-            key = get_param(MASTER_KEY_ICP)
+        if get_str:
+            key = get_str(MASTER_KEY_ICP)
         if key:
             return key
 
         # 3. Bootstrap: generate + persist (warning, not error).
         key = Fernet.generate_key().decode()
-        if set_param:
-            set_param(MASTER_KEY_ICP, key)
+        if set_str:
+            set_str(MASTER_KEY_ICP, key)
         _logger.warning(
             "mail_management: a Fernet master key was auto-generated and "
             "stored in ir.config_parameter.  For production set the %s "
@@ -135,20 +135,20 @@ class FernetCrypto:
     # Convenience Fernet accessor
     # ------------------------------------------------------------------
     @staticmethod
-    def fernet(get_param=None, set_param=None):
+    def fernet(get_str=None, set_str=None):
         """Return a :class:`~cryptography.fernet.Fernet` instance using the
         resolved master key.
 
         The Odoo model injects ``ir.config_parameter`` accessors::
 
             f = FernetCrypto.fernet(
-                lambda k: icp.get_param(k),
-                lambda k, v: icp.set_param(k, v))
+                lambda k: icp.get_str(k),
+                lambda k, v: icp.set_str(k, v))
 
         This keeps key resolution in one place and lets callers re-use the
         Fernet object for multiple encrypt/decrypt operations.
         """
-        key = FernetCrypto.get_master_key(get_param, set_param)
+        key = FernetCrypto.get_master_key(get_str, set_str)
         return Fernet(FernetCrypto._coerce_key(key))
 
     # ------------------------------------------------------------------

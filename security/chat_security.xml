@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="rule_chat_session_user_own" model="ir.rule">
+    <record id="rule_chat_session_user_own" model="ir.access">
         <field name="name">mail chat session: own only</field>
         <field name="model_id" ref="model_mail_management_chat_session"/>
-        <field name="domain_force">[('user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('user_id', '=', user.id)]</field>
     </record>
-    <record id="rule_chat_session_manager_all" model="ir.rule">
+    <record id="rule_chat_session_manager_all" model="ir.access">
         <field name="name">mail chat session: manager all</field>
         <field name="model_id" ref="model_mail_management_chat_session"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">cru</field>
+        <field name="domain">[(1, '=', 1)]</field>
     </record>
-    <record id="rule_chat_message_user_own" model="ir.rule">
+    <record id="rule_chat_message_user_own" model="ir.access">
         <field name="name">mail chat message: own only</field>
         <field name="model_id" ref="model_mail_management_chat_message"/>
-        <field name="domain_force">[('session_id.user_id', '=', user.id)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_user'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_user"/>
+        <field name="operation">cru</field>
+        <field name="domain">[('session_id.user_id', '=', user.id)]</field>
     </record>
-    <record id="rule_chat_message_manager_all" model="ir.rule">
+    <record id="rule_chat_message_manager_all" model="ir.access">
         <field name="name">mail chat message: manager all</field>
         <field name="model_id" ref="model_mail_management_chat_message"/>
-        <field name="domain_force">[(1, '=', 1)]</field>
-        <field name="groups" eval="[(4, ref('group_mail_management_manager'))]"/>
+        <field name="group_id" ref="mail_management.group_mail_management_manager"/>
+        <field name="operation">cru</field>
+        <field name="domain">[(1, '=', 1)]</field>
     </record>
 </odoo>

@@ -83,7 +83,7 @@ class TestWebmailUiWiring(TransactionCase):
             return fh.read()
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(self._read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(self._read_manifest()["version"], "20.0.17.0.0")
 
     def test_manifest_assets_declared(self):
         assets = self._read_manifest()["assets"]

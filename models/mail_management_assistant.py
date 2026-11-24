@@ -96,8 +96,8 @@ class MailManagementAssistant(models.AbstractModel):
             wizard and the ``mail_management.ai.*`` parameters.
         """
         icp = self.env["ir.config_parameter"].sudo()
-        provider = icp.get_param(PARAM_PROVIDER)
-        api_key = self._decrypt_ai_key(icp, icp.get_param(PARAM_API_KEY))
+        provider = icp.get_str(PARAM_PROVIDER)
+        api_key = self._decrypt_ai_key(icp, icp.get_str(PARAM_API_KEY))
         if not provider or not api_key:
             missing = ", ".join(
                 name
@@ -112,8 +112,8 @@ class MailManagementAssistant(models.AbstractModel):
             return make_client(
                 provider,
                 api_key,
-                model=icp.get_param(PARAM_MODEL) or None,
-                base_url=icp.get_param(PARAM_BASE_URL) or None,
+                model=icp.get_str(PARAM_MODEL) or None,
+                base_url=icp.get_str(PARAM_BASE_URL) or None,
             )
         except AIProviderError as err:
             raise UserError(str(err)) from err

@@ -276,7 +276,7 @@ class TestFolderSoftDeleteModel(TransactionCase):
         ir_att = (
             self.env["ir.attachment"]
             .sudo()
-            .create({"name": "f.txt", "datas": "aGVsbG8=", "mimetype": "text/plain"})
+            .create({"name": "f.txt", "raw": b"hello", "mimetype": "text/plain"})
         )
         self.env["mail.management.attachment"].create(
             {
@@ -415,7 +415,7 @@ class TestFolderSoftDeleteModel(TransactionCase):
     def test_many_messages_batched(self):
         for uid in range(1, 131):
             self._msg(self.projects, uid)
-        self.env["ir.config_parameter"].sudo().set_param(
+        self.env["ir.config_parameter"].sudo().set_str(
             "mail_management.move_batch_size", 50
         )
         fake = FakeImapSoftClient()
@@ -1115,4 +1115,4 @@ class TestSoftDeleteUiWiring(TransactionCase):
 
     def test_manifest_version_bumped_to_pr2h(self):
         manifest = ast.literal_eval(_read("__manifest__.py"))
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "20.0.17.0.0")

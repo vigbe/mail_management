@@ -672,7 +672,7 @@ class TestMessagePolicyWiring(TransactionCase):
         self.assertIn("mail_management/static/src/utils/message_policy.js", backend)
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(_read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(_read_manifest()["version"], "20.0.17.0.0")
 
 
 # ===========================================================================

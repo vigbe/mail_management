@@ -331,7 +331,7 @@ class TestAttachmentModel(TransactionCase):
         ir_att = self.env["ir.attachment"].create(
             {
                 "name": "doc.pdf",
-                "datas": base64.b64encode(b"PDFDATA").decode(),
+                "raw": b"PDFDATA",
                 "res_model": "mail.management.message",
                 "res_id": self.message.id,
                 "mimetype": "application/pdf",
@@ -357,7 +357,7 @@ class TestAttachmentModel(TransactionCase):
         ir_att = self.env["ir.attachment"].create(
             {
                 "name": "doc.txt",
-                "datas": base64.b64encode(b"TXT").decode(),
+                "raw": b"TXT",
                 "res_model": "mail.management.message",
                 "res_id": self.message.id,
             }
@@ -548,7 +548,7 @@ class TestSyncCore(TransactionCase):
             for i in range(1, 31)
         ]
         config = {"INBOX": {"uidvalidity": "1", "messages": raws}}
-        self.env["ir.config_parameter"].sudo().set_param(
+        self.env["ir.config_parameter"].sudo().set_str(
             "mail_management.fetch_batch_size", "10"
         )
         # First tick: 10 messages, last_uid = 10.

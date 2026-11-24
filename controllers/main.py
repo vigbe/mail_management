@@ -280,7 +280,7 @@ class MailManagementController(http.Controller):
             {
                 "id": m.id,
                 "uid": m.uid,
-                "subject": m.subject or _("(no subject)"),
+                "subject": m.subject or request.env._("(no subject)"),
                 "email_from": m.email_from,
                 "date": m.date.isoformat() if m.date else None,
                 "flag_seen": m.flag_seen,
@@ -421,7 +421,7 @@ class MailManagementController(http.Controller):
             [("id", "=", mailbox_id)], limit=1
         )
         if not mailbox:
-            raise UserError(_("Mailbox not found."))
+            raise UserError(request.env._("Mailbox not found."))
         folder = mailbox._create_folder(name)
         return {"success": True, "folder_id": folder.id}
 
@@ -436,7 +436,7 @@ class MailManagementController(http.Controller):
         env = request.env
         folder = env["mail.management.folder"].search([("id", "=", folder_id)], limit=1)
         if not folder:
-            raise UserError(_("Folder not found."))
+            raise UserError(request.env._("Folder not found."))
         folder.mailbox_id._rename_folder(folder, name)
         return {"success": True}
 
@@ -459,7 +459,7 @@ class MailManagementController(http.Controller):
         env = request.env
         folder = env["mail.management.folder"].search([("id", "=", folder_id)], limit=1)
         if not folder:
-            raise UserError(_("Folder not found."))
+            raise UserError(request.env._("Folder not found."))
         result = folder.mailbox_id._delete_folder(folder)
         return {
             "success": True,
@@ -488,7 +488,7 @@ class MailManagementController(http.Controller):
         env = request.env
         folder = env["mail.management.folder"].search([("id", "=", folder_id)], limit=1)
         if not folder:
-            raise UserError(_("Folder not found."))
+            raise UserError(request.env._("Folder not found."))
         folder.write({"visible": bool(visible)})
         return {"success": True, "visible": folder.visible}
 
@@ -510,7 +510,7 @@ class MailManagementController(http.Controller):
         env = request.env
         folder = env["mail.management.folder"].search([("id", "=", folder_id)], limit=1)
         if not folder:
-            raise UserError(_("Folder not found."))
+            raise UserError(request.env._("Folder not found."))
         demoted = folder._set_system_role(role)
         return {
             "success": True,
@@ -538,7 +538,7 @@ class MailManagementController(http.Controller):
         env = request.env
         dest = env["mail.management.folder"].search([("id", "=", folder_id)], limit=1)
         if not dest:
-            raise UserError(_("Folder not found."))
+            raise UserError(request.env._("Folder not found."))
         messages = env["mail.management.message"].search(
             [("id", "in", list(message_ids or []))]
         )
@@ -697,20 +697,20 @@ class MailManagementController(http.Controller):
             "below",
             "above",
         ):
-            raise UserError(_("Invalid signature position."))
+            raise UserError(request.env._("Invalid signature position."))
         settings_model = env["mail.management.settings"]
         if default_sort is not None and not settings_model._is_valid_default_sort(
             default_sort
         ):
-            raise UserError(_("Invalid default sort."))
+            raise UserError(request.env._("Invalid default sort."))
         # PR-2g selection whitelists (never stored, never interpolated).
         if compose_editor is not None and compose_editor not in ("html", "plain"):
-            raise UserError(_("Invalid compose editor."))
+            raise UserError(request.env._("Invalid compose editor."))
         if reply_save_folder is not None and reply_save_folder not in (
             "sent",
             "same",
         ):
-            raise UserError(_("Invalid reply save folder."))
+            raise UserError(request.env._("Invalid reply save folder."))
         if theme is not None and theme not in (
             "light",
             "dark",
@@ -719,7 +719,7 @@ class MailManagementController(http.Controller):
             "ocean",
             "forest",
         ):
-            raise UserError(_("Invalid theme."))
+            raise UserError(request.env._("Invalid theme."))
         settings = settings_model._get_or_create_for(env.user)
         vals = {}
         if allow_remote_images is not None:
@@ -800,10 +800,10 @@ class MailManagementController(http.Controller):
             [("id", "=", mailbox_id)], limit=1
         )
         if not mailbox:
-            raise UserError(_("Mailbox not found."))
+            raise UserError(request.env._("Mailbox not found."))
         # Second line of defense (design §F) on top of the ir.rule.
         if mailbox.user_id != env.user:
-            raise UserError(_("Mailbox not found."))
+            raise UserError(request.env._("Mailbox not found."))
 
         original = env["mail.management.message"]
         if reply_to_message_id:
@@ -811,9 +811,9 @@ class MailManagementController(http.Controller):
                 [("id", "=", reply_to_message_id)], limit=1
             )
             if not original:
-                raise UserError(_("Original message not found."))
+                raise UserError(request.env._("Original message not found."))
             if original.user_id != env.user:
-                raise UserError(_("Original message not found."))
+                raise UserError(request.env._("Original message not found."))
 
         payloads = []
         for att in attachments or []:

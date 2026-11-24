@@ -390,7 +390,7 @@ class TestHtmlSendTriangulate(SendTestMixin, TransactionCase):
         ir_att = self.IrAttachment.sudo().create(
             {
                 "name": "contract.pdf",
-                "datas": base64.b64encode(b"%PDF-fwd").decode(),
+                "raw": b"%PDF-fwd",
                 "res_model": "mail.management.message",
                 "res_id": self.original.id,
                 "mimetype": "application/pdf",
