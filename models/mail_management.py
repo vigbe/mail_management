@@ -126,13 +126,22 @@ class MailManagementMailbox(models.Model):
     active = fields.Boolean(default=True)
 
     # ------------------------------------------------------------------
-    # Constraints & indexes (Odoo 19: models.Constraint / models.Index)
+    # Constraints & indexes (Odoo <=18: _sql_constraints + init() indexes;
+    # models.Constraint / models.Index only exist in Odoo 19+)
     # ------------------------------------------------------------------
-    _mailbox_uniq = models.Constraint(
-        "UNIQUE(user_id, imap_host, imap_user)",
-        "A mailbox for this (user, IMAP host, IMAP user) already exists.",
-    )
-    _mailbox_user_company_idx = models.Index("(user_id, company_id)")
+    _sql_constraints = [
+        (
+            "mailbox_uniq",
+            "unique(user_id, imap_host, imap_user)",
+            "A mailbox for this (user, IMAP host, IMAP user) already exists.",
+        ),
+    ]
+
+    def init(self):
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_mailbox_user_company_idx "
+            "ON mail_management_mailbox (user_id, company_id)"
+        )
 
     # ------------------------------------------------------------------
     # Field-parameter whitelist (password=True escape hatch — Odoo 19)

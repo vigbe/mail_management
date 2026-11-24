@@ -22,21 +22,21 @@ class TestMailboxIsolation(TransactionCase):
             {
                 "name": "User A",
                 "login": "webmail_iso_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "User B",
                 "login": "webmail_iso_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.manager = self.env["res.users"].create(
             {
                 "name": "Manager",
                 "login": "webmail_iso_mgr@test",
-                "group_ids": [(6, 0, [group_manager.id])],
+                "groups_id": [(6, 0, [group_manager.id])],
             }
         )
 

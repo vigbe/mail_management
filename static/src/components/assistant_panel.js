@@ -9,7 +9,7 @@ import {
     useRef,
     useState,
 } from "@odoo/owl";
-import { rpc } from "@web/core/network/rpc";
+import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 
 export class AssistantPanel extends Component {
@@ -24,6 +24,7 @@ export class AssistantPanel extends Component {
     };
 
     setup() {
+        this.rpc = useService("rpc");
         this.state = useState({
             messages: [],
             input: "",
@@ -49,7 +50,7 @@ export class AssistantPanel extends Component {
             return;
         }
         try {
-            const result = await rpc("/mail_management/assistant/history", {
+            const result = await this.rpc("/mail_management/assistant/history", {
                 mailbox_id: mbId,
             });
             this.state.messages = result.history || [];
@@ -84,7 +85,7 @@ export class AssistantPanel extends Component {
         this.state.error = "";
         this.state.mode = "chat";
         try {
-            const result = await rpc("/mail_management/assistant/chat", {
+            const result = await this.rpc("/mail_management/assistant/chat", {
                 mailbox_id: this.props.mailboxId,
                 text,
             });
@@ -114,7 +115,7 @@ export class AssistantPanel extends Component {
         this.state.loading = true;
         this.state.error = "";
         try {
-            const result = await rpc("/mail_management/assistant/summarize", {
+            const result = await this.rpc("/mail_management/assistant/summarize", {
                 message_id: message.id,
             });
             this.state.mode = "chat";
@@ -145,7 +146,7 @@ export class AssistantPanel extends Component {
         this.state.loading = true;
         this.state.error = "";
         try {
-            const draft = await rpc("/mail_management/assistant/draft", {
+            const draft = await this.rpc("/mail_management/assistant/draft", {
                 message_id: message.id,
             });
             if (this.props.onDraftReady) {
@@ -178,7 +179,7 @@ export class AssistantPanel extends Component {
         this.state.loading = true;
         this.state.error = "";
         try {
-            const result = await rpc("/mail_management/assistant/triage", {
+            const result = await this.rpc("/mail_management/assistant/triage", {
                 mailbox_id: this.props.mailboxId,
             });
             this.state.triage = result.mensajes || [];
@@ -209,7 +210,7 @@ export class AssistantPanel extends Component {
         this.state.loading = true;
         this.state.error = "";
         try {
-            const result = await rpc("/mail_management/assistant/search", {
+            const result = await this.rpc("/mail_management/assistant/search", {
                 mailbox_id: this.props.mailboxId,
                 query,
             });

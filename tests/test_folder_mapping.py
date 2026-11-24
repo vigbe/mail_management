@@ -50,6 +50,16 @@ from odoo.addons.mail_management.tests.test_message_movement import (  # type: i
 from odoo.exceptions import UserError  # type: ignore
 from odoo.modules.module import get_module_path  # type: ignore
 from odoo.tests.common import TransactionCase, tagged  # type: ignore
+from odoo import _
+
+
+def _translate(term, lang="es_CL"):
+    """Odoo <=17 port of ``env._`` (introduced in 18): the module-level
+    ``_()`` resolves the language from the CALLER FRAME — a local named
+    ``context`` is picked up by tools.translate._get_lang."""
+    context = {"lang": lang}
+    return _(term)
+
 
 SMTP_PATCH = "odoo.addons.mail_management.models.mail_management.SmtpClient"
 IMAP_PATCH = "odoo.addons.mail_management.models.mail_management.ImapClient"
@@ -72,14 +82,14 @@ def _users(env):
         {
             "name": "Map A",
             "login": "map_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "Map B",
             "login": "map_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     return user_a, user_b
@@ -454,7 +464,7 @@ class TestFolderMappingTermTranslatedEsCl(TransactionCase):
     def test_invalid_folder_role_translated_es_cl(self):
         self.env["res.lang"]._activate_lang("es_CL")
         env = self.env["mail.management.folder"].with_context(lang="es_CL").env
-        self.assertEqual(env._("Invalid folder role."), "Rol de carpeta no válido.")
+        self.assertEqual(_translate("Invalid folder role."), "Rol de carpeta no válido.")
 
 
 # ===========================================================================
@@ -547,4 +557,4 @@ class TestVersionTracker(TransactionCase):
                 ln for ln in fh.read().splitlines() if not ln.lstrip().startswith("#")
             )
         manifest = ast.literal_eval(source)
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "17.0.17.0.0")

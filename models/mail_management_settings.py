@@ -241,10 +241,13 @@ class MailManagementSettings(models.Model):
         "purge deletes them permanently (clamped to 1-365 on save).",
     )
 
-    _settings_user_uniq = models.Constraint(
-        "unique (user_id)",
-        "Only one settings row is allowed per user.",
-    )
+    _sql_constraints = [
+        (
+            "settings_user_uniq",
+            "unique(user_id)",
+            "Only one settings row is allowed per user.",
+        ),
+    ]
 
     @api.model
     def _get_or_create_for(self, user):

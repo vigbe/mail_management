@@ -64,7 +64,7 @@ class TestReadControllersUiExtensions(TransactionCase):
             {
                 "name": "Ctrl A",
                 "login": "ctrl_a_ui@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 

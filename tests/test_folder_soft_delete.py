@@ -51,6 +51,16 @@ from odoo import fields  # type: ignore
 from odoo.exceptions import UserError  # type: ignore
 from odoo.modules.module import get_module_path  # type: ignore
 from odoo.tests.common import TransactionCase, tagged  # type: ignore
+from odoo import _
+
+
+def _translate(term, lang="es_CL"):
+    """Odoo <=17 port of ``env._`` (introduced in 18): the module-level
+    ``_()`` resolves the language from the CALLER FRAME — a local named
+    ``context`` is picked up by tools.translate._get_lang."""
+    context = {"lang": lang}
+    return _(term)
+
 
 IMAP_PATCH = "odoo.addons.mail_management.models.mail_management.ImapClient"
 
@@ -726,14 +736,14 @@ class TestFolderSoftDeleteController(TransactionCase):
             {
                 "name": "SoftDel A",
                 "login": "softdel_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "SoftDel B",
                 "login": "softdel_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 
@@ -1010,7 +1020,7 @@ class TestSoftDeleteTermTranslatedEsCl(TransactionCase):
         self.env["res.lang"]._activate_lang("es_CL")
         env = self.env["mail.management.mailbox"].with_context(lang="es_CL").env
         self.assertEqual(
-            env._(
+            _translate(
                 "No Trash folder is mapped for this mailbox. "
                 "Map one in Settings ▸ Folders first."
             ),
@@ -1115,4 +1125,4 @@ class TestSoftDeleteUiWiring(TransactionCase):
 
     def test_manifest_version_bumped_to_pr2h(self):
         manifest = ast.literal_eval(_read("__manifest__.py"))
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "17.0.17.0.0")

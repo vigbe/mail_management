@@ -10,13 +10,32 @@
  * (web.assets_tests bundle). */
 
 import { registry } from "@web/core/registry";
+/** Odoo 17 macro engine: triggers are re-evaluated ONLY on DOM mutations,
+ *  and a render that settles right BEFORE the next step starts leaves the
+ *  engine asleep for that step's whole timeout. This helper clicks and
+ *  then emits ONE delayed mutation to wake the engine (test bundle only). */
+function mmClickAndWake(el) {
+    el.click();
+    setTimeout(() => {
+        // childList mutation: the engine's observer only watches childList,
+        // attribute changes do not wake it.
+        document.body.appendChild(document.createComment("mm-wake"));
+    }, 400);
+}
 
-registry.category("web_tour.tours").add("mail_management_webmail_tour", {
-    url: "/odoo/webmail",
-    steps: () => [
+
+// BISECT BUILD: single registration at the end of this file.
+
+function _mmSteps() {
+    return [
         {
             trigger: ".o_webmail_folder_tree",
             content: "The folder tree pane is rendered",
+        },
+        {
+            trigger:
+                ".o_webmail_folder_tree .o_webmail_folder_item[data-role='inbox'] .o_webmail_unread_badge:contains('1')",
+            content: "The Inbox shows the unread badge",
         },
         {
             trigger:
@@ -32,11 +51,6 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
             trigger:
                 ".o_webmail_message_list .o_webmail_message_row:first-child .o_webmail_msg_subject:contains('Webmail Tour Subject')",
             content: "Newest message first (date desc)",
-        },
-        {
-            trigger:
-                ".o_webmail_folder_tree .o_webmail_folder_item[data-role='inbox'] .o_webmail_unread_badge:contains('1')",
-            content: "The Inbox shows the unread badge",
         },
         {
             trigger: ".o_webmail_message_row:first-child",
@@ -84,7 +98,7 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
             run: "click",
         },
         {
-            trigger: ".o_webmail_compose_wysiwyg .odoo-editor-editable",
+            trigger: ".o_webmail_compose_html_wrap .odoo-editor-editable",
             content: "PR-2c: the WYSIWYG editor mounts inside the dialog",
         },
         {
@@ -144,7 +158,7 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
         {
             trigger: ".o_webmail_search_input",
             content: "PR-2d: type a search query (debounced apply)",
-            run: "fill Webmail Tour",
+            run: "text Webmail Tour",
         },
         {
             trigger:
@@ -186,7 +200,7 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
             trigger:
                 ".o_webmail_message_list .o_webmail_message_row .o_webmail_msg_subject:contains('Webmail Tour Subject')",
             content: "PR-2e: open the message with the remote image",
-            run: "click",
+            run: mmClickAndWake,
         },
         {
             trigger: ".o_webmail_reading_pane .o_webmail_images_blocked_bar",
@@ -195,7 +209,7 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
         {
             trigger: ".o_webmail_reading_pane .o_webmail_show_images_btn",
             content: "PR-2e: reveal the images for THIS message only",
-            run: "click",
+            run: mmClickAndWake,
         },
         {
             trigger:
@@ -257,7 +271,7 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
         {
             trigger: ".o_webmail_folder_dialog_name",
             content: "PR-2b: type a folder name",
-            run: "fill Projects",
+            run: "text Projects",
         },
         {
             trigger: ".o_webmail_folder_dialog_confirm",
@@ -285,5 +299,11 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
             trigger: ".o_notification:contains('credential')",
             content: "The refresh error surfaces as a notification",
         },
-    ],
+    ];
+}
+
+const MM_BISECT_N = 99;
+registry.category("web_tour.tours").add("mail_management_webmail_tour", {
+    steps: () => _mmSteps().slice(0, MM_BISECT_N),
+    url: "/web#action=mail_management.webmail",
 });

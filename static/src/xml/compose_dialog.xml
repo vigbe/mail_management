@@ -57,8 +57,9 @@
                                   t-on-input="setBodyText"/>
                         <div t-else="" class="o_webmail_compose_html_wrap"
                              t-att-spellcheck="spellcheckAttr">
-                            <Wysiwyg class="'o_webmail_compose_wysiwyg w-100'"
-                                     config="wysiwygConfig" onLoad.bind="onLoadWysiwyg"/>
+                            <Wysiwyg options="wysiwygOptions"
+                                     editingValue="state.bodyHtml"
+                                     startWysiwyg.bind="startWysiwyg"/>
                         </div>
                     </div>
                 <div t-if="forwardAttachments.length" class="o_webmail_compose_forward_atts">

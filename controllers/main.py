@@ -180,7 +180,7 @@ class MailManagementController(http.Controller):
     # /mail_management/folders — list mailboxes + folders for current user
     # ------------------------------------------------------------------
     @http.route(
-        "/mail_management/folders", type="jsonrpc", auth="user", methods=["POST"]
+        "/mail_management/folders", type="json", auth="user", methods=["POST"]
     )
     def get_folders(self, include_hidden=False):
         """List mailboxes + folders of the current user.
@@ -224,7 +224,7 @@ class MailManagementController(http.Controller):
     # /mail_management/messages — paginated message list for a folder
     # ------------------------------------------------------------------
     @http.route(
-        "/mail_management/messages", type="jsonrpc", auth="user", methods=["POST"]
+        "/mail_management/messages", type="json", auth="user", methods=["POST"]
     )
     def get_messages(
         self,
@@ -294,7 +294,7 @@ class MailManagementController(http.Controller):
     # /mail_management/message_body — single message body + metadata
     # ------------------------------------------------------------------
     @http.route(
-        "/mail_management/message_body", type="jsonrpc", auth="user", methods=["POST"]
+        "/mail_management/message_body", type="json", auth="user", methods=["POST"]
     )
     def get_message_body(self, message_id):
         env = request.env
@@ -333,7 +333,7 @@ class MailManagementController(http.Controller):
     # /mail_management/refresh — on-demand sync (idempotent, worker-safe)
     # ------------------------------------------------------------------
     @http.route(
-        "/mail_management/refresh", type="jsonrpc", auth="user", methods=["POST"]
+        "/mail_management/refresh", type="json", auth="user", methods=["POST"]
     )
     def refresh(self, mailbox_id=None):
         env = request.env
@@ -351,7 +351,7 @@ class MailManagementController(http.Controller):
     # /mail_management/set_flags — mark seen/flagged
     # ------------------------------------------------------------------
     @http.route(
-        "/mail_management/set_flags", type="jsonrpc", auth="user", methods=["POST"]
+        "/mail_management/set_flags", type="json", auth="user", methods=["POST"]
     )
     def set_flags(self, message_id, **flags):
         env = request.env
@@ -374,7 +374,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     @http.route(
         "/mail_management/message/set_flags",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -410,7 +410,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     @http.route(
         "/mail_management/folder/create",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -427,7 +427,7 @@ class MailManagementController(http.Controller):
 
     @http.route(
         "/mail_management/folder/rename",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -442,7 +442,7 @@ class MailManagementController(http.Controller):
 
     @http.route(
         "/mail_management/folder/delete",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -475,7 +475,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     @http.route(
         "/mail_management/folder/set_visible",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -494,7 +494,7 @@ class MailManagementController(http.Controller):
 
     @http.route(
         "/mail_management/folder/set_role",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -524,7 +524,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     @http.route(
         "/mail_management/message/move",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -548,7 +548,7 @@ class MailManagementController(http.Controller):
 
     @http.route(
         "/mail_management/message/delete",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -581,7 +581,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     @http.route(
         "/mail_management/signatures",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -642,7 +642,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     @http.route(
         "/mail_management/settings",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -654,7 +654,7 @@ class MailManagementController(http.Controller):
 
     @http.route(
         "/mail_management/settings/save",
-        type="jsonrpc",
+        type="json",
         auth="user",
         methods=["POST"],
     )
@@ -766,7 +766,7 @@ class MailManagementController(http.Controller):
     # ------------------------------------------------------------------
     # /mail_management/send — compose: reply / reply-all / forward (PR-1c)
     # ------------------------------------------------------------------
-    @http.route("/mail_management/send", type="jsonrpc", auth="user", methods=["POST"])
+    @http.route("/mail_management/send", type="json", auth="user", methods=["POST"])
     def send(
         self,
         mailbox_id,

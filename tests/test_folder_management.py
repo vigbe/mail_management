@@ -393,14 +393,14 @@ class TestFolderCrudController(TransactionCase):
             {
                 "name": "Folder A",
                 "login": "folder_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "Folder B",
                 "login": "folder_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 
@@ -416,7 +416,7 @@ class TestFolderCrudController(TransactionCase):
 
     def test_folder_create_route_meta(self):
         routing = self.controller.folder_create.original_routing
-        self.assertEqual(routing["type"], "jsonrpc")
+        self.assertEqual(routing["type"], "json")
         self.assertEqual(routing["auth"], "user")
         self.assertIn("/mail_management/folder/create", routing["routes"])
         self.assertIn("POST", routing["methods"])
@@ -610,4 +610,4 @@ class TestFolderUiWiring(TransactionCase):
         import ast
 
         manifest = ast.literal_eval(_read("__manifest__.py"))
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "17.0.17.0.0")

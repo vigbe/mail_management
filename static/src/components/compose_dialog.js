@@ -18,12 +18,11 @@
  *   data, never user-raw input).
  */
 
-import { Component, markup, onWillStart, useState } from "@odoo/owl";
+import { Component, onWillStart, useState } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
-import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
-import { Wysiwyg } from "@html_editor/wysiwyg";
+import { Wysiwyg } from "@web_editor/js/wysiwyg/wysiwyg";
 
 const MODE_TITLES = {
   reply: _t("Reply"),
@@ -145,10 +144,10 @@ export class ComposeDialog extends Component {
 
   setup() {
     this.notification = useService("notification");
+        this.rpc = useService("rpc");
     /** @type { import("@html_editor/wysiwyg").Wysiwyg } */
     this.editorComponent = null;
     /** @type { import("@html_editor/editor").Editor } */
-    this.editor = null;
     const message = this.props.message || {};
     const isReplyAll = this.props.mode === "reply_all";
     const isNew = this.props.mode === "new";
@@ -236,21 +235,39 @@ export class ComposeDialog extends Component {
   // Wysiwyg embed (sanctioned Odoo 19 pattern — see file header)
   // ------------------------------------------------------------------
 
-  get wysiwygConfig() {
+  get wysiwygOptions() {
+    // Odoo 17: the Wysiwyg component takes an options object; unknown
+    // keys are ignored by the 17 editor bridge.
     return {
-      content: markup(this.state.bodyHtml || "<p></p>"),
       placeholder: this.placeholderLabel,
       classList: ["o_webmail_compose_editor"],
-      onChange: () => {
-        // The editor content is the single source of truth from now
-        // on; it is sanitized server-side on send.
-        this.state.bodyHtml = this.editor.getContent();
-      },
     };
   }
 
-  onLoadWysiwyg(editor) {
-    this.editor = editor;
+  async startWysiwyg(wysiwyg) {
+    // Odoo 17: the startWysiwyg prop REPLACES the default startEdition
+    // call, so the edition must be started here. The adapter below keeps
+    // the rest of this file speaking the same editor surface (editable /
+    // isDestroyed / getContent) it used on Odoo 18-19.
+    this.wysiwyg = wysiwyg;
+    await wysiwyg.startEdition();
+  }
+
+  get editor() {
+    const w = this.wysiwyg;
+    const oe = w && w.odooEditor;
+    if (!oe || !oe.editable || !oe.editable.isConnected) {
+      return null;
+    }
+    return {
+      get editable() {
+        return oe.editable;
+      },
+      get isDestroyed() {
+        return !oe.editable || !oe.editable.isConnected;
+      },
+      getContent: () => w.getValue(),
+    };
   }
 
   // ------------------------------------------------------------------
@@ -348,7 +365,7 @@ export class ComposeDialog extends Component {
 
   async _loadSignatures() {
     try {
-      const data = await rpc("/mail_management/signatures", {
+      const data = await this.rpc("/mail_management/signatures", {
         mailbox_id: this.props.mailboxId,
       });
       this.state.signatures = data.signatures || [];
@@ -520,7 +537,7 @@ export class ComposeDialog extends Component {
           ? this.editor.getContent()
           : this.state.bodyHtml;
       const bodyText = this.isPlainEditor ? this.state.bodyText : "";
-      const result = await rpc("/mail_management/send", {
+      const result = await this.rpc("/mail_management/send", {
         mailbox_id: this.props.mailboxId,
         to: this.state.to,
         cc: this.state.cc,

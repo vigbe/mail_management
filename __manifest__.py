@@ -1,6 +1,6 @@
 {  # noqa: B018 — Odoo manifests are a top-level dict literal (ast.literal_eval)
     "name": "Mail Management",
-    "version": "19.0.17.0.0",
+    "version": "17.0.17.0.0",
     "category": "Tools",
     "summary": "AI-powered mail management module for Odoo",
     "description": """
@@ -14,7 +14,7 @@
         "mail",
         # PR-2c: the Wysiwyg editor component (@html_editor/wysiwyg) —
         # already transitively present via mail, declared explicitly.
-        "html_editor",
+        "web_editor",
     ],
     "data": [
         "security/security_groups.xml",
@@ -30,6 +30,10 @@
     "demo": [],
     "assets": {
         "web.assets_backend": [
+            # Odoo 17: the Wysiwyg component lives in a separate bundle
+            # (web_editor.backend_assets_wysiwyg); include it so the
+            # @web_editor/js/wysiwyg/wysiwyg import resolves in backend.
+            ("include", "web_editor.backend_assets_wysiwyg"),
             "mail_management/static/src/scss/webmail.scss",
             "mail_management/static/src/utils/prepare_body.js",
             "mail_management/static/src/utils/message_policy.js",

@@ -44,21 +44,21 @@ def _users(env):
         {
             "name": "Sig A",
             "login": "sig_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "Sig B",
             "login": "sig_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     manager = env["res.users"].create(
         {
             "name": "Sig Manager",
             "login": "sig_manager@test",
-            "group_ids": [(6, 0, [group_manager.id])],
+            "groups_id": [(6, 0, [group_manager.id])],
         }
     )
     return user_a, user_b, manager
@@ -674,11 +674,11 @@ class TestSignatureConfigUi(TransactionCase):
         action = self.env.ref("mail_management.action_mail_management_signature")
         self.assertEqual(action.type, "ir.actions.act_window")
         self.assertEqual(action.res_model, "mail.management.signature")
-        self.assertIn("list", (action.view_mode or "").split(","))
+        self.assertIn("tree", (action.view_mode or "").split(","))
         self.assertIn("form", (action.view_mode or "").split(","))
 
         list_view = self.env.ref("mail_management.view_signature_list")
-        self.assertEqual(list_view.type, "list")
+        self.assertEqual(list_view.type, "tree")
         form_view = self.env.ref("mail_management.view_signature_form")
         self.assertEqual(form_view.type, "form")
         self.assertIn("html_body", form_view.arch_db)
@@ -704,12 +704,12 @@ class TestComposeRichTextWiring(TransactionCase):
     def test_manifest_version_bumped(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
             manifest = ast.literal_eval(fh.read())
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "17.0.17.0.0")
 
     def test_manifest_depends_on_html_editor(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
             manifest = ast.literal_eval(fh.read())
-        self.assertIn("html_editor", manifest["depends"])
+        self.assertIn("web_editor", manifest["depends"])
 
     def test_manifest_data_includes_signature_views(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
@@ -728,9 +728,10 @@ class TestComposeRichTextWiring(TransactionCase):
             js = fh.read()
         # The sanctioned Odoo 19 embed (verified in-container: this is the
         # pattern mail's Composer and website_profile's ProfileDialog use).
-        self.assertIn("@html_editor/wysiwyg", js)
+        self.assertIn("@web_editor/js/wysiwyg/wysiwyg", js)
         self.assertIn("Wysiwyg", js)
-        self.assertIn("wysiwygConfig", js)
+        self.assertIn("wysiwygOptions", js)
+        self.assertIn("startWysiwyg", js)
 
     def test_compose_template_has_editor_and_signature_picker(self):
         with open(
@@ -738,7 +739,7 @@ class TestComposeRichTextWiring(TransactionCase):
         ) as fh:
             xml = fh.read()
         self.assertIn("<Wysiwyg", xml)
-        self.assertIn("wysiwygConfig", xml)
+        self.assertIn("wysiwygOptions", xml)
         self.assertIn("o_webmail_compose_signature", xml)
         # The plain-text body textarea is gone (rich editor replaces it).
         self.assertNotIn('id="o_webmail_compose_body"', xml)

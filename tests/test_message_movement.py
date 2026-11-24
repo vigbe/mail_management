@@ -463,14 +463,14 @@ class TestMovementController(TransactionCase):
             {
                 "name": "Move A",
                 "login": "move_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "Move B",
                 "login": "move_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 
@@ -494,7 +494,7 @@ class TestMovementController(TransactionCase):
 
     def test_message_move_route_meta(self):
         routing = self.controller.message_move.original_routing
-        self.assertEqual(routing["type"], "jsonrpc")
+        self.assertEqual(routing["type"], "json")
         self.assertEqual(routing["auth"], "user")
         self.assertIn("/mail_management/message/move", routing["routes"])
 

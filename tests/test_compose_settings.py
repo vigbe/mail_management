@@ -45,6 +45,16 @@ from odoo.addons.mail_management.tests.test_compose_send import (  # type: ignor
 from odoo.exceptions import UserError  # type: ignore
 from odoo.modules.module import get_module_path  # type: ignore
 from odoo.tests.common import TransactionCase, tagged  # type: ignore
+from odoo import _
+
+
+def _translate(term, lang="es_CL"):
+    """Odoo <=17 port of ``env._`` (introduced in 18): the module-level
+    ``_()`` resolves the language from the CALLER FRAME — a local named
+    ``context`` is picked up by tools.translate._get_lang."""
+    context = {"lang": lang}
+    return _(term)
+
 
 SMTP_PATCH = "odoo.addons.mail_management.models.mail_management.SmtpClient"
 IMAP_PATCH = "odoo.addons.mail_management.models.mail_management.ImapClient"
@@ -66,7 +76,7 @@ def _users(env):
         {
             "name": "Compose A",
             "login": "compose_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     return user_a
@@ -484,4 +494,4 @@ class TestComposeSettingsTermTranslatedEsCl(TransactionCase):
     def test_invalid_theme_translated_es_cl(self):
         self.env["res.lang"]._activate_lang("es_CL")
         env = self.env["mail.management.settings"].with_context(lang="es_CL").env
-        self.assertEqual(env._("Invalid theme."), "Tema no válido.")
+        self.assertEqual(_translate("Invalid theme."), "Tema no válido.")
