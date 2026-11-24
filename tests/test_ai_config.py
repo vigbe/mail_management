@@ -8,6 +8,10 @@ builds the configured provider from those parameters only (the legacy
 still go through the factory, and the new terms are translated to es_CL.
 """
 
+# Odoo 16 runs on Python 3.9: postponed evaluation keeps ``str | bool``
+# annotations legal on every supported version.
+from __future__ import annotations
+
 from pathlib import Path
 from unittest.mock import Mock, patch
 

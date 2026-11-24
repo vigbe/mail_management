@@ -19,11 +19,10 @@
                             <field name="model"
                                    placeholder="Leave empty to use the provider default"/>
                             <field name="default_model" readonly="1"
-                                   invisible="not default_model"/>
+                                   attrs="{'invisible': [('default_model', '=', False)]}"/>
                             <field name="base_url"
                                    placeholder="https://llm.example.com/v1"
-                                   invisible="provider != 'custom'"
-                                   required="provider == 'custom'"/>
+                                   attrs="{'invisible': [('provider', '!=', 'custom')], 'required': [('provider', '=', 'custom')]}"/>
                         </group>
                     </group>
                 </sheet>
