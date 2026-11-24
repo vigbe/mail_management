@@ -2,15 +2,15 @@
 <templates xml:space="preserve">
     <!-- PR-2b — create/rename folder modal (IMAP-first endpoints behind it). -->
     <t t-name="mail_management.FolderDialog" owl="1">
-        <Dialog title="title">
+        <Dialog title="this.title">
             <div class="o_webmail_folder_dialog d-flex flex-column gap-2">
-                <div t-if="isCreate &amp;&amp; props.mailboxes.length &gt; 1">
+                <div t-if="this.isCreate &amp;&amp; this.props.mailboxes.length &gt; 1">
                     <label class="form-label small fw-bold" for="o_webmail_folder_dialog_mailbox">Mailbox</label>
                     <select id="o_webmail_folder_dialog_mailbox"
                             class="form-select o_webmail_folder_dialog_mailbox"
-                            t-att-value="state.mailboxId"
-                            t-on-change="setMailbox">
-                        <option t-foreach="props.mailboxes" t-as="mb" t-key="mb.id"
+                            t-att-value="this.state.mailboxId"
+                            t-on-change="this.setMailbox">
+                        <option t-foreach="this.props.mailboxes" t-as="mb" t-key="mb.id"
                                 t-att-value="mb.id" t-out="mb.name"/>
                     </select>
                 </div>
@@ -19,9 +19,9 @@
                     <input id="o_webmail_folder_dialog_name"
                            type="text"
                            class="form-control o_webmail_folder_dialog_name"
-                           t-att-value="state.name"
+                           t-att-value="this.state.name"
                            placeholder="e.g. Projects"
-                           t-on-input="setName"/>
+                           t-on-input="this.setName"/>
                     <div class="form-text">
                         Simple folder names only (no "/" or "." — sub-folders are not supported yet).
                     </div>
@@ -29,9 +29,9 @@
             </div>
             <t t-set-slot="footer">
                 <button type="button" class="btn btn-primary o_webmail_folder_dialog_confirm"
-                        t-att-disabled="canConfirm ? null : 'disabled'"
-                        t-on-click="onConfirm">
-                    <span t-out="confirmLabel"/>
+                        t-att-disabled="this.canConfirm ? null : 'disabled'"
+                        t-on-click="this.onConfirm">
+                    <span t-out="this.confirmLabel"/>
                 </button>
                 <button type="button" class="btn btn-secondary" t-on-click="() => this.props.close()">
                     Discard

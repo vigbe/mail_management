@@ -30,7 +30,6 @@ m4    2023      dave   Delta     True      False   yes
 =====  ========  =====  ========  ========  ============
 """
 
-import base64
 import io
 import os
 from contextlib import contextmanager
@@ -427,7 +426,7 @@ class TestSortingUiWiring(TransactionCase):
             "onSetSort.bind",
             "onTogglePriority.bind",
             "onSetFilter.bind",
-            'sortBy="state.messageSort"',
-            'filter="state.messageFilter"',
+            'sortBy="this.state.messageSort"',
+            'filter="this.state.messageFilter"',
         ):
             self.assertIn(needle, xml)

@@ -6,25 +6,31 @@ import {
     Component,
     markup,
     onWillUpdateProps,
-    useRef,
-    useState,
+    proxy,
+    signal,
+    t,
+    useProps,
 } from "@odoo/owl";
 import { rpc } from "@web/core/network/rpc";
 import { _t } from "@web/core/l10n/translation";
 
 export class AssistantPanel extends Component {
     static template = "mail_management.AssistantPanel";
-    static props = {
-        mailboxId: { type: Number, optional: true },
-        mailboxName: { type: String, optional: true },
-        selectedMessage: { type: [Object, Boolean], optional: true },
-        onClose: Function,
-        onOpenMessage: { type: Function, optional: true },
-        onDraftReady: { type: Function, optional: true },
-    };
+    props = useProps({
+        mailboxId: t.number().optional(),
+        mailboxName: t.string().optional(),
+        selectedMessage: t.any().optional(),
+        onClose: t.function(),
+        onOpenMessage: t.function().optional(),
+        onDraftReady: t.function().optional(),
+    });
+
+    // OWL 3: bound by the template (t-ref="this.assistantScrollEl");
+    // a signal ref — call it to read the element.
+    assistantScrollEl = signal.ref();
 
     setup() {
-        this.state = useState({
+        this.state = proxy({
             messages: [],
             input: "",
             loading: false,
@@ -34,7 +40,8 @@ export class AssistantPanel extends Component {
             searchQuery: "",
             error: "",
         });
-        this.scrollRef = useRef("assistantScroll");
+        // Populated by t-ref="this.assistantScrollEl" after mount.
+        // (kept for clarity; the signal ref field above holds the binding)
         this._loadHistory();
         onWillUpdateProps((nextProps) => {
             if (nextProps.mailboxId !== this.props.mailboxId) {
@@ -61,7 +68,7 @@ export class AssistantPanel extends Component {
     }
 
     _scrollDown() {
-        const el = this.scrollRef.el;
+        const el = this.assistantScrollEl();
         if (el) {
             el.scrollTop = el.scrollHeight;
         }

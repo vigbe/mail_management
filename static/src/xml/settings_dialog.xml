@@ -4,13 +4,13 @@
          General (images + signature position) / Message list / Message
          view / Accounts &amp; signatures.  Odoo 19 Dialog: t-set-slot. -->
     <t t-name="mail_management.SettingsDialog" owl="1">
-        <Dialog title="title">
+        <Dialog title="this.title">
             <div class="o_webmail_settings_dialog d-flex flex-column">
                 <ul class="nav nav-tabs mb-3" role="tablist">
-                    <li t-foreach="tabs" t-as="tab" t-key="tab.id" class="nav-item">
+                    <li t-foreach="this.tabs" t-as="tab" t-key="tab.id" class="nav-item">
                         <button type="button"
                                 class="nav-link o_webmail_settings_tab"
-                                t-att-class="isActive(tab.id) ? 'active' : ''"
+                                t-att-class="this.isActive(tab.id) ? 'active' : ''"
                                 t-att-data-tab="tab.id"
                                 t-on-click="() => this.setActive(tab.id)"
                                 t-out="tab.label"/>
@@ -19,25 +19,25 @@
 
                     <!-- General: theme + unread badge (PR-2g), compose settings
                          (PR-2g), remote images + signature position (PR-2e) -->
-                    <div t-if="state.activeTab === 'general'"
+                    <div t-if="this.state.activeTab === 'general'"
                          class="o_webmail_settings_pane d-flex flex-column gap-3"
                          data-pane="general">
                         <div class="row g-2">
                             <div class="col">
                                 <label class="form-label small fw-bold mb-1"
                                        for="o_webmail_settings_theme"
-                                       t-out="themeLabel"/>
+                                       t-out="this.themeLabel"/>
                                 <select id="o_webmail_settings_theme"
                                         class="form-select o_webmail_settings_theme"
-                                        t-att-value="state.theme"
+                                        t-att-value="this.state.theme"
                                         t-att-data-setting="'theme'"
-                                        t-on-change="setSelection">
-                                    <option value="light" t-out="lightLabel"/>
-                                    <option value="dark" t-out="darkLabel"/>
-                                    <option value="night" t-out="nightLabel"/>
-                                    <option value="sepia" t-out="sepiaLabel"/>
-                                    <option value="ocean" t-out="oceanLabel"/>
-                                    <option value="forest" t-out="forestLabel"/>
+                                        t-on-change="this.setSelection">
+                                    <option value="light" t-out="this.lightLabel"/>
+                                    <option value="dark" t-out="this.darkLabel"/>
+                                    <option value="night" t-out="this.nightLabel"/>
+                                    <option value="sepia" t-out="this.sepiaLabel"/>
+                                    <option value="ocean" t-out="this.oceanLabel"/>
+                                    <option value="forest" t-out="this.forestLabel"/>
                                 </select>
                             </div>
                             <div class="col d-flex align-items-end">
@@ -46,12 +46,12 @@
                                            role="switch"
                                            class="form-check-input o_webmail_settings_unread_badge"
                                            id="o_webmail_settings_unread_badge"
-                                           t-att-checked="state.showUnreadBadge"
+                                           t-att-checked="this.state.showUnreadBadge"
                                            t-att-data-setting="'showUnreadBadge'"
-                                           t-on-change="toggleSetting"/>
+                                           t-on-change="this.toggleSetting"/>
                                     <label class="form-check-label fw-bold"
                                            for="o_webmail_settings_unread_badge"
-                                           t-out="unreadBadgeLabel"/>
+                                           t-out="this.unreadBadgeLabel"/>
                                 </div>
                             </div>
                         </div>
@@ -59,27 +59,27 @@
                             <div class="col">
                                 <label class="form-label small fw-bold mb-1"
                                        for="o_webmail_settings_compose_editor"
-                                       t-out="composeEditorLabel"/>
+                                       t-out="this.composeEditorLabel"/>
                                 <select id="o_webmail_settings_compose_editor"
                                         class="form-select o_webmail_settings_compose_editor"
-                                        t-att-value="state.composeEditor"
+                                        t-att-value="this.state.composeEditor"
                                         t-att-data-setting="'composeEditor'"
-                                        t-on-change="setSelection">
-                                    <option value="html" t-out="htmlEditorLabel"/>
-                                    <option value="plain" t-out="plainEditorLabel"/>
+                                        t-on-change="this.setSelection">
+                                    <option value="html" t-out="this.htmlEditorLabel"/>
+                                    <option value="plain" t-out="this.plainEditorLabel"/>
                                 </select>
                             </div>
                             <div class="col">
                                 <label class="form-label small fw-bold mb-1"
                                        for="o_webmail_settings_reply_save"
-                                       t-out="replySaveLabel"/>
+                                       t-out="this.replySaveLabel"/>
                                 <select id="o_webmail_settings_reply_save"
                                         class="form-select o_webmail_settings_reply_save"
-                                        t-att-value="state.replySaveFolder"
+                                        t-att-value="this.state.replySaveFolder"
                                         t-att-data-setting="'replySaveFolder'"
-                                        t-on-change="setSelection">
-                                    <option value="sent" t-out="replySaveSentLabel"/>
-                                    <option value="same" t-out="replySaveSameLabel"/>
+                                        t-on-change="this.setSelection">
+                                    <option value="sent" t-out="this.replySaveSentLabel"/>
+                                    <option value="same" t-out="this.replySaveSameLabel"/>
                                 </select>
                             </div>
                         </div>
@@ -88,36 +88,36 @@
                                    role="switch"
                                    class="form-check-input o_webmail_settings_read_receipt"
                                    id="o_webmail_settings_read_receipt"
-                                   t-att-checked="state.requestReadReceipt"
+                                   t-att-checked="this.state.requestReadReceipt"
                                    t-att-data-setting="'requestReadReceipt'"
-                                   t-on-change="toggleSetting"/>
+                                   t-on-change="this.toggleSetting"/>
                             <label class="form-check-label fw-bold"
                                    for="o_webmail_settings_read_receipt"
-                                   t-out="readReceiptLabel"/>
+                                   t-out="this.readReceiptLabel"/>
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
                                    role="switch"
                                    class="form-check-input o_webmail_settings_delivery_receipt"
                                    id="o_webmail_settings_delivery_receipt"
-                                   t-att-checked="state.requestDeliveryReceipt"
+                                   t-att-checked="this.state.requestDeliveryReceipt"
                                    t-att-data-setting="'requestDeliveryReceipt'"
-                                   t-on-change="toggleSetting"/>
+                                   t-on-change="this.toggleSetting"/>
                             <label class="form-check-label fw-bold"
                                    for="o_webmail_settings_delivery_receipt"
-                                   t-out="deliveryReceiptLabel"/>
+                                   t-out="this.deliveryReceiptLabel"/>
                         </div>
                         <div class="form-check form-switch">
                             <input type="checkbox"
                                    role="switch"
                                    class="form-check-input o_webmail_settings_spellcheck"
                                    id="o_webmail_settings_spellcheck"
-                                   t-att-checked="state.enableSpellcheck"
+                                   t-att-checked="this.state.enableSpellcheck"
                                    t-att-data-setting="'enableSpellcheck'"
-                                   t-on-change="toggleSetting"/>
+                                   t-on-change="this.toggleSetting"/>
                             <label class="form-check-label fw-bold"
                                    for="o_webmail_settings_spellcheck"
-                                   t-out="spellcheckLabel"/>
+                                   t-out="this.spellcheckLabel"/>
                         </div>
                         <div>
                             <div class="form-check form-switch">
@@ -125,24 +125,24 @@
                                        role="switch"
                                        class="form-check-input o_webmail_settings_remote_images"
                                        id="o_webmail_settings_remote_images"
-                                       t-att-checked="state.allowRemoteImages"
-                                       t-on-change="toggleRemoteImages"/>
+                                       t-att-checked="this.state.allowRemoteImages"
+                                       t-on-change="this.toggleRemoteImages"/>
                                 <label class="form-check-label fw-bold"
                                        for="o_webmail_settings_remote_images"
-                                       t-out="remoteImagesLabel"/>
+                                       t-out="this.remoteImagesLabel"/>
                             </div>
-                            <div class="form-text ms-4" t-out="remoteImagesHelp"/>
+                            <div class="form-text ms-4" t-out="this.remoteImagesHelp"/>
                         </div>
                         <div>
                             <label class="form-label small fw-bold mb-1"
                                    for="o_webmail_settings_signature_position"
-                                   t-out="signaturePositionLabel"/>
+                                   t-out="this.signaturePositionLabel"/>
                             <select id="o_webmail_settings_signature_position"
                                     class="form-select o_webmail_settings_signature_position"
-                                    t-att-value="state.signaturePosition"
-                                    t-on-change="setPosition">
-                                <option value="below" t-out="belowLabel"/>
-                                <option value="above" t-out="aboveLabel"/>
+                                    t-att-value="this.state.signaturePosition"
+                                    t-on-change="this.setPosition">
+                                <option value="below" t-out="this.belowLabel"/>
+                                <option value="above" t-out="this.aboveLabel"/>
                             </select>
                         </div>
                     </div>
@@ -153,35 +153,35 @@
                              Actions apply IMMEDIATELY (each callback resolves
                              the fresh all-folders payload that re-renders the
                              tab); the retention rides the normal Save. -->
-                        <div t-if="state.activeTab === 'folders'"
+                        <div t-if="this.state.activeTab === 'folders'"
                              class="o_webmail_settings_pane d-flex flex-column gap-2"
                              data-pane="folders">
-                            <div class="form-text" t-out="foldersHelp"/>
+                            <div class="form-text" t-out="this.foldersHelp"/>
                             <div class="row g-2">
                                 <div class="col-sm-5">
                                     <label class="form-label small fw-bold mb-1"
                                            for="o_webmail_settings_trash_retention"
-                                           t-out="trashRetentionLabel"/>
+                                           t-out="this.trashRetentionLabel"/>
                                     <input type="number"
                                            id="o_webmail_settings_trash_retention"
                                            class="form-control o_webmail_settings_trash_retention"
-                                           t-att-value="state.trashRetentionDays"
+                                           t-att-value="this.state.trashRetentionDays"
                                            min="1"
                                            max="365"
                                            t-att-data-setting="'trashRetentionDays'"
-                                           t-on-change="setNumber"/>
-                                    <div class="form-text" t-out="trashRetentionHelp"/>
+                                           t-on-change="this.setNumber"/>
+                                    <div class="form-text" t-out="this.trashRetentionHelp"/>
                                 </div>
                             </div>
-                            <t t-foreach="state.folders" t-as="mailbox" t-key="mailbox.id">
+                            <t t-foreach="this.state.folders" t-as="mailbox" t-key="mailbox.id">
                                 <div class="d-flex justify-content-between align-items-center mt-2">
                                     <div class="fw-bolder text-muted text-uppercase small"
                                          t-out="mailbox.name"/>
                                     <button type="button"
                                             class="btn btn-sm btn-outline-secondary o_webmail_settings_create_folder"
                                             t-on-click="() => this.createFolderIn(mailbox)">
-                                        <i class="fa fa-plus me-1" role="img"/>
-                                        <span t-out="createFolderLabel"/>
+                                        <i class="oi me-1" data-icon="add" role="img"/>
+                                        <span t-out="this.createFolderLabel"/>
                                     </button>
                                 </div>
                                 <div t-foreach="mailbox.folders" t-as="folder" t-key="folder.id"
@@ -190,7 +190,7 @@
                                         <span t-out="folder.label || folder.name"/>
                                         <span t-if="!folder.visible"
                                               class="badge text-bg-light border ms-1"
-                                              t-out="hiddenLabel"/>
+                                              t-out="this.hiddenLabel"/>
                                     </span>
                                     <span class="d-inline-flex align-items-center gap-2">
                                         <select t-if="folder.role !== 'inbox'"
@@ -198,24 +198,24 @@
                                                 t-att-data-folder-id="folder.id"
                                                 t-att-value="folder.role"
                                                 t-on-change="(ev) => this.onFolderRoleChange(folder, ev)">
-                                            <option t-foreach="folderRoleOptions(mailbox)" t-as="opt" t-key="opt.key"
+                                            <option t-foreach="this.folderRoleOptions(mailbox)" t-as="opt" t-key="opt.key"
                                                     t-att-value="opt.key" t-out="opt.label"/>
                                         </select>
                                         <span t-else="" class="text-muted small" t-out="mailbox.role_labels.inbox || 'Inbox'"/>
                                         <button type="button"
                                                 class="btn btn-sm btn-link p-0 o_webmail_settings_folder_rename"
-                                                t-att-title="renameLabel"
-                                                t-att-aria-label="renameLabel"
+                                                t-att-title="this.renameLabel"
+                                                t-att-aria-label="this.renameLabel"
                                                 t-on-click="() => this.renameFolder(folder)">
-                                            <i class="fa fa-pencil" role="img"/>
+                                            <i class="oi" data-icon="edit" role="img"/>
                                         </button>
                                         <button type="button"
                                                 class="btn btn-sm btn-link p-0 text-danger o_webmail_settings_folder_delete"
-                                                t-att-title="isSystemFolder(folder) ? systemFolderDeleteTooltip : deleteLabel"
-                                                t-att-aria-label="deleteLabel"
-                                                t-att-disabled="isSystemFolder(folder) ? 'disabled' : null"
+                                                t-att-title="this.isSystemFolder(folder) ? this.systemFolderDeleteTooltip : this.deleteLabel"
+                                                t-att-aria-label="this.deleteLabel"
+                                                t-att-disabled="this.isSystemFolder(folder) ? 'disabled' : null"
                                                 t-on-click="() => this.deleteFolder(folder)">
-                                            <i class="fa fa-trash" role="img"/>
+                                            <i class="oi oi-filled" data-icon="delete" role="img"/>
                                         </button>
                                         <div class="form-check form-switch mb-0">
                                             <input type="checkbox"
@@ -234,46 +234,46 @@
                         </div>
 
                 <!-- Message list: page size, default sort (+ priority), checkboxes -->
-                <div t-if="state.activeTab === 'message_list'"
+                <div t-if="this.state.activeTab === 'message_list'"
                      class="o_webmail_settings_pane d-flex flex-column gap-3"
                      data-pane="message_list">
                     <div>
                         <label class="form-label small fw-bold mb-1"
                                for="o_webmail_settings_messages_per_page"
-                               t-out="messagesPerPageLabel"/>
+                               t-out="this.messagesPerPageLabel"/>
                         <input type="number"
                                id="o_webmail_settings_messages_per_page"
                                class="form-control o_webmail_settings_messages_per_page"
-                               t-att-value="state.messagesPerPage"
+                               t-att-value="this.state.messagesPerPage"
                                min="10"
                                max="200"
                                t-att-data-setting="'messagesPerPage'"
-                               t-on-change="setNumber"/>
-                        <div class="form-text" t-out="messagesPerPageHelp"/>
+                               t-on-change="this.setNumber"/>
+                        <div class="form-text" t-out="this.messagesPerPageHelp"/>
                     </div>
                     <div class="row g-2">
                         <div class="col">
                             <label class="form-label small fw-bold mb-1"
                                    for="o_webmail_settings_default_sort"
-                                   t-out="defaultSortLabel"/>
+                                   t-out="this.defaultSortLabel"/>
                             <select id="o_webmail_settings_default_sort"
                                     class="form-select o_webmail_settings_default_sort"
-                                    t-att-value="state.defaultSortKey"
-                                    t-on-change="setSortKey">
-                                <option t-foreach="sortOptions" t-as="opt" t-key="opt.key"
+                                    t-att-value="this.state.defaultSortKey"
+                                    t-on-change="this.setSortKey">
+                                <option t-foreach="this.sortOptions" t-as="opt" t-key="opt.key"
                                         t-att-value="opt.key" t-out="opt.label"/>
                             </select>
                         </div>
                         <div class="col">
                             <label class="form-label small fw-bold mb-1"
                                    for="o_webmail_settings_priority"
-                                   t-out="priorityLabel"/>
+                                   t-out="this.priorityLabel"/>
                             <select id="o_webmail_settings_priority"
                                     class="form-select o_webmail_settings_priority"
-                                    t-att-value="state.defaultPriority"
-                                    t-on-change="setPriority">
-                                <option value="" t-out="noneLabel"/>
-                                <option t-foreach="priorityOptions" t-as="opt" t-key="opt.key"
+                                    t-att-value="this.state.defaultPriority"
+                                    t-on-change="this.setPriority">
+                                <option value="" t-out="this.noneLabel"/>
+                                <option t-foreach="this.priorityOptions" t-as="opt" t-key="opt.key"
                                         t-att-value="opt.key" t-out="opt.label"/>
                             </select>
                         </div>
@@ -284,34 +284,34 @@
                                    role="switch"
                                    class="form-check-input o_webmail_settings_show_checkboxes"
                                    id="o_webmail_settings_show_checkboxes"
-                                   t-att-checked="state.showCheckboxes"
+                                   t-att-checked="this.state.showCheckboxes"
                                    t-att-data-setting="'showCheckboxes'"
-                                   t-on-change="toggleSetting"/>
+                                   t-on-change="this.toggleSetting"/>
                             <label class="form-check-label fw-bold"
                                    for="o_webmail_settings_show_checkboxes"
-                                   t-out="showCheckboxesLabel"/>
+                                   t-out="this.showCheckboxesLabel"/>
                         </div>
-                        <div class="form-text ms-4" t-out="showCheckboxesHelp"/>
+                        <div class="form-text ms-4" t-out="this.showCheckboxesHelp"/>
                     </div>
                 </div>
 
                 <!-- Message view: mark-read, quotes, styles, html, attachments,
                      next-on-delete, image whitelist -->
-                <div t-if="state.activeTab === 'message_view'"
+                <div t-if="this.state.activeTab === 'message_view'"
                      class="o_webmail_settings_pane d-flex flex-column gap-3"
                      data-pane="message_view">
                     <div>
                         <label class="form-label small fw-bold mb-1"
                                for="o_webmail_settings_mark_read"
-                               t-out="markReadLabel"/>
+                               t-out="this.markReadLabel"/>
                         <input type="number"
                                id="o_webmail_settings_mark_read"
                                class="form-control o_webmail_settings_mark_read"
-                               t-att-value="state.markReadAfterSeconds"
+                               t-att-value="this.state.markReadAfterSeconds"
                                min="-1"
                                t-att-data-setting="'markReadAfterSeconds'"
-                               t-on-change="setNumber"/>
-                        <div class="form-text" t-out="markReadHelp"/>
+                               t-on-change="this.setNumber"/>
+                        <div class="form-text" t-out="this.markReadHelp"/>
                     </div>
                     <div class="d-flex gap-3 align-items-end">
                         <div class="form-check form-switch mb-1">
@@ -319,26 +319,26 @@
                                    role="switch"
                                    class="form-check-input o_webmail_settings_collapse_quotes"
                                    id="o_webmail_settings_collapse_quotes"
-                                   t-att-checked="state.collapseQuotedText"
+                                   t-att-checked="this.state.collapseQuotedText"
                                    t-att-data-setting="'collapseQuotedText'"
-                                   t-on-change="toggleSetting"/>
+                                   t-on-change="this.toggleSetting"/>
                             <label class="form-check-label fw-bold"
                                    for="o_webmail_settings_collapse_quotes"
-                                   t-out="collapseQuotesLabel"/>
+                                   t-out="this.collapseQuotesLabel"/>
                         </div>
                         <div>
                             <label class="form-label small fw-bold mb-1"
                                    for="o_webmail_settings_max_quote_levels"
-                                   t-out="maxQuoteLevelsLabel"/>
+                                   t-out="this.maxQuoteLevelsLabel"/>
                             <input type="number"
                                    id="o_webmail_settings_max_quote_levels"
                                    class="form-control form-control-sm o_webmail_settings_max_quote_levels"
                                    style="width: 5rem;"
-                                   t-att-value="state.maxQuoteLevels"
+                                   t-att-value="this.state.maxQuoteLevels"
                                    min="1"
                                    max="10"
                                    t-att-data-setting="'maxQuoteLevels'"
-                                   t-on-change="setNumber"/>
+                                   t-on-change="this.setNumber"/>
                         </div>
                     </div>
                     <div>
@@ -347,85 +347,85 @@
                                    role="switch"
                                    class="form-check-input o_webmail_settings_strip_styles"
                                    id="o_webmail_settings_strip_styles"
-                                   t-att-checked="state.stripMessageStyles"
+                                   t-att-checked="this.state.stripMessageStyles"
                                    t-att-data-setting="'stripMessageStyles'"
-                                   t-on-change="toggleSetting"/>
+                                   t-on-change="this.toggleSetting"/>
                             <label class="form-check-label fw-bold"
                                    for="o_webmail_settings_strip_styles"
-                                   t-out="stripStylesLabel"/>
+                                   t-out="this.stripStylesLabel"/>
                         </div>
-                        <div class="form-text ms-4" t-out="stripStylesHelp"/>
+                        <div class="form-text ms-4" t-out="this.stripStylesHelp"/>
                     </div>
                     <div class="form-check form-switch">
                         <input type="checkbox"
                                role="switch"
                                class="form-check-input o_webmail_settings_prefer_html"
                                id="o_webmail_settings_prefer_html"
-                               t-att-checked="state.preferHtml"
+                               t-att-checked="this.state.preferHtml"
                                t-att-data-setting="'preferHtml'"
-                               t-on-change="toggleSetting"/>
+                               t-on-change="this.toggleSetting"/>
                         <label class="form-check-label fw-bold"
                                for="o_webmail_settings_prefer_html"
-                               t-out="preferHtmlLabel"/>
+                               t-out="this.preferHtmlLabel"/>
                     </div>
                     <div class="form-check form-switch">
                         <input type="checkbox"
                                role="switch"
                                class="form-check-input o_webmail_settings_simple_attachments"
                                id="o_webmail_settings_simple_attachments"
-                               t-att-checked="state.simpleAttachmentList"
+                               t-att-checked="this.state.simpleAttachmentList"
                                t-att-data-setting="'simpleAttachmentList'"
-                               t-on-change="toggleSetting"/>
+                               t-on-change="this.toggleSetting"/>
                         <label class="form-check-label fw-bold"
                                for="o_webmail_settings_simple_attachments"
-                               t-out="simpleAttachmentsLabel"/>
+                               t-out="this.simpleAttachmentsLabel"/>
                     </div>
                     <div class="form-check form-switch">
                         <input type="checkbox"
                                role="switch"
                                class="form-check-input o_webmail_settings_next_on_delete"
                                id="o_webmail_settings_next_on_delete"
-                               t-att-checked="state.showNextOnMoveDelete"
+                               t-att-checked="this.state.showNextOnMoveDelete"
                                t-att-data-setting="'showNextOnMoveDelete'"
-                               t-on-change="toggleSetting"/>
+                               t-on-change="this.toggleSetting"/>
                         <label class="form-check-label fw-bold"
                                for="o_webmail_settings_next_on_delete"
-                               t-out="nextOnDeleteLabel"/>
+                               t-out="this.nextOnDeleteLabel"/>
                     </div>
                     <div>
                         <label class="form-label small fw-bold mb-1"
                                for="o_webmail_settings_image_whitelist"
-                               t-out="whitelistLabel"/>
+                               t-out="this.whitelistLabel"/>
                         <textarea id="o_webmail_settings_image_whitelist"
                                   class="form-control o_webmail_settings_image_whitelist"
                                   rows="4"
-                                  t-att-placeholder="whitelistHelp"
-                                  t-on-change="setWhitelist"><t t-out="state.imageWhitelistText"/></textarea>
-                        <div class="form-text" t-out="whitelistHelp"/>
+                                  t-att-placeholder="this.whitelistHelp"
+                                  t-on-change="this.setWhitelist"><t t-out="this.state.imageWhitelistText"/></textarea>
+                        <div class="form-text" t-out="this.whitelistHelp"/>
                     </div>
                 </div>
 
                 <!-- Accounts &amp; signatures: the existing management action -->
-                <div t-if="state.activeTab === 'accounts'"
+                <div t-if="this.state.activeTab === 'accounts'"
                      class="o_webmail_settings_pane d-flex flex-column gap-3"
                      data-pane="accounts">
                     <button type="button"
                             class="btn btn-outline-secondary btn-sm o_webmail_settings_signatures"
-                            t-on-click="openSignatures">
-                        <i class="fa fa-pencil me-1" role="img"/>
-                        <span t-out="manageSignaturesLabel"/>
+                            t-on-click="this.openSignatures">
+                        <i class="oi me-1" data-icon="edit" role="img"/>
+                        <span t-out="this.manageSignaturesLabel"/>
                     </button>
                 </div>
             </div>
             <t t-set-slot="footer">
                 <button type="button"
                         class="btn btn-primary o_webmail_settings_save"
-                        t-on-click="save"
-                        t-out="saveLabel"/>
+                        t-on-click="this.save"
+                        t-out="this.saveLabel"/>
                 <button type="button"
                         class="btn btn-secondary o_webmail_settings_close"
                         t-on-click="() => this.props.close()"
-                        t-out="closeLabel"/>
+                        t-out="this.closeLabel"/>
             </t>
         </Dialog>
     </t>

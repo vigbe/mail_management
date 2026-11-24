@@ -12,81 +12,82 @@
                                  — compact icons with title tooltips. -->
                                                         <button type="button"
                                     class="btn btn-sm btn-secondary o_webmail_settings_btn"
-                                    t-att-title="settingsLabel"
-                                    t-att-aria-label="settingsLabel"
+                                    t-att-title="this.settingsLabel"
+                                    t-att-aria-label="this.settingsLabel"
                                     t-on-click="() => this.openSettings()">
-                                <i class="fa fa-cog" role="img" t-att-aria-label="settingsLabel"/>
+                                <i class="oi" data-icon="settings" role="img" t-att-aria-label="this.settingsLabel"/>
                             </button>
                             <button type="button"
                                     class="btn btn-sm btn-secondary o_webmail_add_folder_btn"
-                                    t-att-title="addFolderLabel"
-                                    t-att-disabled="props.mailboxes.length ? null : 'disabled'"
+                                    t-att-title="this.addFolderLabel"
+                                    t-att-disabled="this.props.mailboxes.length ? null : 'disabled'"
                                     t-on-click="() => this.props.onCreateFolder()">
-                                <i class="fa fa-plus" role="img" t-att-aria-label="addFolderLabel"/>
+                                <i class="oi" data-icon="add" role="img" t-att-aria-label="this.addFolderLabel"/>
                             </button>
                         <!-- PR-2d: mailbox management menu (Add mailbox / Refresh
                              all) — the full config stays in My Mailboxes. -->
                         <div class="position-relative d-inline-flex">
                             <button type="button"
                                     class="btn btn-sm btn-secondary o_webmail_manage_btn"
-                                    t-att-aria-label="manageMenuLabel"
-                                    t-att-expanded="menu.openManage ? 'true' : 'false'"
+                                    t-att-aria-label="this.manageMenuLabel"
+                                    t-att-expanded="this.menu.openManage ? 'true' : 'false'"
                                     t-on-click="() => this.toggleManageMenu()">
-                                <i class="fa fa-ellipsis-v" role="img" t-att-aria-label="manageMenuLabel"/>
+                                <i class="oi" data-icon="more_vert" role="img" t-att-aria-label="this.manageMenuLabel"/>
                             </button>
-                            <div t-if="menu.openManage"
+                            <div t-if="this.menu.openManage"
                                  class="o_webmail_manage_menu dropdown-menu show position-absolute end-0 mt-1 p-1 shadow">
                                 <button type="button"
                                         class="dropdown-item o_webmail_manage_item o_webmail_add_mailbox_item"
                                         t-on-click.stop="() => this.addMailbox()">
-                                    <i class="fa fa-plus me-2" role="img"/>
-                                    <span t-out="addMailboxLabel"/>
+                                    <i class="oi me-2" data-icon="add" role="img"/>
+                                    <span t-out="this.addMailboxLabel"/>
                                 </button>
                                 <button type="button"
                                         class="dropdown-item o_webmail_manage_item o_webmail_refresh_all_item"
-                                        t-att-disabled="props.refreshing ? 'disabled' : null"
+                                        t-att-disabled="this.props.refreshing ? 'disabled' : null"
                                         t-on-click.stop="() => this.refreshAll()">
-                                    <i class="fa fa-rotate-right me-2" role="img"/>
-                                    <span t-out="refreshAllLabel"/>
+                                    <i class="oi me-2" data-icon="refresh" role="img"/>
+                                    <span t-out="this.refreshAllLabel"/>
                                 </button>
                             </div>
                     </div>
                 </span>
             </div>
             <div class="o_webmail_tree_body flex-grow-1 overflow-auto p-1">
-                <div t-if="props.loading" class="text-muted p-2">Loading…</div>
-                <t t-elif="props.mailboxes.length">
-                    <t t-foreach="props.mailboxes"
+                <div t-if="this.props.loading" class="text-muted p-2">Loading…</div>
+                <t t-elif="this.props.mailboxes.length">
+                    <t t-foreach="this.props.mailboxes"
                        t-as="mailbox" t-key="mailbox.id">
-                        <div t-attf-class="o_webmail_mailbox_label d-flex align-items-center gap-1 fw-bolder text-uppercase small mt-2 px-2 rounded cursor-pointer #{mailbox.id === props.selectedMailboxId ? 'o_webmail_mailbox_active' : 'text-muted'}"
+                        <div t-attf-class="o_webmail_mailbox_label d-flex align-items-center gap-1 fw-bolder text-uppercase small mt-2 px-2 rounded cursor-pointer #{mailbox.id === this.props.selectedMailboxId ? 'o_webmail_mailbox_active' : 'text-muted'}"
                                  role="button"
                                  t-att-title="mailbox.name"
                                  t-on-click="() => this.selectMailbox(mailbox.id)">
-                                <i t-attf-class="fa fa-fw #{isCollapsed(mailbox.id) ? 'fa-caret-right' : 'fa-caret-down'} o_webmail_mailbox_chevron"
+                                <i class="oi oi-fw o_webmail_mailbox_chevron"
+                                   t-att-data-icon="this.isCollapsed(mailbox.id) ? 'keyboard_arrow_right' : 'keyboard_arrow_down'"
                                    role="button"
-                                   t-att-title="isCollapsed(mailbox.id) ? 'Expandir' : 'Contraer'"
+                                   t-att-title="this.isCollapsed(mailbox.id) ? 'Expandir' : 'Contraer'"
                                    t-on-click.stop="() => this.toggleCollapse(mailbox.id)"/>
                                 <span class="text-truncate flex-grow-1" t-out="mailbox.name"/>
                                 <button type="button"
                                         class="btn btn-sm px-1 border-0 o_webmail_mailbox_config"
                                         title="Configurar buzón"
                                         t-on-click.stop="() => this.props.onConfigureMailbox(mailbox.id)">
-                                    <i class="fa fa-cog" role="img"/>
+                                    <i class="oi" data-icon="settings" role="img"/>
                                 </button>
                             </div>
-<t t-if="!isCollapsed(mailbox.id)">
+<t t-if="!this.isCollapsed(mailbox.id)">
                             <div t-foreach="mailbox.folders" t-as="folder" t-key="folder.id"
-                             t-attf-class="o_webmail_folder_item d-flex justify-content-between align-items-center px-2 py-1 rounded cursor-pointer #{folder.id === props.selectedFolderId ? 'o_webmail_folder_selected bg-primary-subtle' : ''}"
+                             t-attf-class="o_webmail_folder_item d-flex justify-content-between align-items-center px-2 py-1 rounded cursor-pointer #{folder.id === this.props.selectedFolderId ? 'o_webmail_folder_selected bg-primary-subtle' : ''}"
                              t-att-data-role="folder.role"
                              t-att-data-folder-id="folder.id"
                              role="button"
                              t-on-click="() => this.props.onSelectFolder(mailbox.id, folder.id)">
                             <span class="o_webmail_folder_name text-truncate">
-                                <i t-attf-class="fa #{folderIcon(folder.role)} me-2" role="img"/>
+                                <i class="oi me-2" t-att-data-icon="this.folderIcon(folder.role)" role="img"/>
                                 <span t-out="folder.label || folder.name"/>
                             </span>
                             <span class="d-inline-flex align-items-center gap-1">
-                                <span t-if="props.showUnreadBadge !== false &amp;&amp; folder.unread_count"
+                                <span t-if="this.props.showUnreadBadge !== false &amp;&amp; folder.unread_count"
                                       class="o_webmail_unread_badge badge rounded-pill text-bg-primary"
                                       t-out="folder.unread_count"/>
                                 <span t-if="folder.message_count"
@@ -96,20 +97,20 @@
                                         class="btn btn-sm o_webmail_folder_menu_btn px-1"
                                         title="Folder actions"
                                         t-on-click.stop="() => this.toggleMenu(folder.id)">
-                                    <i class="fa fa-ellipsis-v text-muted" role="img" aria-label="Folder actions"/>
+                                    <i class="oi text-muted" data-icon="more_vert" role="img" aria-label="Folder actions"/>
                                 </button>
                             </span>
-                            <div t-if="menu.openFolderId === folder.id"
+                            <div t-if="this.menu.openFolderId === folder.id"
                                  class="o_webmail_folder_menu dropdown-menu show position-absolute end-0 mt-1 p-1 shadow">
                                     <button type="button"
                                             class="dropdown-item o_webmail_folder_menu_item o_webmail_folder_menu_rename"
                                             t-on-click.stop="() => this.renameFolder(folder)">
-                                        <i class="fa fa-pencil me-2" role="img"/>Rename
+                                        <i class="oi me-2" data-icon="edit" role="img"/>Rename
                                     </button>
                                     <button type="button"
                                             class="dropdown-item o_webmail_folder_menu_item o_webmail_folder_menu_delete text-danger"
                                             t-on-click.stop="() => this.deleteFolder(folder)">
-                                        <i class="fa fa-trash me-2" role="img"/>Delete
+                                        <i class="oi oi-filled me-2" data-icon="delete" role="img"/>Delete
                                     </button>
                                     <!-- PR-2g: hide from the tree (restorable in
                                          Settings ▸ Folders — hidden folders keep
@@ -117,8 +118,8 @@
                                     <button type="button"
                                             class="dropdown-item o_webmail_folder_menu_item o_webmail_folder_menu_hide"
                                             t-on-click.stop="() => this.hideFolder(folder)">
-                                        <i class="fa fa-eye-slash me-2" role="img"/>
-                                        <span t-out="hideFolderLabel"/>
+                                        <i class="oi me-2" data-icon="visibility_off" role="img"/>
+                                        <span t-out="this.hideFolderLabel"/>
                                     </button>
                                 </div>
                         </div>

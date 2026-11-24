@@ -394,7 +394,7 @@ class TestGeneralSettingsWiring(TransactionCase):
         maps all six theme keys to their scss root classes and whitelists
         the payload value."""
         xml = _read("static/src/xml/webmail_client.xml")
-        self.assertIn('t-att-class="themeClass"', xml)
+        self.assertIn('t-att-class="this.themeClass"', xml)
         js = _read("static/src/webmail_client.js")
         self.assertIn("get themeClass()", js)
         for key in ("dark", "night", "sepia", "ocean", "forest"):

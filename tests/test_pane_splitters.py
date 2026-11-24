@@ -21,7 +21,7 @@ class TestPaneSplitters(TransactionCase):
         self.assertEqual(xml.count("o_webmail_splitter"), 2)
         self.assertIn("startSplitterDrag('tree', ev)", xml)
         self.assertIn("startSplitterDrag('list', ev)", xml)
-        self.assertIn('t-on-mounted="applySavedWidths"', xml)
+        self.assertIn('t-on-mounted="this.applySavedWidths"', xml)
 
     def test_no_tref_on_components(self):
         """OWL 2 rejects t-ref on component tags — regression guard for the
@@ -29,7 +29,7 @@ class TestPaneSplitters(TransactionCase):
         xml = _read("xml/webmail_client.xml")
         self.assertNotIn("<FolderTree t-ref", xml)
         self.assertNotIn("<MessageList t-ref", xml)
-        self.assertIn('t-ref="root"', xml)  # ref only on the plain root div
+        self.assertIn('t-ref="this.rootEl"', xml)  # OWL 3 property-bound ref on the plain root div
 
     def test_drag_logic_bounds_and_persistence(self):
         js = _read("webmail_client.js")

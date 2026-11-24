@@ -16,10 +16,9 @@ and deterministically (UserError, no network) — exercising the refresh wiring
 end-to-end without any real IMAP connection.
 """
 
-import base64
-import unittest
+import base64  # noqa: F401 — kept: attachment fixtures may re-enable it
 
-import odoo.service.server  # type: ignore
+import odoo.service.server  # type: ignore # noqa: F401 — HttpCase httpd bootstrap
 from odoo import fields  # type: ignore
 from odoo.tests.common import HttpCase, tagged  # type: ignore
 
@@ -28,15 +27,9 @@ from odoo.tests.common import HttpCase, tagged  # type: ignore
 class TestWebmailTour(HttpCase):
     @classmethod
     def setUpClass(cls):
-        # Odoo 20 ships OWL 3: useState/useRef and the OWL 2 reactivity
-        # model were removed, so the webmail client action cannot mount
-        # ("TypeError: useState is not a function" in WebmailClient.setup).
-        # The backend (models, security, controllers, cron) is fully
-        # ported and covered by the test suite; porting the OWL frontend
-        # to OWL 3 is tracked as follow-up work for this branch.
-        raise unittest.SkipTest(
-            "webmail client action requires an OWL 3 port on Odoo 20"
-        )
+        # Odoo 20 ships OWL 3: the frontend was ported (proxy() state,
+        # useProps schemas, t-custom-model, property-bound t-ref) and this
+        # tour is the proof it runs on the OWL 3 runtime.
         super().setUpClass()
 
     def setUp(self):

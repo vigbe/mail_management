@@ -440,7 +440,7 @@ class TestUiConsolidationWiring(TransactionCase):
         xml = _read("static/src/xml/folder_tree.xml")
         for needle in (
             "o_webmail_settings_btn",
-            "fa-cog",
+            'data-icon="settings"',
             "openSettings",
         ):
             self.assertIn(needle, xml)

@@ -19,9 +19,9 @@ class TestMailboxSwitch(TransactionCase):
         self.assertIn('role="button"', xml)
 
     def test_prop_and_binding(self):
-        self.assertIn("onSelectMailbox: Function", _read("components/folder_tree.js"))
+        self.assertIn("onSelectMailbox: t.function()", _read("components/folder_tree.js"))
         client_xml = _read("xml/webmail_client.xml")
-        self.assertIn('onSelectMailbox.bind="selectMailbox"', client_xml)
+        self.assertIn('onSelectMailbox.bind="this.selectMailbox"', client_xml)
 
     def test_client_selects_inbox_first(self):
         js = _read("webmail_client.js")

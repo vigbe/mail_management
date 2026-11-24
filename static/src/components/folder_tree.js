@@ -11,55 +11,55 @@
  * delegated to the parent through the on* props.  Drag-and-drop stays
  * out of v1 by design. */
 
-import { Component, useState } from "@odoo/owl";
+import { Component, proxy, t, useProps } from "@odoo/owl";
 import { _t } from "@web/core/l10n/translation";
 
 const FOLDER_ICONS = {
-    inbox: "fa-inbox",
-    sent: "fa-paper-plane-o",
-    drafts: "fa-file-text-o",
-    trash: "fa-trash-o",
-    junk: "fa-ban",
-    all: "fa-archive",
-    archive: "fa-archive",
-    other: "fa-folder-o",
+    inbox: "inbox",
+    sent: "send",
+    drafts: "description",
+    trash: "delete",
+    junk: "block",
+    all: "archive",
+    archive: "archive",
+    other: "folder",
 };
 
 export class FolderTree extends Component {
     static template = "mail_management.FolderTree";
-    static props = {
-        mailboxes: Array,
-        selectedMailboxId: { type: [Number, Boolean], optional: true },
-        selectedFolderId: { type: [Number, Boolean], optional: true },
-        loading: Boolean,
-        refreshing: Boolean,
-        onSelectFolder: Function,
-        onSelectMailbox: Function,
-        onConfigureMailbox: Function,
-        onConfigure: Function,
+    props = useProps({
+        mailboxes: t.array(t.any()),
+        selectedMailboxId: t.any().optional(),
+        selectedFolderId: t.any().optional(),
+        loading: t.boolean(),
+        refreshing: t.boolean(),
+        onSelectFolder: t.function(),
+        onSelectMailbox: t.function(),
+        onConfigureMailbox: t.function(),
+        onConfigure: t.function(),
         /** PR-2b folder CRUD (all delegated to WebmailClient). */
-        onCreateFolder: { type: Function, optional: true },
-        onRenameFolder: { type: Function, optional: true },
-        onDeleteFolder: { type: Function, optional: true },
+        onCreateFolder: t.function().optional(),
+        onRenameFolder: t.function().optional(),
+        onDeleteFolder: t.function().optional(),
         /** PR-2d mailbox management (tree header menu). */
-        onAddMailbox: { type: Function, optional: true },
-        onRefreshAll: { type: Function, optional: true },
+        onAddMailbox: t.function().optional(),
+        onRefreshAll: t.function().optional(),
         /** PR-2e settings panel (gear ⚙ in the header). */
-        onOpenSettings: { type: Function, optional: true },
+        onOpenSettings: t.function().optional(),
         /** PR-2g: hide a folder from the tree (Settings ▸ Folders restores). */
-        onHideFolder: { type: Function, optional: true },
+        onHideFolder: t.function().optional(),
         /** PR-2g: gate the unread badge on the show_unread_badge setting. */
-        showUnreadBadge: { type: Boolean, optional: true },
-    };
+        showUnreadBadge: t.boolean().optional(),
+    });
 
     setup() {
         // PR-2j: per-mailbox collapse (expanded by default).
-        this.collapsed = useState({});
+        this.collapsed = proxy({});
 
         // Overflow menu open state — purely presentational.  The header
         // "manage" menu (PR-2d: Add mailbox / Refresh all) follows the
         // same one-open-menu rule as the per-folder menu.
-        this.menu = useState({ openFolderId: false, openManage: false });
+        this.menu = proxy({ openFolderId: false, openManage: false });
     }
 
     isCollapsed(mailboxId) {

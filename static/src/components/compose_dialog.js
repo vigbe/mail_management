@@ -18,7 +18,7 @@
  *   data, never user-raw input).
  */
 
-import { Component, markup, onWillStart, useState } from "@odoo/owl";
+import { Component, markup, onWillStart, proxy, t, useProps } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
 import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
@@ -121,27 +121,27 @@ export function replacePlainSignature(
 export class ComposeDialog extends Component {
   static template = "mail_management.ComposeDialog";
   static components = { Dialog, Wysiwyg };
-  static props = {
-    aiDraft: { type: Object, optional: true },
+  props = useProps({
+    aiDraft: t.object().optional(),
     /** 'reply' | 'reply_all' | 'forward' | 'new' */
-    mode: String,
+    mode: t.string(),
     /** Payload from /mail_management/message_body (id, subject,
      * email_from, email_cc, body_text, date, attachments…).  Empty for
      * the 'new' mode. */
-    message: { type: Object, optional: true },
-    mailboxId: Number,
+    message: t.object().optional(),
+    mailboxId: t.number(),
     /** PR-2e: where the signature goes relative to the quote
      * ('below' default | 'above') — from the user's webmail settings. */
-    signaturePosition: { type: String, optional: true },
+    signaturePosition: t.string().optional(),
     /** PR-2g: 'html' (Wysiwyg, default) | 'plain' (plain textarea;
      * single-part text send). */
-    composeEditor: { type: String, optional: true },
+    composeEditor: t.string().optional(),
     /** PR-2g: browser spellcheck attribute on the editor surface. */
-    enableSpellcheck: { type: Boolean, optional: true },
-    onSent: { type: Function, optional: true },
+    enableSpellcheck: t.boolean().optional(),
+    onSent: t.function().optional(),
     /** Injected automatically by the dialog service. */
-    close: { type: Function, optional: true },
-  };
+    close: t.function().optional(),
+  });
 
   setup() {
     this.notification = useService("notification");
@@ -152,7 +152,7 @@ export class ComposeDialog extends Component {
     const message = this.props.message || {};
     const isReplyAll = this.props.mode === "reply_all";
     const isNew = this.props.mode === "new";
-    this.state = useState({
+    this.state = proxy({
       to:
         isNew || this.props.mode === "forward" ? "" : message.email_from || "",
       cc: isReplyAll ? message.email_cc || "" : "",

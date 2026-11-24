@@ -119,7 +119,7 @@ registry.category("web_tour.tours").add("mail_management_webmail_tour", {
         },
         {
             trigger:
-                ".o_webmail_message_row:first-child .o_webmail_star_toggle .fa-star",
+                ".o_webmail_message_row:first-child .o_webmail_star_toggle .oi-filled[data-icon='star']",
             content: "PR-2a: the star icon is now solid",
         },
         {

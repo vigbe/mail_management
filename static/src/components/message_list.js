@@ -13,55 +13,55 @@
  * tooltips) stay.  Pure presentational: every action is delegated to the
  * parent through the on* props. */
 
-import { Component, onWillUnmount, useState } from "@odoo/owl";
+import { Component, onWillUnmount, proxy, t, useProps } from "@odoo/owl";
 import { deserializeDateTime } from "@web/core/l10n/dates";
 import { _t } from "@web/core/l10n/translation";
 
 export class MessageList extends Component {
     static template = "mail_management.MessageList";
-    static props = {
-        messages: Array,
-        loading: Boolean,
-        selectedMessageId: { type: [Number, Boolean], optional: true },
-        sortBy: { type: String, optional: true },
-        priority: { type: Array, optional: true },
-        filter: { type: String, optional: true },
-        selectedIds: { type: Array, optional: true },
-        folderName: { type: String, optional: true },
+    props = useProps({
+        messages: t.array(t.any()),
+        loading: t.boolean(),
+        selectedMessageId: t.any().optional(),
+        sortBy: t.string().optional(),
+        priority: t.array(t.any()).optional(),
+        filter: t.string().optional(),
+        selectedIds: t.array(t.any()).optional(),
+        folderName: t.string().optional(),
         /** PR-2f: settings.show_checkboxes — hides the checkbox column
          * and the bulk bar when False. */
-        showCheckboxes: { type: Boolean, optional: true },
+        showCheckboxes: t.boolean().optional(),
         /** PR-2b: move destinations ([{id, label}]) — excludes the current
          * folder; shared Delete handler (trash semantics server-side). */
-        moveTargets: { type: Array, optional: true },
-        isTrash: { type: Boolean, optional: true },
-        onOpenMessage: Function,
+        moveTargets: t.array(t.any()).optional(),
+        isTrash: t.boolean().optional(),
+        onOpenMessage: t.function(),
         /** PR-2e: absolute sort key from the sort menu (PR-2a whitelist). */
-        onSetSort: { type: Function, optional: true },
-        onTogglePriority: { type: Function, optional: true },
-        onSetFilter: { type: Function, optional: true },
-        onToggleStar: { type: Function, optional: true },
-        onToggleSelect: { type: Function, optional: true },
-        onToggleSelectAll: { type: Function, optional: true },
-        onBulkSetFlags: { type: Function, optional: true },
-        onMoveToFolder: { type: Function, optional: true },
-        onDeleteMessages: { type: Function, optional: true },
+        onSetSort: t.function().optional(),
+        onTogglePriority: t.function().optional(),
+        onSetFilter: t.function().optional(),
+        onToggleStar: t.function().optional(),
+        onToggleSelect: t.function().optional(),
+        onToggleSelectAll: t.function().optional(),
+        onBulkSetFlags: t.function().optional(),
+        onMoveToFolder: t.function().optional(),
+        onDeleteMessages: t.function().optional(),
         /** PR-2c: open a fresh compose dialog ('new' mode). */
-        onComposeNew: { type: Function, optional: true },
+        onComposeNew: t.function().optional(),
         /** PR-2d: the APPLIED search query ("" = plain folder view); the
          * component keeps only a local input DRAFT (debounced apply). */
-        searchQuery: { type: String, optional: true },
-        onSearch: { type: Function, optional: true },
-        onClearSearch: { type: Function, optional: true },
-    };
+        searchQuery: t.string().optional(),
+        onSearch: t.function().optional(),
+        onClearSearch: t.function().optional(),
+    });
 
     setup() {
         // PR-2d search box: local draft + debounce timer.  The applied
         // query lives in the parent (state.searchQuery) — every fetch goes
         // through the parent's RPC so the component stays presentational.
-        this.search = useState({ draft: "", timer: null });
+        this.search = proxy({ draft: "", timer: null });
         // PR-2e sort menu: local open state only.
-        this.menu = useState({ openSort: false });
+        this.menu = proxy({ openSort: false });
         onWillUnmount(() => this._clearSearchTimer());
     }
 

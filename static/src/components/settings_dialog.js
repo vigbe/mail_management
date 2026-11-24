@@ -24,7 +24,7 @@
  * local copy (mapping is a per-folder action, not a form submit).
  */
 
-import { Component, useState } from "@odoo/owl";
+import { Component, proxy, t, useProps } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
 import { _t } from "@web/core/l10n/translation";
 
@@ -35,36 +35,36 @@ const SYSTEM_FOLDER_ROLES = ["inbox", "sent", "drafts", "trash", "junk"];
 export class SettingsDialog extends Component {
     static template = "mail_management.SettingsDialog";
     static components = { Dialog };
-    static props = {
+    props = useProps({
         /** Current settings (camelCase, imageWhitelist is an array). */
-        settings: Object,
+        settings: t.object(),
         /** PR-2g: ALL folders (incl. hidden) per mailbox, each with
          * role/visible, plus the server-translated role_labels map. */
-        folders: { type: Array, optional: true },
+        folders: t.array(t.any()).optional(),
         /** PR-2g: apply a role change; resolves the fresh folders payload. */
-        onSetFolderRole: { type: Function, optional: true },
+        onSetFolderRole: t.function().optional(),
         /** PR-2g: hide/restore a folder; resolves the fresh payload. */
-        onToggleFolderVisible: { type: Function, optional: true },
+        onToggleFolderVisible: t.function().optional(),
         /** PR-2h: create a folder in a mailbox; resolves the fresh payload. */
-        onCreateFolder: { type: Function, optional: true },
+        onCreateFolder: t.function().optional(),
         /** PR-2h: rename a folder; resolves the fresh payload. */
-        onRenameFolder: { type: Function, optional: true },
+        onRenameFolder: t.function().optional(),
         /** PR-2h: delete a folder (soft semantics); resolves the fresh
          * payload (false when the confirmation was cancelled). */
-        onDeleteFolder: { type: Function, optional: true },
+        onDeleteFolder: t.function().optional(),
         /** Called with the new settings on Save. */
-        onSave: Function,
+        onSave: t.function(),
         /** Opens the existing signature management action. */
-        onOpenSignatures: { type: Function, optional: true },
+        onOpenSignatures: t.function().optional(),
         /** Injected automatically by the dialog service. */
-        close: { type: Function, optional: true },
-    };
+        close: t.function().optional(),
+    });
 
     setup() {
         const s = this.props.settings;
         // Local draft — nothing persists until Save (Folders tab actions
         // apply immediately instead, see onSetFolderRole).
-        this.state = useState({
+        this.state = proxy({
             activeTab: "general",
             allowRemoteImages: Boolean(s.allowRemoteImages),
             signaturePosition:

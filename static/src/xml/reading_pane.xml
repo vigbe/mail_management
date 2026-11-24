@@ -10,82 +10,84 @@
         <div class="o_webmail_reading_pane flex-grow-1 d-flex flex-column overflow-hidden">
                 <div class="o_webmail_reading_toolbar d-flex justify-content-end align-items-center px-2 py-1 border-bottom">
                     <button type="button"
-                            t-attf-class="btn btn-sm border-0 {{props.assistantOpen ? 'text-primary fw-bold' : 'text-muted'}}"
+                            t-attf-class="btn btn-sm border-0 {{this.props.assistantOpen ? 'text-primary fw-bold' : 'text-muted'}}"
                             t-att-title="'Asistente IA'"
                             t-on-click.stop="() => this.props.onToggleAssistant()">
-                        <i class="fa fa-robot me-1" role="img"/>Asistente
+                        <i class="oi oi-filled me-1" data-icon="smart_toy" role="img"/>Asistente
                     </button>
                 </div>
                 <div class="o_webmail_reading_scroll flex-grow-1 overflow-auto">
-                <div t-if="props.message" class="p-3">
+                <div t-if="this.props.message" class="p-3">
                     <div class="d-flex align-items-center gap-2 mb-2 flex-nowrap">
                             
                         <div class="o_webmail_compose_actions btn-group btn-group-sm">
                             <button type="button"
                                     class="btn btn-outline-secondary o_webmail_compose_btn"
                                     data-mode="reply"
-                                    t-att-title="replyLabel"
+                                    t-att-title="this.replyLabel"
                                     t-on-click="() => this.compose('reply')">
-                                <i class="fa fa-reply" role="img"/>
-                                <span class="d-none d-sm-inline ms-1" t-out="replyLabel"/>
+                                <i class="oi" data-icon="reply" role="img"/>
+                                <span class="d-none d-sm-inline ms-1" t-out="this.replyLabel"/>
                             </button>
                             <button type="button"
                                     class="btn btn-outline-secondary o_webmail_compose_btn"
                                     data-mode="reply_all"
-                                    t-att-title="replyAllLabel"
+                                    t-att-title="this.replyAllLabel"
                                     t-on-click="() => this.compose('reply_all')">
-                                <i class="fa fa-reply-all" role="img"/>
-                                <span class="d-none d-sm-inline ms-1" t-out="replyAllLabel"/>
+                                <i class="oi" data-icon="reply_all" role="img"/>
+                                <span class="d-none d-sm-inline ms-1" t-out="this.replyAllLabel"/>
                             </button>
                             <button type="button"
                                     class="btn btn-outline-secondary o_webmail_compose_btn"
                                     data-mode="forward"
-                                    t-att-title="forwardLabel"
+                                    t-att-title="this.forwardLabel"
                                     t-on-click="() => this.compose('forward')">
-                                <i class="fa fa-share" role="img"/>
-                                <span class="d-none d-sm-inline ms-1" t-out="forwardLabel"/>
+                                <i class="oi oi-filled" data-icon="ios_share" role="img"/>
+                                <span class="d-none d-sm-inline ms-1" t-out="this.forwardLabel"/>
                             </button>
                         </div>
                         <div class="d-inline-flex gap-1 align-items-center">
                             <button type="button"
                                     class="btn btn-outline-secondary btn-sm o_webmail_reading_star"
-                                    t-att-title="props.message.flag_flagged ? unstarLabel : starLabel"
+                                    t-att-title="this.props.message.flag_flagged ? this.unstarLabel : this.starLabel"
                                     t-on-click="() => this.toggleStar()">
-                                <i t-attf-class="fa #{props.message.flag_flagged ? 'fa-star text-warning' : 'fa-star-o'}"
+                                <i class="oi"
+                                   t-att-class="this.props.message.flag_flagged ? 'oi-filled text-warning' : ''"
+                                   data-icon="star"
                                    role="img"/>
                             </button>
                             <div class="position-relative d-inline-flex">
                                 <button type="button"
                                         class="btn btn-outline-secondary btn-sm o_webmail_msg_menu_btn"
-                                        t-att-aria-label="menuLabel"
-                                        t-att-expanded="menu.open ? 'true' : 'false'"
+                                        t-att-aria-label="this.menuLabel"
+                                        t-att-expanded="this.menu.open ? 'true' : 'false'"
                                         t-on-click="() => this.toggleMenu()">
-                                    <i class="fa fa-ellipsis-v" role="img" t-att-aria-label="menuLabel"/>
+                                    <i class="oi" data-icon="more_vert" role="img" t-att-aria-label="this.menuLabel"/>
                                 </button>
-                                <div t-if="menu.open"
+                                <div t-if="this.menu.open"
                                      class="o_webmail_msg_menu dropdown-menu show position-absolute end-0 mt-1 p-1 shadow">
                                     <button type="button"
-                                            t-if="props.imagesBlocked"
+                                            t-if="this.props.imagesBlocked"
                                             class="dropdown-item o_webmail_msg_menu_item o_webmail_msg_menu_show_images"
                                             t-on-click.stop="() => this.showImages()">
-                                        <i class="fa fa-image me-2" role="img"/>
-                                        <span t-out="showImagesLabel"/>
+                                        <i class="oi oi-filled me-2" data-icon="image" role="img"/>
+                                        <span t-out="this.showImagesLabel"/>
                                     </button>
                                     <button type="button"
                                             class="dropdown-item o_webmail_msg_menu_item o_webmail_mark_unread"
                                             t-on-click.stop="() => this.markUnread()">
-                                        <i class="fa fa-envelope-o me-2" role="img"/>
-                                        <span t-out="markUnreadLabel"/>
+                                        <i class="oi me-2" data-icon="mail" role="img"/>
+                                        <span t-out="this.markUnreadLabel"/>
                                     </button>
-                                    <t t-if="moveTargets.length">
+                                    <t t-if="this.moveTargets.length">
                                         <div class="dropdown-divider"/>
-                                        <h6 class="dropdown-header" t-out="moveToLabel"/>
+                                        <h6 class="dropdown-header" t-out="this.moveToLabel"/>
                                         <button type="button"
-                                                t-foreach="moveTargets" t-as="target" t-key="target.id"
+                                                t-foreach="this.moveTargets" t-as="target" t-key="target.id"
                                                 class="dropdown-item o_webmail_msg_menu_item o_webmail_msg_menu_move"
                                                 t-att-data-folder-id="target.id"
                                                 t-on-click.stop="() => this.moveTo(target.id)">
-                                            <i class="fa fa-folder-o me-2" role="img"/>
+                                            <i class="oi me-2" data-icon="folder" role="img"/>
                                             <span t-out="target.label"/>
                                         </button>
                                     </t>
@@ -93,77 +95,77 @@
                                     <button type="button"
                                             class="dropdown-item o_webmail_msg_menu_item o_webmail_msg_menu_delete o_webmail_msg_delete text-danger"
                                             t-on-click.stop="() => this.deleteCurrent()">
-                                        <i class="fa fa-trash-o me-2" role="img"/>
-                                        <span t-out="deleteLabel"/>
+                                        <i class="oi me-2" data-icon="delete" role="img"/>
+                                        <span t-out="this.deleteLabel"/>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="o_webmail_reading_subject fs-5 fw-bold"
-                         t-out="props.message.subject || '(no subject)'"/>
+                         t-out="this.props.message.subject || '(no subject)'"/>
                     <div class="text-muted small mt-1">
-                        <span t-out="props.message.email_from"/>
-                        <span t-if="props.message.date" class="ms-2"
-                              t-out="displayDate(props.message.date)"/>
+                        <span t-out="this.props.message.email_from"/>
+                        <span t-if="this.props.message.date" class="ms-2"
+                              t-out="this.displayDate(this.props.message.date)"/>
                     </div>
-                    <div t-if="props.message.email_to" class="text-muted small">
+                    <div t-if="this.props.message.email_to" class="text-muted small">
                         <span class="fw-bold">To:</span>
-                        <span t-out="props.message.email_to"/>
+                        <span t-out="this.props.message.email_to"/>
                     </div>
-                    <div t-if="props.message.email_cc" class="text-muted small">
+                    <div t-if="this.props.message.email_cc" class="text-muted small">
                         <span class="fw-bold">Cc:</span>
-                        <span t-out="props.message.email_cc"/>
+                        <span t-out="this.props.message.email_cc"/>
                     </div>
                     <hr/>
                     <!-- PR-2e: subtle per-message "Images blocked" bar. -->
-                    <div t-if="props.imagesBlocked"
+                    <div t-if="this.props.imagesBlocked"
                          class="o_webmail_images_blocked_bar d-flex align-items-center gap-2 px-2 py-1 mb-2 border rounded bg-warning-subtle small">
-                        <i class="fa fa-shield" role="img"/>
-                        <span t-out="imagesBlockedLabel"/>
+                        <i class="oi oi-filled" data-icon="shield" role="img"/>
+                        <span t-out="this.imagesBlockedLabel"/>
                         <button type="button"
                                 class="btn btn-sm btn-link p-0 ms-auto o_webmail_show_images_btn"
                                 t-on-click="() => this.showImages()">
-                            <span t-out="showImagesLabel"/>
+                            <span t-out="this.showImagesLabel"/>
                         </button>
                     </div>
                     <div class="o_webmail_reading_body"
-                         t-out="props.message.bodyMarkup"/>
-                        <div t-if="props.message.attachments.length" class="mt-3">
+                         t-out="this.props.message.bodyMarkup"/>
+                        <div t-if="this.props.message.attachments.length" class="mt-3">
                             <hr/>
                             <div class="fw-bold small text-uppercase text-muted">
                                 Attachments
                             </div>
                             <!-- PR-2f: settings.simple_attachment_list — compact
                                  list instead of preview cards. -->
-                            <t t-if="props.simpleAttachmentList">
+                            <t t-if="this.props.simpleAttachmentList">
                                 <ul class="o_webmail_attachments_simple list-unstyled small mt-2 mb-0">
-                                    <li t-foreach="props.message.attachments" t-as="att"
+                                    <li t-foreach="this.props.message.attachments" t-as="att"
                                         t-key="att.id"
                                         class="o_webmail_attachment_simple">
-                                        <i class="fa fa-paperclip me-1" role="img"/>
-                                        <a t-att-href="attachmentUrl(att)" t-out="att.name"/>
+                                        <i class="oi me-1" data-icon="attach_file" role="img"/>
+                                        <a t-att-href="this.attachmentUrl(att)" t-out="att.name"/>
                                         <small class="text-muted ms-1"
-                                               t-out="displaySize(att.file_size)"/>
+                                               t-out="this.displaySize(att.file_size)"/>
                                     </li>
                                 </ul>
                             </t>
                             <t t-else="">
                                 <div class="d-flex flex-wrap gap-2 mt-2">
-                                    <div t-foreach="props.message.attachments" t-as="att"
+                                    <div t-foreach="this.props.message.attachments" t-as="att"
                                          t-key="att.id"
                                          class="o_webmail_attachment border rounded p-2">
-                                        <i class="fa fa-paperclip me-1" role="img"/>
-                                        <a t-att-href="attachmentUrl(att)" t-out="att.name"/>
+                                        <i class="oi me-1" data-icon="attach_file" role="img"/>
+                                        <a t-att-href="this.attachmentUrl(att)" t-out="att.name"/>
                                         <small class="text-muted ms-1"
-                                               t-out="displaySize(att.file_size)"/>
+                                               t-out="this.displaySize(att.file_size)"/>
                                     </div>
                                 </div>
                             </t>
                         </div>
                 </div>
-                <div t-elif="props.loading" class="text-muted p-3">Loading…</div>
-                <div t-else="" class="text-muted p-3" t-out="noMessageLabel"/>
+                <div t-elif="this.props.loading" class="text-muted p-3">Loading…</div>
+                <div t-else="" class="text-muted p-3" t-out="this.noMessageLabel"/>
             </div>
             </div>
         </t>

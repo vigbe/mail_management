@@ -496,7 +496,7 @@ class TestSearchUiWiring(TransactionCase):
         xml = _read("static/src/xml/webmail_client.xml")
         for needle in (
             "onSearch.bind",
-            'searchQuery="state.searchQuery"',
+            'searchQuery="this.state.searchQuery"',
         ):
             self.assertIn(needle, xml)
 

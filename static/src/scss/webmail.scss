@@ -513,3 +513,14 @@ body.o_webmail_dragging {
             font-size: 0.72rem;
             padding: 0 0.35rem;
         }
+
+// Odoo 20 dropped FontAwesome from the webclient: the assistant's thinking
+// spinner animates the Material Symbols icon instead of fa-spin.
+.o_webmail_client .oi-spin {
+    animation: o-webmail-oi-spin 1.2s linear infinite;
+}
+@keyframes o-webmail-oi-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

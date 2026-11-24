@@ -9,23 +9,23 @@
         <div class="o_webmail_message_list d-flex flex-column border-end">
                 <div class="o_webmail_list_header d-flex justify-content-between align-items-center p-2 border-bottom">
                     <span class="fw-bold text-truncate"
-                          t-out="props.folderName || 'Messages'"/>
+                          t-out="this.props.folderName || 'Messages'"/>
                         <div class="d-flex gap-2 align-items-center">
                             <!-- PR-2e: the single Sort menu -->
                             <div class="position-relative d-inline-flex">
                                 <button type="button"
                                         class="btn btn-outline-secondary btn-sm o_webmail_sort_menu_btn"
-                                        t-att-expanded="menu.openSort ? 'true' : 'false'"
+                                        t-att-expanded="this.menu.openSort ? 'true' : 'false'"
                                         t-on-click="() => this.toggleSortMenu()">
-                                    <i class="fa fa-sort me-1" role="img"/>
-                                    <span t-out="sortMenuLabel"/>
+                                    <i class="oi oi-filled me-1" data-icon="sort" role="img"/>
+                                    <span t-out="this.sortMenuLabel"/>
                                 </button>
-                                <div t-if="menu.openSort"
+                                <div t-if="this.menu.openSort"
                                      class="o_webmail_sort_menu dropdown-menu show position-absolute end-0 mt-1 p-1 shadow">
                                     <button type="button"
-                                            t-foreach="sortItems" t-as="item" t-key="item.key"
+                                            t-foreach="this.sortItems" t-as="item" t-key="item.key"
                                             class="dropdown-item o_webmail_sort_menu_item"
-                                            t-att-class="isSortActive(item.key) ? 'active' : ''"
+                                            t-att-class="this.isSortActive(item.key) ? 'active' : ''"
                                             t-att-data-sort-key="item.key"
                                             t-on-click.stop="() => this.applySort(item.key)">
                                         <span t-out="item.label"/>
@@ -35,17 +35,17 @@
                                         <input type="checkbox"
                                                class="form-check-input m-0 o_webmail_sort_priority_check"
                                                data-priority="unread_first"
-                                               t-att-checked="isPriorityActive('unread_first')"
+                                               t-att-checked="this.isPriorityActive('unread_first')"
                                                t-on-change="() => this.togglePriority('unread_first')"/>
-                                        <span t-out="unreadFirstLabel"/>
+                                        <span t-out="this.unreadFirstLabel"/>
                                     </label>
                                     <label class="dropdown-item form-check mb-0 d-flex align-items-center gap-2">
                                         <input type="checkbox"
                                                class="form-check-input m-0 o_webmail_sort_priority_check"
                                                data-priority="flagged_first"
-                                               t-att-checked="isPriorityActive('flagged_first')"
+                                               t-att-checked="this.isPriorityActive('flagged_first')"
                                                t-on-change="() => this.togglePriority('flagged_first')"/>
-                                        <span t-out="starredFirstLabel"/>
+                                        <span t-out="this.starredFirstLabel"/>
                                     </label>
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                             <button type="button"
                                     class="btn btn-outline-primary btn-sm o_webmail_compose_new"
                                     t-on-click="() => this.props.onComposeNew?.()">
-                                <i class="fa fa-pencil me-1" role="img"/>Compose
+                                <i class="oi me-1" data-icon="edit" role="img"/>Compose
                             </button>
                         </div>
                     </div>
@@ -62,132 +62,135 @@
                     <div class="o_webmail_search_bar d-flex gap-1 align-items-center px-2 py-1 border-bottom">
                         <input type="search"
                                class="form-control form-control-sm o_webmail_search_input"
-                               t-att-placeholder="searchPlaceholder"
-                               t-att-value="search.draft"
-                               t-on-input="onSearchInput"
-                               t-on-keydown="onSearchKeydown"/>
+                               t-att-placeholder="this.searchPlaceholder"
+                               t-att-value="this.search.draft"
+                               t-on-input="this.onSearchInput"
+                               t-on-keydown="this.onSearchKeydown"/>
                         <button type="button"
                                 class="btn btn-sm btn-outline-secondary o_webmail_search_btn"
-                                t-att-title="searchLabel"
-                                t-on-click="applySearchNow">
-                            <i class="fa fa-search" role="img" t-att-aria-label="searchLabel"/>
+                                t-att-title="this.searchLabel"
+                                t-on-click="this.applySearchNow">
+                            <i class="oi" data-icon="search" role="img" t-att-aria-label="this.searchLabel"/>
                         </button>
                     </div>
-                    <div t-if="props.searchQuery"
+                    <div t-if="this.props.searchQuery"
                          class="o_webmail_search_indicator d-flex align-items-center gap-2 px-2 py-1 border-bottom bg-info-subtle small">
-                        <i class="fa fa-search text-muted" role="img"/>
-                        <span class="text-truncate fw-bold" t-out="searchIndicatorLabel"/>
+                        <i class="oi text-muted" data-icon="search" role="img"/>
+                        <span class="text-truncate fw-bold" t-out="this.searchIndicatorLabel"/>
                         <button type="button"
                                 class="btn btn-sm btn-link p-0 ms-auto o_webmail_search_clear"
-                                t-att-title="clearSearchLabel"
-                                t-on-click="clearSearch">
-                            <i class="fa fa-times me-1" role="img"/>
-                            <span t-out="clearSearchLabel"/>
+                                t-att-title="this.clearSearchLabel"
+                                t-on-click="this.clearSearch">
+                            <i class="oi me-1" data-icon="close" role="img"/>
+                            <span t-out="this.clearSearchLabel"/>
                         </button>
                     </div>
                     <div class="o_webmail_filter_chips d-flex gap-1 px-2 py-1 border-bottom flex-nowrap">
                     <button type="button"
                             class="btn btn-sm rounded-pill o_webmail_filter_chip"
-                            t-att-class="isFilterActive('') ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-att-class="this.isFilterActive('') ? 'btn-primary' : 'btn-outline-secondary'"
                             data-filter="all"
-                            t-on-click="() => this.props.onSetFilter('')"><t t-out="filterAllLabel"/></button>
+                            t-on-click="() => this.props.onSetFilter('')"><t t-out="this.filterAllLabel"/></button>
                     <button type="button"
                             class="btn btn-sm rounded-pill o_webmail_filter_chip"
-                            t-att-class="isFilterActive('unread') ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-att-class="this.isFilterActive('unread') ? 'btn-primary' : 'btn-outline-secondary'"
                             data-filter="unread"
-                            t-on-click="() => this.props.onSetFilter('unread')"><t t-out="filterUnreadLabel"/></button>
+                            t-on-click="() => this.props.onSetFilter('unread')"><t t-out="this.filterUnreadLabel"/></button>
                     <button type="button"
                             class="btn btn-sm rounded-pill o_webmail_filter_chip"
-                            t-att-class="isFilterActive('flagged') ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-att-class="this.isFilterActive('flagged') ? 'btn-primary' : 'btn-outline-secondary'"
                             data-filter="flagged"
-                            t-on-click="() => this.props.onSetFilter('flagged')"><t t-out="filterStarredLabel"/></button>
+                            t-on-click="() => this.props.onSetFilter('flagged')"><t t-out="this.filterStarredLabel"/></button>
                     <button type="button"
                             class="btn btn-sm rounded-pill o_webmail_filter_chip"
-                            t-att-class="isFilterActive('attachments') ? 'btn-primary' : 'btn-outline-secondary'"
+                            t-att-class="this.isFilterActive('attachments') ? 'btn-primary' : 'btn-outline-secondary'"
                             data-filter="attachments"
-                            t-on-click="() => this.props.onSetFilter('attachments')"><t t-out="filterAttachmentsLabel"/></button>
+                            t-on-click="() => this.props.onSetFilter('attachments')"><t t-out="this.filterAttachmentsLabel"/></button>
                 </div>
                 <!-- PR-2h UI: the bulk bar sits ABOVE the column header row,
                      single compact line (user request 2026-09). -->
-                <div t-if="showCheckboxes &amp;&amp; selectedCount"
+                <div t-if="this.showCheckboxes &amp;&amp; this.selectedCount"
                      class="o_webmail_bulk_bar d-flex align-items-center gap-1 flex-nowrap px-2 py-1 border-bottom bg-primary-subtle">
                     <span class="small fw-bold text-nowrap">
-                        <span t-out="selectedCount"/> <t t-out="selectedLabel"/>
+                        <span t-out="this.selectedCount"/> <t t-out="this.selectedLabel"/>
                     </span>
                     <!-- PR-2e: icon-only buttons with tooltips. -->
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary o_webmail_bulk_read"
-                            t-att-title="markReadLabel"
+                            t-att-title="this.markReadLabel"
                             t-on-click="() => this.props.onBulkSetFlags({seen: true})">
-                        <i class="fa fa-envelope-open-o" role="img" t-att-aria-label="markReadLabel"/>
+                        <i class="oi oi-filled" data-icon="drafts" role="img" t-att-aria-label="this.markReadLabel"/>
                     </button>
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary o_webmail_bulk_unread"
-                            t-att-title="markUnreadLabel"
+                            t-att-title="this.markUnreadLabel"
                             t-on-click="() => this.props.onBulkSetFlags({seen: false})">
-                        <i class="fa fa-envelope-o" role="img" t-att-aria-label="markUnreadLabel"/>
+                        <i class="oi" data-icon="mail" role="img" t-att-aria-label="this.markUnreadLabel"/>
                     </button>
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary o_webmail_bulk_star"
-                            t-att-title="starLabel"
+                            t-att-title="this.starLabel"
                             t-on-click="() => this.props.onBulkSetFlags({flagged: true})">
-                        <i class="fa fa-star" role="img" t-att-aria-label="starLabel"/>
+                        <i class="oi oi-filled" data-icon="star" role="img" t-att-aria-label="this.starLabel"/>
                     </button>
                     <button type="button"
                             class="btn btn-sm btn-outline-secondary o_webmail_bulk_unstar"
-                            t-att-title="unstarLabel"
+                            t-att-title="this.unstarLabel"
                             t-on-click="() => this.props.onBulkSetFlags({flagged: false})">
-                        <i class="fa fa-star-o" role="img" t-att-aria-label="unstarLabel"/>
+                        <i class="oi" data-icon="star" role="img" t-att-aria-label="this.unstarLabel"/>
                     </button>
-                    <select t-if="moveTargets.length"
+                    <select t-if="this.moveTargets.length"
                             class="form-select form-select-sm w-auto o_webmail_bulk_move"
-                            t-att-aria-label="moveToLabel"
-                            t-on-change="bulkMove">
-                        <option value="" t-out="moveToLabel"/>
-                        <option t-foreach="moveTargets" t-as="target" t-key="target.id"
+                            t-att-aria-label="this.moveToLabel"
+                            t-on-change="this.bulkMove">
+                        <option value="" t-out="this.moveToLabel"/>
+                        <option t-foreach="this.moveTargets" t-as="target" t-key="target.id"
                             t-att-value="target.id" t-out="target.label"/>
                     </select>
                     <button type="button"
                             class="btn btn-sm btn-outline-danger o_webmail_bulk_delete"
-                            t-att-title="deleteLabel"
+                            t-att-title="this.deleteLabel"
                             t-on-click="() => this.props.onDeleteMessages()">
-                        <i class="fa fa-trash-o" role="img" t-att-aria-label="deleteLabel"/>
+                        <i class="oi" data-icon="delete" role="img" t-att-aria-label="this.deleteLabel"/>
                     </button>
                 </div>
                     <!-- PR-2e: plain column labels (no more clickable sort headers).
                          PR-2f: the checkbox column + bulk bar honor show_checkboxes. -->
                     <div class="o_webmail_list_columns d-flex align-items-center gap-1 px-2 py-1 border-bottom small text-muted">
-                        <input t-if="showCheckboxes"
+                        <input t-if="this.showCheckboxes"
                                type="checkbox"
                                class="o_webmail_select_all"
                                aria-label="Select all messages"
-                               t-att-checked="allSelected"
+                               t-att-checked="this.allSelected"
                                t-on-change="ev => this.props.onToggleSelectAll(ev.target.checked)"/>
                     <span class="o_webmail_col_star" style="width: 26px;" aria-hidden="true"/>
-                    <span class="flex-grow-1"><t t-out="fromLabel"/></span>
-                    <span class="flex-grow-2"><t t-out="subjectLabel"/></span>
-                    <span class="text-nowrap"><t t-out="dateLabel"/></span>
+                    <span class="flex-grow-1"><t t-out="this.fromLabel"/></span>
+                    <span class="flex-grow-2"><t t-out="this.subjectLabel"/></span>
+                    <span class="text-nowrap"><t t-out="this.dateLabel"/></span>
                 </div>
                 <div class="o_webmail_message_rows flex-grow-1 overflow-auto">
-                    <div t-if="props.loading" class="text-muted p-3">Loading…</div>
-                    <t t-elif="props.messages.length">
-                        <t t-foreach="props.messages"
+                    <div t-if="this.props.loading" class="text-muted p-3">Loading…</div>
+                    <t t-elif="this.props.messages.length">
+                        <t t-foreach="this.props.messages"
                            t-as="msg" t-key="msg.id">
-                            <div t-attf-class="o_webmail_message_row d-flex p-2 border-bottom cursor-pointer #{msg.id === props.selectedMessageId ? 'o_webmail_message_selected bg-primary-subtle' : ''} #{msg.flag_seen ? '' : 'o_webmail_unread fw-bold'}"
+                            <div t-attf-class="o_webmail_message_row d-flex p-2 border-bottom cursor-pointer #{msg.id === this.props.selectedMessageId ? 'o_webmail_message_selected bg-primary-subtle' : ''} #{msg.flag_seen ? '' : 'o_webmail_unread fw-bold'}"
                                  role="button"
                                  t-on-click="() => this.props.onOpenMessage(msg)">
-                                <input t-if="showCheckboxes"
+                                <input t-if="this.showCheckboxes"
                                        type="checkbox"
                                        class="o_webmail_msg_checkbox mt-1 me-1"
-                                       t-att-checked="isSelected(msg.id)"
+                                       t-att-checked="this.isSelected(msg.id)"
                                        t-att-aria-label="'Select message'"
                                        t-on-click.stop=""
                                        t-on-change="ev => this.props.onToggleSelect(msg.id, ev.target.checked)"/>
                                 <button type="button"
                                         class="btn btn-sm o_webmail_star_toggle px-1"
-                                        t-att-title="starTitle(msg)"
+                                        t-att-title="this.starTitle(msg)"
                                         t-on-click.stop="() => this.props.onToggleStar(msg)">
-                                    <i t-attf-class="fa #{msg.flag_flagged ? 'fa-star text-warning' : 'fa-star-o text-muted'}"
+                                    <i t-key="msg.flag_flagged"
+                                       class="oi"
+                                       t-att-class="msg.flag_flagged ? 'oi-filled text-warning' : 'text-muted'"
+                                       data-icon="star"
                                        role="img"/>
                                 </button>
                                 <div class="flex-grow-1 min-width-0">
@@ -195,20 +198,20 @@
                                         <span class="o_webmail_msg_subject text-truncate"
                                               t-out="msg.subject"/>
                                         <small class="text-muted ms-2 text-nowrap"
-                                               t-out="displayDate(msg.date)"/>
+                                               t-out="this.displayDate(msg.date)"/>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center text-muted small">
-                                        <span class="text-truncate" t-out="displaySender(msg.email_from)"/>
+                                        <span class="text-truncate" t-out="this.displaySender(msg.email_from)"/>
                                         <span class="text-nowrap">
-                                            <i t-if="msg.has_attachment" class="fa fa-paperclip ms-1"
-                                               role="img" t-att-title="hasAttachmentLabel"/>
+                                            <i t-if="msg.has_attachment" class="oi ms-1" data-icon="attach_file"
+                                               role="img" t-att-title="this.hasAttachmentLabel"/>
                                         </span>
                                     </div>
                                 </div>
                             </div>
                         </t>
                     </t>
-                        <div t-else="" class="text-muted p-3" t-out="emptyLabel"/>
+                        <div t-else="" class="text-muted p-3" t-out="this.emptyLabel"/>
                     </div>
                 </div>
             </t>

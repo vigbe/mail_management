@@ -22,8 +22,11 @@ import {
     markup,
     onWillStart,
     onWillUnmount,
-    useState,
+    proxy,
+    signal,
+    useProps,
 } from "@odoo/owl";
+import { standardActionServiceProps } from "@web/webclient/actions/action_plugin";
 import { registry } from "@web/core/registry";
 import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
@@ -65,11 +68,13 @@ export class WebmailClient extends Component {
     }
 
     // ---- PR-2j: draggable pane splitters (user request 2026-09) -----------
-    // OWL 2: t-ref is NOT allowed on components — the pane element is found
-    // via DOM relations (splitter's previousElementSibling) and the root ref.
+    // OWL 3: the root element is bound with t-ref="this.rootEl" to a
+    // signal ref (called to read the element); panes are found via DOM
+    // relations (splitter's previousElementSibling).
+    rootEl = signal.ref();
 
     applySavedWidths() {
-        const rootEl = this.root && this.root.el;
+        const rootEl = this.rootEl();
         if (!rootEl) {
             return;
         }
@@ -147,6 +152,10 @@ export class WebmailClient extends Component {
     /** Reachable directly at /odoo/webmail (action service path handler). */
     static path = "webmail";
 
+    // OWL 3: props only exist for components that declare a schema — a
+    // client action receives the standard action-service props.
+    props = useProps({ ...standardActionServiceProps });
+
     setup() {
         this.actionService = useService("action");
         this.notification = useService("notification");
@@ -159,7 +168,7 @@ export class WebmailClient extends Component {
         // > 0) — cancelled whenever the user navigates away.
         this._markReadTimer = null;
 
-        this.state = useState({
+        this.state = proxy({
             mailboxes: [],
             selectedMailboxId: false,
             assistantOpen:
@@ -823,20 +832,30 @@ export class WebmailClient extends Component {
         if (!message) {
             return;
         }
-        const next = !message.flag_flagged;
+        const target =
+            this.state.messages.find((m) => m.id === message.id) || message;
+        const next = !target.flag_flagged;
         // Optimistic flip (list row + reading pane), reverted on error.
-        message.flag_flagged = next;
-        this._syncSelectedMessageFlag(message.id, "flag_flagged", next);
+        // OWL 3: props reaching children may be copies, so the reactive
+        // update REPLACES the array item / object instead of deep-mutating.
+        this._replaceMessageFlag(target.id, "flag_flagged", next);
+        this._syncSelectedMessageFlag(target.id, "flag_flagged", next);
         try {
             await rpc("/mail_management/message/set_flags", {
-                message_ids: [message.id],
+                message_ids: [target.id],
                 flags: { flagged: next },
             });
         } catch (error) {
-            message.flag_flagged = !next;
-            this._syncSelectedMessageFlag(message.id, "flag_flagged", !next);
+            this._replaceMessageFlag(target.id, "flag_flagged", !next);
+            this._syncSelectedMessageFlag(target.id, "flag_flagged", !next);
             this._notifyError(error);
         }
+    }
+
+    _replaceMessageFlag(messageId, key, value) {
+        this.state.messages = this.state.messages.map((m) =>
+            m.id === messageId ? { ...m, [key]: value } : m
+        );
     }
 
     async markUnread(message) {
@@ -866,7 +885,7 @@ export class WebmailClient extends Component {
     _syncSelectedMessageFlag(messageId, key, value) {
         const selected = this.state.selectedMessage;
         if (selected && selected.id === messageId) {
-            selected[key] = value;
+            this.state.selectedMessage = { ...selected, [key]: value };
         }
     }
 

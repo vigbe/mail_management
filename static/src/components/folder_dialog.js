@@ -8,30 +8,30 @@
  * server endpoints do the rest (a failure surfaces as a notification and
  * nothing changes locally). */
 
-import { Component, useState } from "@odoo/owl";
+import { Component, proxy, t, useProps } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
 import { _t } from "@web/core/l10n/translation";
 
 export class FolderDialog extends Component {
     static template = "mail_management.FolderDialog";
     static components = { Dialog };
-    static props = {
+    props = useProps({
         /** 'create' | 'rename' — drives the title/labels. */
-        mode: String,
+        mode: t.string(),
         /** Mailboxes the user may target: [{id, name}] (create only). */
-        mailboxes: { type: Array, optional: true },
+        mailboxes: t.array(t.any()).optional(),
         /** Preselected mailbox id (create only). */
-        mailboxId: { type: Number, optional: true },
+        mailboxId: t.number().optional(),
         /** Folder being renamed: {id, name} (rename only). */
-        folder: { type: Object, optional: true },
+        folder: t.object().optional(),
         /** Called with {name, mailboxId, folder} on confirm. */
-        onConfirm: { type: Function, optional: true },
+        onConfirm: t.function().optional(),
         /** Injected automatically by the dialog service. */
-        close: { type: Function, optional: true },
-    };
+        close: t.function().optional(),
+    });
 
     setup() {
-        this.state = useState({
+        this.state = proxy({
             name: this.props.folder ? this.props.folder.name || "" : "",
             mailboxId:
                 this.props.mailboxId ||

@@ -16,12 +16,12 @@ class TestTreeCollapse(TransactionCase):
         xml = _read("xml/folder_tree.xml")
         self.assertIn("o_webmail_mailbox_chevron", xml)
         self.assertIn("toggleCollapse(mailbox.id)", xml)
-        self.assertIn("fa-caret-right", xml)
-        self.assertIn("fa-caret-down", xml)
+        self.assertIn("'keyboard_arrow_right'", xml)
+        self.assertIn("'keyboard_arrow_down'", xml)
 
     def test_folders_hidden_when_collapsed(self):
         xml = _read("xml/folder_tree.xml")
-        self.assertIn('<t t-if="!isCollapsed(mailbox.id)">', xml)
+        self.assertIn('<t t-if="!this.isCollapsed(mailbox.id)">', xml)
 
     def test_label_click_expands_and_selects(self):
         js = _read("components/folder_tree.js")

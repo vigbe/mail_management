@@ -10,40 +10,40 @@
  * [star]; right group a compact overflow ⋯ menu (Mark unread / Move to
  * folder / Delete / Show images when blocked). */
 
-import { Component, useState } from "@odoo/owl";
+import { Component, proxy, t, useProps } from "@odoo/owl";
 import { deserializeDateTime, formatDateTime } from "@web/core/l10n/dates";
 import { _t } from "@web/core/l10n/translation";
 
 export class ReadingPane extends Component {
     static template = "mail_management.ReadingPane";
-    static props = {
-        onToggleAssistant: { type: Function, optional: true },
-        assistantOpen: { type: Boolean, optional: true },
-        message: { type: [Object, Boolean], optional: true },
-        loading: Boolean,
+    props = useProps({
+        onToggleAssistant: t.function().optional(),
+        assistantOpen: t.boolean().optional(),
+        message: t.any().optional(),
+        loading: t.boolean(),
         /** PR-1c: opens the ComposeDialog ('reply' | 'reply_all' | 'forward'). */
-        onCompose: { type: Function, optional: true },
+        onCompose: t.function().optional(),
         /** PR-2a: star toggle + mark-as-unread (delegated to the parent). */
-        onToggleStar: { type: Function, optional: true },
-        onMarkUnread: { type: Function, optional: true },
+        onToggleStar: t.function().optional(),
+        onMarkUnread: t.function().optional(),
         /** PR-2b: move the open message to another folder + delete it
          * (trash semantics server-side; "Delete permanently" in Trash). */
-        moveTargets: { type: Array, optional: true },
-        isTrash: { type: Boolean, optional: true },
-        onMoveToFolder: { type: Function, optional: true },
-        onDeleteMessage: { type: Function, optional: true },
+        moveTargets: t.array(t.any()).optional(),
+        isTrash: t.boolean().optional(),
+        onMoveToFolder: t.function().optional(),
+        onDeleteMessage: t.function().optional(),
         /** PR-2e: per-message remote-image reveal (bar shown by the parent
          * when the policy blocks images for THIS message). */
-        imagesBlocked: { type: Boolean, optional: true },
-        onShowImages: { type: Function, optional: true },
+        imagesBlocked: t.boolean().optional(),
+        onShowImages: t.function().optional(),
         /** PR-2f: settings.simple_attachment_list — compact list instead
          * of preview cards. */
-        simpleAttachmentList: { type: Boolean, optional: true },
-    };
+        simpleAttachmentList: t.boolean().optional(),
+    });
 
     setup() {
         // Overflow menu open state — purely presentational.
-        this.menu = useState({ open: false });
+        this.menu = proxy({ open: false });
     }
 
     compose(mode) {
