@@ -66,7 +66,7 @@ def _users(env):
         {
             "name": "Compose A",
             "login": "compose_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     return user_a

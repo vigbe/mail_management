@@ -683,14 +683,14 @@ class TestSendController(SendTestMixin, TransactionCase):
             {
                 "name": "Send A",
                 "login": "send_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "Send B",
                 "login": "send_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         # Give the mailbox to user A.
@@ -866,7 +866,7 @@ class TestComposeUiWiring(TransactionCase):
     def test_manifest_version_bumped_5(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
             manifest = ast.literal_eval(fh.read())
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "18.0.17.0.0")
 
     def test_reading_pane_has_compose_buttons(self):
         with open(

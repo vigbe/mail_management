@@ -44,4 +44,9 @@ class MailManagementAttachment(models.Model):
     # ------------------------------------------------------------------
     # Indexes
     # ------------------------------------------------------------------
-    _attachment_msg_idx = models.Index("(webmail_message_id, content_id)")
+    def init(self):
+        # Odoo <=18: plain SQL index (models.Index is 19+).
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_attachment_msg_cid_idx "
+            "ON mail_management_attachment (webmail_message_id, content_id)"
+        )

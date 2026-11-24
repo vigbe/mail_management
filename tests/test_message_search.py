@@ -76,7 +76,7 @@ class TestMessageSearch(TransactionCase):
             {
                 "name": "Search A",
                 "login": "search_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         Mailbox = self.env["mail.management.mailbox"]
@@ -392,7 +392,7 @@ class TestMessageSearch(TransactionCase):
             {
                 "name": "Search B",
                 "login": "search_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         mailbox_b = (
@@ -625,4 +625,4 @@ class TestNewTermTranslatedEsCl(TransactionCase):
                 ln for ln in fh.read().splitlines() if not ln.lstrip().startswith("#")
             )
         manifest = ast.literal_eval(source)
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "18.0.17.0.0")

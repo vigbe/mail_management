@@ -95,11 +95,20 @@ class MailManagementFolder(models.Model):
     # ------------------------------------------------------------------
     # Constraints & indexes
     # ------------------------------------------------------------------
-    _folder_uniq = models.Constraint(
-        "UNIQUE(mailbox_id, imap_name)",
-        "A folder with this IMAP name already exists for this mailbox.",
-    )
-    _folder_mailbox_idx = models.Index("(mailbox_id, role)")
+    _sql_constraints = [
+        (
+            "folder_uniq",
+            "unique(mailbox_id, imap_name)",
+            "A folder with this IMAP name already exists for this mailbox.",
+        ),
+    ]
+
+    def init(self):
+        # Odoo <=18: plain SQL index (models.Index is 19+).
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_folder_mailbox_role_idx "
+            "ON mail_management_folder (mailbox_id, role)"
+        )
 
     # ------------------------------------------------------------------
     # Computed counts (design A.2) + display labels (user feedback 2026-09)

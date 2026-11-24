@@ -89,12 +89,24 @@ class MailManagementMessage(models.Model):
     # ------------------------------------------------------------------
     # Constraints & indexes (HIGH-RISK A.3.1)
     # ------------------------------------------------------------------
-    _msg_folder_uid_uniq = models.Constraint(
-        "UNIQUE(folder_id, uid)",
-        "A message with this (folder, UID) already exists.",
-    )
-    _msg_mailbox_msgid_idx = models.Index("(mailbox_id, message_id)")
-    _msg_folder_date_idx = models.Index("(folder_id, date DESC)")
+    _sql_constraints = [
+        (
+            "msg_folder_uid_uniq",
+            "unique(folder_id, uid)",
+            "A message with this (folder, UID) already exists.",
+        ),
+    ]
+
+    def init(self):
+        # Odoo <=18: plain SQL indexes (models.Index is 19+).
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_message_mailbox_msgid_idx "
+            "ON mail_management_message (mailbox_id, message_id)"
+        )
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_message_folder_date_idx "
+            "ON mail_management_message (folder_id, date DESC)"
+        )
 
     # ------------------------------------------------------------------
     # Computed fields

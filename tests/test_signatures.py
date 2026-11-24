@@ -44,21 +44,21 @@ def _users(env):
         {
             "name": "Sig A",
             "login": "sig_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "Sig B",
             "login": "sig_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     manager = env["res.users"].create(
         {
             "name": "Sig Manager",
             "login": "sig_manager@test",
-            "group_ids": [(6, 0, [group_manager.id])],
+            "groups_id": [(6, 0, [group_manager.id])],
         }
     )
     return user_a, user_b, manager
@@ -704,7 +704,7 @@ class TestComposeRichTextWiring(TransactionCase):
     def test_manifest_version_bumped(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:
             manifest = ast.literal_eval(fh.read())
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "18.0.17.0.0")
 
     def test_manifest_depends_on_html_editor(self):
         with open(_module_file("__manifest__.py"), encoding="utf-8") as fh:

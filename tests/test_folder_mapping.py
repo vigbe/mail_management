@@ -72,14 +72,14 @@ def _users(env):
         {
             "name": "Map A",
             "login": "map_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "Map B",
             "login": "map_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     return user_a, user_b
@@ -547,4 +547,4 @@ class TestVersionTracker(TransactionCase):
                 ln for ln in fh.read().splitlines() if not ln.lstrip().startswith("#")
             )
         manifest = ast.literal_eval(source)
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "18.0.17.0.0")

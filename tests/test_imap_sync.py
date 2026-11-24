@@ -730,21 +730,21 @@ class TestIsolationExtended(TransactionCase):
             {
                 "name": "Sync User A",
                 "login": "sync_iso_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "Sync User B",
                 "login": "sync_iso_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.manager = self.env["res.users"].create(
             {
                 "name": "Sync Manager",
                 "login": "sync_iso_mgr@test",
-                "group_ids": [(6, 0, [group_manager.id])],
+                "groups_id": [(6, 0, [group_manager.id])],
             }
         )
 

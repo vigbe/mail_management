@@ -726,14 +726,14 @@ class TestFolderSoftDeleteController(TransactionCase):
             {
                 "name": "SoftDel A",
                 "login": "softdel_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "SoftDel B",
                 "login": "softdel_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 
@@ -1115,4 +1115,4 @@ class TestSoftDeleteUiWiring(TransactionCase):
 
     def test_manifest_version_bumped_to_pr2h(self):
         manifest = ast.literal_eval(_read("__manifest__.py"))
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "18.0.17.0.0")

@@ -270,7 +270,7 @@ class TestHtmlSendController(SendTestMixin, TransactionCase):
             {
                 "name": "Html A",
                 "login": "html_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.mailbox.user_id = self.user_a

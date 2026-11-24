@@ -22,7 +22,7 @@ class MailManagementAssistantController(http.Controller):
             raise UserError(_("Message not found."))
         return message
 
-    @http.route("/mail_management/assistant/chat", type="jsonrpc", auth="user")
+    @http.route("/mail_management/assistant/chat", type="json", auth="user")
     def assistant_chat(self, mailbox_id, text, **kw):
         if not (text or "").strip():
             return {"reply": ""}
@@ -37,7 +37,7 @@ class MailManagementAssistantController(http.Controller):
             ],
         }
 
-    @http.route("/mail_management/assistant/history", type="jsonrpc", auth="user")
+    @http.route("/mail_management/assistant/history", type="json", auth="user")
     def assistant_history(self, mailbox_id, **kw):
         mailbox = self._mailbox(mailbox_id)
         session = request.env["mail.management.chat.session"].search(
@@ -55,20 +55,20 @@ class MailManagementAssistantController(http.Controller):
             else []
         }
 
-    @http.route("/mail_management/assistant/summarize", type="jsonrpc", auth="user")
+    @http.route("/mail_management/assistant/summarize", type="json", auth="user")
     def assistant_summarize(self, message_id, **kw):
         message = self._message(message_id)
         result = request.env["mail.management.assistant"].summarize(message)
         return result
 
-    @http.route("/mail_management/assistant/draft", type="jsonrpc", auth="user")
+    @http.route("/mail_management/assistant/draft", type="json", auth="user")
     def assistant_draft(self, message_id, instructions="", **kw):
         message = self._message(message_id)
         return request.env["mail.management.assistant"].draft(
             message, instructions or ""
         )
 
-    @http.route("/mail_management/assistant/triage", type="jsonrpc", auth="user")
+    @http.route("/mail_management/assistant/triage", type="json", auth="user")
     def assistant_triage(self, mailbox_id, folder_id=None, **kw):
         mailbox = self._mailbox(mailbox_id)
         folder = None
@@ -78,7 +78,7 @@ class MailManagementAssistantController(http.Controller):
 
     @http.route(
         "/mail_management/assistant/search",
-        type="jsonrpc",
+        type="json",
         auth="user",
     )
     def assistant_search(self, mailbox_id, query, **kw):

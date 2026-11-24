@@ -10,7 +10,7 @@ Contract under test (openspec/changes/webmail-complete-management):
   ``unread_count`` react instantly, then the IMAP mirror runs best-effort
   through the seam — a mirror failure is logged with the mailbox id and
   NEVER raised to the caller; ``unread_count`` recomputes afterwards;
-* ``POST /mail_management/message/set_flags`` (``auth='user'``, jsonrpc) —
+* ``POST /mail_management/message/set_flags`` (``auth='user'``, json) —
   accepts ``message_ids`` + ``flags``; per-user isolation via the ir.rules:
   cross-user ids are silently ignored; invalid flag keys → UserError.
 
@@ -336,14 +336,14 @@ class TestMessageSetFlagsController(TransactionCase):
             {
                 "name": "Flags A",
                 "login": "flags_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "Flags B",
                 "login": "flags_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 
@@ -367,9 +367,9 @@ class TestMessageSetFlagsController(TransactionCase):
     def _env(self, user):
         return self.env(user=user)
 
-    def test_route_meta_auth_user_jsonrpc(self):
+    def test_route_meta_auth_user_json(self):
         routing = self.controller.message_set_flags.original_routing
-        self.assertEqual(routing["type"], "jsonrpc")
+        self.assertEqual(routing["type"], "json")
         self.assertEqual(routing["auth"], "user")
         self.assertIn("/mail_management/message/set_flags", routing["routes"])
         self.assertIn("POST", routing["methods"])
@@ -604,4 +604,4 @@ class TestFlagsUiWiring(TransactionCase):
         import ast
 
         manifest = ast.literal_eval(_read("__manifest__.py"))
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "18.0.17.0.0")

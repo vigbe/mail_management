@@ -67,21 +67,21 @@ def _users(env):
         {
             "name": "Settings A",
             "login": "settings_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "Settings B",
             "login": "settings_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     manager = env["res.users"].create(
         {
             "name": "Settings Manager",
             "login": "settings_manager@test",
-            "group_ids": [(6, 0, [group_manager.id])],
+            "groups_id": [(6, 0, [group_manager.id])],
         }
     )
     return user_a, user_b, manager
@@ -572,7 +572,7 @@ class TestUiConsolidationWiring(TransactionCase):
         self.assertIn("mail_management/static/src/utils/prepare_body.js", backend)
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(_read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(_read_manifest()["version"], "18.0.17.0.0")
 
 
 # ===========================================================================
@@ -645,7 +645,7 @@ class TestSettingsTriangulate(TransactionCase):
             {
                 "name": "Settings C",
                 "login": "settings_c@test",
-                "group_ids": [
+                "groups_id": [
                     (
                         6,
                         0,

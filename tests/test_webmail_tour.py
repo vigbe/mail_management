@@ -47,7 +47,7 @@ class TestWebmailTour(HttpCase):
                 "name": "Webmail Tour User",
                 "login": "webmail_tour_user",
                 "email": "webmail_tour@example.com",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         Mailbox = self.env["mail.management.mailbox"]

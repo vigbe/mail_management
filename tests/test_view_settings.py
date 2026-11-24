@@ -79,14 +79,14 @@ def _users(env):
         {
             "name": "View Settings A",
             "login": "view_settings_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "View Settings B",
             "login": "view_settings_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     return user_a, user_b
@@ -672,7 +672,7 @@ class TestMessagePolicyWiring(TransactionCase):
         self.assertIn("mail_management/static/src/utils/message_policy.js", backend)
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(_read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(_read_manifest()["version"], "18.0.17.0.0")
 
 
 # ===========================================================================
