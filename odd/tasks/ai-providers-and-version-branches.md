@@ -56,9 +56,9 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
 | ID | Spec | Route | Commit |
 | --- | --- | --- | --- |
 | T1 | — | Track: this doc, Engram mirror, visible todo | — |
-| T2 | S7 | Harness: isolated compose project, parametrized Dockerfile, per-version images; baseline 19.0 green on current `main` | — |
+| T2 | S7 | Harness: isolated compose project, parametrized Dockerfile, per-version images; baseline 19.0 green on current `main` | 872 tests green (tour skipped until image rebuild) |
 | T3 | S4, S6 | `lib/ai_provider.py` (base, registry, errors) + google/openai/anthropic/deepseek clients + tests (RED → GREEN) | c8c9565 |
-| T4 | S2, S3, S5, S6, S8 | Factory in the assistant, wizard model + view, params, `UserError`, tests, i18n; suite green on 19.0 | |
+| T4 | S2, S3, S5, S6, S8 | Factory in the assistant, wizard model + view, params, `UserError`, tests, i18n; suite green on 19.0 | 25927c6, 0a2b9a5 |
 | T5 | S7 | `19.0` branch = `main` snapshot | |
 | T6 | S7 | 18.0: reapply 59acf0b on the new base, test on `odoo:18.0`, fix | |
 | T7 | S7 | 17.0: reapply 557aab2, test on `odoo:17.0`, fix | |
@@ -113,3 +113,32 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
 - **L8** — T2 harness incident: two concurrent runs shared one DB name and one
   log file → `duplicate key ... pg_database_datname_index`. Fixed in the runner
   (DB and log keyed by version + checkout).
+- **L9** — T2 harness root causes (keep for the port workers): (1) `docker
+  compose run <svc> <args>` REPLACES the service `command`, so the test options
+  must go on the command line; (2) `--test-enable` and `--stop-after-init` are
+  `file_loadable=False` in `odoo/tools/config.py` — they are ignored in
+  `odoo.conf` (while `--test-tags` on the CLI implies both, which is why scoped
+  runs worked); (3) a single-file bind mount keeps the old inode after the host
+  file is rewritten — mount the directory (`./conf:/etc/odoo`); (4) the webmail
+  tour is skipped without `websocket-client` — added to the image, all five
+  images rebuilt. Runner: `run-tests.sh <ver> <checkout> [--test-tags=...]`.
+- **L10** — T2 baseline on clean `main` (1c57710): `mail_management: 872 tests
+  28.09s`, `0 failed, 0 error(s) of 672 tests` (loading) + 1 post-test; the tour
+  was skipped for the missing `websocket-client` (image rebuild in progress;
+  the tour is re-verified on the rebuilt image).
+- **L11** — T4: the worker recorded RED `4 failed, 20 error(s) of 17 tests`,
+  implemented everything, and timed out at 20 min with `1 failed, 0 error(s) of
+  17 tests` — the translation test. Cause: field labels are model terms, not
+  code strings; `_activate_lang` alone does not load them (the existing
+  `test_folder_labels` pattern translates a code string). Fixed inline with
+  `ir.module.module._update_translations(['es_CL'])`; scoped GREEN `0 failed, 0
+  error(s) of 17 tests`. Commit 25927c6 (slice: 1 608 lines over 3 commits since
+  `main`; library+tests, docs, wizard+factory+tests+i18n — one behavior unit
+  each; delivery shape decided at publishing time).
+- **L12** — T4 full suite on `feat/ai-providers` (image rebuilt with
+  `websocket-client`): first run `2 failed` in the pre-existing i18n grammar
+  guard (`TestNewTermTranslatedEsCl`): it treated `#: model_terms:` entries as
+  code and demanded a flavor marker; Odoo exports view-arch/field-help terms
+  without one. Fixed the guard (0a2b9a5). Final: `mail_management: 922 tests
+  35.74s`, `0 failed, 0 error(s) of 708 tests`, exit 0, and the webmail tour
+  ran for real (Chrome headless, 52/52 steps, "tour succeeded").
