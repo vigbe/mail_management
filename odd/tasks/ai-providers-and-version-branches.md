@@ -60,10 +60,10 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
 | T3 | S4, S6 | `lib/ai_provider.py` (base, registry, errors) + google/openai/anthropic/deepseek clients + tests (RED → GREEN) | c8c9565 |
 | T4 | S2, S3, S5, S6, S8 | Factory in the assistant, wizard model + view, params, `UserError`, tests, i18n; suite green on 19.0 | 25927c6, 0a2b9a5 |
 | T5 | S7 | `19.0` branch = `main` snapshot | |
-| T6 | S7 | 18.0: reapply 59acf0b on the new base, test on `odoo:18.0`, fix | |
-| T7 | S7 | 17.0: reapply 557aab2, test on `odoo:17.0`, fix | |
-| T8 | S7 | 16.0: reapply 387d21c (cumulative), test on `odoo:16.0`, fix | |
-| T9 | S7 | 20.0: reapply 5d9f83c + OWL 3 frontend, test on `odoo:20.0` (suite + tour), fix; `main` := 20.0 | |
+| T6 | S7 | 18.0: reapply 59acf0b on the new base, test on `odoo:18.0`, fix | 0399d11 — 922 tests 0 failed + tour green | |
+| T7 | S7 | 17.0: reapply 557aab2, test on `odoo:17.0`, fix | 29019dd — 922 tests 0 failed (tour skip inherited) | |
+| T8 | S7 | 16.0: reapply 387d21c (cumulative), test on `odoo:16.0`, fix | 7dbd039+26824d1 — 922 tests 0 failed (tour skip inherited) | |
+| T9 | S7 | 20.0: reapply 5d9f83c + OWL 3 frontend, test on `odoo:20.0` (suite + tour), fix; `main` := 20.0 | backend 2a1a650+60544c3 — 1314 tests 0 failed; OWL 3 frontend port in progress | |
 | T10 | S7 | Close: report, memory, push decision (push is the user's) | — |
 
 ## Log
@@ -142,3 +142,17 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
   without one. Fixed the guard (0a2b9a5). Final: `mail_management: 922 tests
   35.74s`, `0 failed, 0 error(s) of 708 tests`, exit 0, and the webmail tour
   ran for real (Chrome headless, 52/52 steps, "tour succeeded").
+- **L13** — Port evidence (all in isolated Docker, runner `run-tests.sh`):
+  18.0 `0 failed, 0 error(s) of 708 tests` (922 stats) + Chrome tour
+  succeeded; 17.0 same numbers, tour skipped by the inherited `@unittest.skip`
+  (Odoo 17 macro-engine stall, verified with in-browser probes in the original
+  port); 16.0 first failed to install — the AI wizard view used Odoo 17+
+  `invisible=`/`required=` expressions — fixed with classic `attrs` plus
+  `from __future__ import annotations` for the Python 3.9 container
+  (26824d1), then green `0 failed of 708` (922 stats), tour skip inherited
+  (legacy engine stalls on the debounced search step); 20.0 backend green
+  `0 failed, 0 error(s) of 1314 tests` (2a1a650 + 60544c3: finished the
+  `get_str`/`set_str` rename — two higher-order references without parentheses
+  escaped the sed — and normalized the selection assertion to tuples); its
+  tour is skipped pending the OWL 3 frontend port (the only S7 remainder,
+  together with `main` := 20.0 tip).
