@@ -385,7 +385,6 @@ class TestHtmlSendTriangulate(SendTestMixin, TransactionCase):
     def test_forward_keeps_attachments_and_signature(self):
         """Forward: original attachments ride along AND the signature stays
         in the html alternative."""
-        import base64
 
         ir_att = self.IrAttachment.sudo().create(
             {

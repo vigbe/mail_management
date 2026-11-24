@@ -326,7 +326,6 @@ class TestAttachmentModel(TransactionCase):
 
     def test_attachment_links_ir_attachment(self):
         """Attachment links to ir.attachment filestore (no blob column)."""
-        import base64
 
         ir_att = self.env["ir.attachment"].create(
             {
@@ -352,7 +351,6 @@ class TestAttachmentModel(TransactionCase):
 
     def test_attachment_ondelete_restrict(self):
         """Deleting a linked ir.attachment is restricted (FK RESTRICT)."""
-        import base64
 
         ir_att = self.env["ir.attachment"].create(
             {

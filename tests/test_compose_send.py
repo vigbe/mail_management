@@ -16,7 +16,6 @@ All transports are MOCKED — no real network calls.
 """
 
 import ast
-import base64
 import email
 import os
 from contextlib import contextmanager

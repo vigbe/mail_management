@@ -12,7 +12,6 @@ endpoints:
 Written BEFORE the controller change (RED).
 """
 
-import base64
 import io
 from contextlib import contextmanager
 from unittest import mock
