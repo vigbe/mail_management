@@ -569,9 +569,10 @@ class TestNewTermTranslatedEsCl(TransactionCase):
             if "msgid " not in entry or 'msgid ""' in entry:
                 continue
             self.assertIn("#. module: mail_management", entry)
-            # Model-translation entries (menu/action labels) use '#: model:'
-            # occurrences and legitimately carry NO code flavor marker.
-            if "#: model:" not in entry:
+            # Model-translation entries (menu/action labels, field help, view
+            # arch) use '#: model:' / '#: model_terms:' occurrences and
+            # legitimately carry NO code flavor marker.
+            if "#: model:" not in entry and "#: model_terms:" not in entry:
                 self.assertTrue(
                     "#. odoo-python" in entry or "#. odoo-javascript" in entry,
                     f"entry lacks a flavor marker:\n{entry}",
@@ -598,7 +599,7 @@ class TestNewTermTranslatedEsCl(TransactionCase):
         for msgid in po_ids:
             block = self._entry_block(pot, msgid)
             self.assertIn("#. module: mail_management", block)
-            if "#: model:" not in block:
+            if "#: model:" not in block and "#: model_terms:" not in block:
                 self.assertTrue(
                     "#. odoo-python" in block or "#. odoo-javascript" in block,
                     f"POT entry lacks a flavor marker: {msgid}",
