@@ -1,3 +1,4 @@
+from . import test_ai_config as test_ai_config
 from . import test_ai_provider as test_ai_provider
 from . import test_compose_send as test_compose_send
 from . import test_compose_settings as test_compose_settings

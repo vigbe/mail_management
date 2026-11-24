@@ -10,6 +10,11 @@ Capabilities (all read-only or DRAFT-only — the assistant NEVER sends mail):
 
 Anti-injection: email bodies are DATA; the system prompt forbids following
 instructions found inside them, and drafts always require human review.
+
+The model is provider-agnostic: ``_get_ai_client`` builds it from the
+``mail_management.ai.*`` system parameters written by the AI configuration
+wizard (``models/mail_management_ai_config_wizard.py``).  Call sites only use
+``client.chat(system, messages)`` / ``client.ask(system, text)``.
 """
 
 import json
@@ -17,10 +22,19 @@ import logging
 import re
 
 from odoo import _, api, models
-from odoo.addons.mail_management.lib.gemini_client import GeminiClient
+from odoo.addons.mail_management.lib.ai_provider import AIProviderError, make_client
+from odoo.addons.mail_management.lib.mail_crypto import FernetCrypto, MailCryptoError
 from odoo.exceptions import UserError
 
 _logger = logging.getLogger(__name__)
+
+#: System parameters written by the AI configuration wizard.
+PARAM_PROVIDER = "mail_management.ai.provider"
+PARAM_API_KEY = "mail_management.ai.api_key_encrypted"
+PARAM_MODEL = "mail_management.ai.model"
+PARAM_BASE_URL = "mail_management.ai.base_url"
+#: Menu item of the configuration wizard, named by every configuration error.
+AI_CONFIG_WIZARD = "Configurar IA"
 
 _SYSTEM_PROMPT = (
     "Sos el asistente de IA del buzón [%(mailbox)s] (%(email)s). "
@@ -74,23 +88,70 @@ class MailManagementAssistant(models.AbstractModel):
     _description = "Mail AI Assistant Service"
 
     @api.model
-    def _get_gemini(self):
+    def _get_ai_client(self):
+        """Build the AI client from the module parameters.
+
+        :raises UserError: when the configuration is missing or unreadable, or
+            when the provider rejects it.  The message names the configuration
+            wizard and the ``mail_management.ai.*`` parameters.
+        """
         icp = self.env["ir.config_parameter"].sudo()
-        api_key = icp.get_param("ia_prop.gemini_api_key")
-        if not api_key:
+        provider = icp.get_param(PARAM_PROVIDER)
+        api_key = self._decrypt_ai_key(icp, icp.get_param(PARAM_API_KEY))
+        if not provider or not api_key:
+            missing = ", ".join(
+                name
+                for name, value in (
+                    (PARAM_PROVIDER, provider),
+                    (PARAM_API_KEY, api_key),
+                )
+                if not value
+            )
+            raise UserError(self._missing_config_error(missing))
+        try:
+            return make_client(
+                provider,
+                api_key,
+                model=icp.get_param(PARAM_MODEL) or None,
+                base_url=icp.get_param(PARAM_BASE_URL) or None,
+            )
+        except AIProviderError as err:
+            raise UserError(str(err)) from err
+
+    @api.model
+    def _missing_config_error(self, missing):
+        """UserError text telling where the assistant is configured."""
+        return _(
+            "The AI assistant is not configured (missing: %(missing)s). Open the "
+            "AI configuration wizard (Settings ▸ Mail Management ▸ %(wizard)s) "
+            "and set the provider (%(provider)s) and the API key (%(key)s). "
+            "The model (%(model)s) and the base URL (%(base_url)s) are optional."
+        ) % {
+            "missing": missing,
+            "wizard": AI_CONFIG_WIZARD,
+            "provider": PARAM_PROVIDER,
+            "key": PARAM_API_KEY,
+            "model": PARAM_MODEL,
+            "base_url": PARAM_BASE_URL,
+        }
+
+    @api.model
+    def _decrypt_ai_key(self, icp, token):
+        """Plain API key from the stored Fernet token (``""`` when none)."""
+        if not token:
+            return ""
+        master_key = FernetCrypto.get_master_key(icp.get_param, icp.set_param)
+        try:
+            return FernetCrypto.decrypt(token, key=master_key)
+        except MailCryptoError as err:
             raise UserError(
                 _(
-                    "La IA no está configurada: falta el parámetro "
-                    "ia_prop.gemini_api_key en Ajustes - Técnico - "
-                    "Parámetros del sistema."
-                )
-            )
-        model = (
-            icp.get_param("real_estate.ai_gemini_model")
-            or icp.get_param("mail_management.ai_model")
-            or "gemini-2.0-flash"
-        )
-        return GeminiClient(api_key=api_key, model=model)
+                    "The stored AI API key (%(key)s) could not be decrypted. "
+                    "Open the AI configuration wizard "
+                    "(Settings ▸ Mail Management ▸ %(wizard)s) and enter the "
+                    "key again."
+                ) % {"key": PARAM_API_KEY, "wizard": AI_CONFIG_WIZARD}
+            ) from err
 
     def _recent_digest(self, mailbox):
         msgs = mailbox.synced_message_ids.sorted(
@@ -165,7 +226,7 @@ class MailManagementAssistant(models.AbstractModel):
             + "\n\nPregunta del usuario: "
             + user_text
         )
-        client = self._get_gemini()
+        client = self._get_ai_client()
         reply = client.chat(
             self._system(mailbox),
             self._chat_history(session)[:-1] + [{"role": "user", "text": prompt}],
@@ -189,7 +250,7 @@ class MailManagementAssistant(models.AbstractModel):
             "(quienes, qué se pide, fechas/límites, estado). Cifrá con [n] "
             "según el número de cada correo. Hilos:\n\n" + "\n\n".join(parts)
         )
-        reply = self._get_gemini().ask(self._system(message.mailbox_id), prompt)
+        reply = self._get_ai_client().ask(self._system(message.mailbox_id), prompt)
         return {"summary": _strip_html(reply), "message_ids": thread.ids}
 
     def draft(self, message, instructions=""):
@@ -207,7 +268,7 @@ class MailManagementAssistant(models.AbstractModel):
             + "No inventes hechos que no estén en el hilo. Hilo:\n\n"
             + context
         )
-        raw = self._get_gemini().ask(self._system(message.mailbox_id), prompt)
+        raw = self._get_ai_client().ask(self._system(message.mailbox_id), prompt)
         try:
             data = json.loads(self._extract_json(raw))
         except ValueError as err:
@@ -245,7 +306,7 @@ class MailManagementAssistant(models.AbstractModel):
             '{"mensajes": [{"id": <id>, "categoria": "...", "razon": "..."}, '
             "...]}. Correos:\n" + digest
         )
-        raw = self._get_gemini().ask(self._system(mailbox), prompt)
+        raw = self._get_ai_client().ask(self._system(mailbox), prompt)
         try:
             data = json.loads(self._extract_json(raw))
         except ValueError:
@@ -264,7 +325,7 @@ class MailManagementAssistant(models.AbstractModel):
             f"Escribí 2-4 líneas: qué encontraste sobre el tema y, si hay, "
             f"qué acción pendiente salta."
         )
-        return _strip_html(self._get_gemini().ask(self._system(mailbox), prompt))
+        return _strip_html(self._get_ai_client().ask(self._system(mailbox), prompt))
 
     def _thread_of(self, message):
         refs = set((message.references or "").split())

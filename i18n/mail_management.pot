@@ -971,3 +971,105 @@ msgstr ""
 #: code:addons/mail_management/models/mail_management.py:0
 msgid "Connection successful. %s folders discovered."
 msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_ai_config_wizard.py:0
+msgid "%(provider)s needs a base URL (the root of the OpenAI-compatible endpoint)."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_ai_config_wizard.py:0
+msgid "%(provider)s needs a model."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_ai_config_wizard.py:0
+msgid "Enter the API key: none is stored yet."
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,field_description:mail_management.field_mail_management_ai_config_wizard__provider
+msgid "Provider"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,help:mail_management.field_mail_management_ai_config_wizard__provider
+msgid "Service that hosts the model. Custom points the assistant at any OpenAI-compatible endpoint."
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,field_description:mail_management.field_mail_management_ai_config_wizard__api_key
+msgid "API key"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,help:mail_management.field_mail_management_ai_config_wizard__api_key
+msgid "Secret key issued by the provider. It is stored encrypted (Fernet). Leave it empty to keep the current key."
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,field_description:mail_management.field_mail_management_ai_config_wizard__model
+msgid "Model"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,help:mail_management.field_mail_management_ai_config_wizard__model
+msgid "Leave empty to use the provider's default model."
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,field_description:mail_management.field_mail_management_ai_config_wizard__default_model
+msgid "Default model"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,help:mail_management.field_mail_management_ai_config_wizard__default_model
+msgid "Model the provider uses when the model field is empty."
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,field_description:mail_management.field_mail_management_ai_config_wizard__base_url
+msgid "Base URL"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,help:mail_management.field_mail_management_ai_config_wizard__base_url
+msgid "Custom provider only: root of the OpenAI-compatible endpoint, e.g. https://llm.example.com/v1"
+msgstr ""
+
+#. module: mail_management
+#: model:ir.model.fields,field_description:mail_management.field_mail_management_ai_config_wizard__current_model
+msgid "Current model"
+msgstr ""
+
+#. module: mail_management
+#: model_terms:ir.ui.view,arch_db:mail_management.view_ai_config_wizard_form
+msgid "Paste your key here"
+msgstr ""
+
+#. module: mail_management
+#: model_terms:ir.ui.view,arch_db:mail_management.view_ai_config_wizard_form
+msgid "Leave empty to use the provider default"
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_assistant.py:0
+msgid ""
+"The AI assistant is not configured (missing: %(missing)s). Open the AI "
+"configuration wizard (Settings ▸ Mail Management ▸ %(wizard)s) and set the "
+"provider (%(provider)s) and the API key (%(key)s). The model (%(model)s) and "
+"the base URL (%(base_url)s) are optional."
+msgstr ""
+
+#. module: mail_management
+#. odoo-python
+#: code:addons/mail_management/models/mail_management_assistant.py:0
+msgid ""
+"The stored AI API key (%(key)s) could not be decrypted. Open the AI "
+"configuration wizard (Settings ▸ Mail Management ▸ %(wizard)s) and enter "
+"the key again."
+msgstr ""

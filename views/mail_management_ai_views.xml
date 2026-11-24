@@ -13,9 +13,17 @@
                             <field name="current_model" readonly="1"/>
                         </group>
                         <group string="Configuración">
+                            <field name="provider"/>
                             <field name="api_key" password="1"
-                                   placeholder="AIza…"/>
-                            <field name="model"/>
+                                   placeholder="Paste your key here"/>
+                            <field name="model"
+                                   placeholder="Leave empty to use the provider default"/>
+                            <field name="default_model" readonly="1"
+                                   invisible="not default_model"/>
+                            <field name="base_url"
+                                   placeholder="https://llm.example.com/v1"
+                                   invisible="provider != 'custom'"
+                                   required="provider == 'custom'"/>
                         </group>
                     </group>
                 </sheet>
