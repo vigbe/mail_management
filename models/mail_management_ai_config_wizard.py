@@ -107,7 +107,7 @@ class MailManagementAiConfigWizard(models.TransientModel):
         self._check_before_save(key_is_set=bool(icp.get_str(PARAM_API_KEY)))
 
         if self.api_key:
-            key = FernetCrypto.get_master_key(icp.get_param, icp.set_param)
+            key = FernetCrypto.get_master_key(icp.get_str, icp.set_str)
             icp.set_str(
                 PARAM_API_KEY, FernetCrypto.encrypt(self.api_key.strip(), key=key)
             )
@@ -150,5 +150,5 @@ class MailManagementAiConfigWizard(models.TransientModel):
 
     @staticmethod
     def _param_value(text):
-        """Trimmed text, or ``False`` so ``set_param`` removes the parameter."""
+        """Trimmed text, or ``False`` so ``set_str`` removes the parameter."""
         return (text or "").strip() or False

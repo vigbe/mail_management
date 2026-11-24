@@ -57,7 +57,7 @@ class TestAiConfig(TransactionCase):
     # -- helpers -------------------------------------------------------------
 
     def _master_key(self):
-        return FernetCrypto.get_master_key(self.icp.get_param, self.icp.set_param)
+        return FernetCrypto.get_master_key(self.icp.get_str, self.icp.set_str)
 
     def _stored_key(self):
         """Decrypt whatever the wizard stored (fails loudly if it is clear)."""
@@ -184,7 +184,7 @@ class TestAiConfig(TransactionCase):
     def test_provider_selection_is_the_registry(self):
         selection = self.Wizard.fields_get(["provider"])["provider"]["selection"]
 
-        self.assertEqual(selection, provider_selection())
+        self.assertEqual(list(selection), provider_selection())
         self.assertEqual(
             [key for key, _label in selection],
             ["google", "openai", "anthropic", "deepseek", "custom"],

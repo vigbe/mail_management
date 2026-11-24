@@ -140,7 +140,7 @@ class MailManagementAssistant(models.AbstractModel):
         """Plain API key from the stored Fernet token (``""`` when none)."""
         if not token:
             return ""
-        master_key = FernetCrypto.get_master_key(icp.get_param, icp.set_param)
+        master_key = FernetCrypto.get_master_key(icp.get_str, icp.set_str)
         try:
             return FernetCrypto.decrypt(token, key=master_key)
         except MailCryptoError as err:
