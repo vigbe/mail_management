@@ -2,7 +2,7 @@
 <odoo>
     <!-- ================================================================ -->
     <!-- PR-2c — signature management: minimal list + form + action +     -->
-    <!-- submenu under the Mail Management root.  Odoo 19: <list>, direct -->
+    <!-- submenu under the Mail Management root.  Odoo 19: <tree>, direct -->
     <!-- attributes, standard html widget for the sanitized body.         -->
     <!-- ================================================================ -->
 
@@ -10,12 +10,12 @@
         <field name="name">mail.management.signature.list</field>
         <field name="model">mail.management.signature</field>
         <field name="arch" type="xml">
-            <list string="Signatures" decoration-info="is_default">
+            <tree string="Signatures" decoration-info="is_default">
                 <field name="name"/>
                 <field name="mailbox_id" optional="show"/>
                 <field name="is_default" widget="boolean_toggle"/>
                 <field name="user_id" groups="mail_management.group_mail_management_manager"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -79,7 +79,7 @@
         <field name="name">Firmas</field>
         <field name="target">new</field>
         <field name="res_model">mail.management.signature</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="views" eval="[
             (ref('view_signature_list'), 'list'),
             (False, 'form'),

@@ -25,7 +25,6 @@ import {
     useState,
 } from "@odoo/owl";
 import { registry } from "@web/core/registry";
-import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
@@ -151,6 +150,8 @@ export class WebmailClient extends Component {
         this.actionService = useService("action");
         this.notification = useService("notification");
         this.dialog = useService("dialog");
+        this.rpc = useService("rpc");
+        this.rpc = useService("rpc");
 
         // PR-2f: once the user picks a sort/priority for the session, the
         // saved default sort no longer overrides it on folder open.
@@ -229,7 +230,7 @@ export class WebmailClient extends Component {
 
     async loadSettings() {
         try {
-            const payload = await rpc("/mail_management/settings", {});
+            const payload = await this.rpc("/mail_management/settings", {});
             this.state.settings = this._settingsFromPayload(payload);
         } catch {
             // Defaults on failure — the webmail stays usable.
@@ -281,7 +282,7 @@ export class WebmailClient extends Component {
 
     async saveSettings(payload) {
         try {
-            const saved = await rpc("/mail_management/settings/save", {
+            const saved = await this.rpc("/mail_management/settings/save", {
                 allow_remote_images: payload.allowRemoteImages,
                 signature_position: payload.signaturePosition,
                 messages_per_page: payload.messagesPerPage,
@@ -326,7 +327,7 @@ export class WebmailClient extends Component {
 
     async _loadFoldersForSettings() {
         try {
-            return await rpc("/mail_management/folders", {
+            return await this.rpc("/mail_management/folders", {
                 include_hidden: true,
             });
         } catch (error) {
@@ -337,7 +338,7 @@ export class WebmailClient extends Component {
 
     async setFolderRole(folderId, role) {
         try {
-            const result = await rpc("/mail_management/folder/set_role", {
+            const result = await this.rpc("/mail_management/folder/set_role", {
                 folder_id: folderId,
                 role,
             });
@@ -360,7 +361,7 @@ export class WebmailClient extends Component {
 
     async toggleFolderVisible(folderId, visible) {
         try {
-            await rpc("/mail_management/folder/set_visible", {
+            await this.rpc("/mail_management/folder/set_visible", {
                 folder_id: folderId,
                 visible,
             });
@@ -412,7 +413,7 @@ export class WebmailClient extends Component {
     async loadFolders() {
         this.state.loadingFolders = true;
         try {
-            this.state.mailboxes = await rpc("/mail_management/folders");
+            this.state.mailboxes = await this.rpc("/mail_management/folders");
             this._keepOrAutoSelect();
         } catch (error) {
             this.state.mailboxes = [];
@@ -475,7 +476,7 @@ export class WebmailClient extends Component {
                 // (the controller whitelists/escapes the pattern).
                 params.search = this.state.searchQuery;
             }
-            this.state.messages = await rpc(
+            this.state.messages = await this.rpc(
                 "/mail_management/messages",
                 params,
             );
@@ -638,7 +639,7 @@ export class WebmailClient extends Component {
         this.state.selectedMessageId = message.id;
         this.state.loadingMessage = true;
         try {
-            const payload = await rpc("/mail_management/message_body", {
+            const payload = await this.rpc("/mail_management/message_body", {
                 message_id: message.id,
             });
             const rawBodyHtml = payload.body_html || "";
@@ -698,7 +699,7 @@ export class WebmailClient extends Component {
             try {
                 // Optimistic local update, then mirror through the
                 // controller (ir.rule-checked write).
-                await rpc("/mail_management/set_flags", {
+                await this.rpc("/mail_management/set_flags", {
                     message_id: messageId,
                     seen: true,
                 });
@@ -828,7 +829,7 @@ export class WebmailClient extends Component {
         message.flag_flagged = next;
         this._syncSelectedMessageFlag(message.id, "flag_flagged", next);
         try {
-            await rpc("/mail_management/message/set_flags", {
+            await this.rpc("/mail_management/message/set_flags", {
                 message_ids: [message.id],
                 flags: { flagged: next },
             });
@@ -848,7 +849,7 @@ export class WebmailClient extends Component {
         // mark-read must not fight back.
         this._cancelMarkReadTimer();
         try {
-            await rpc("/mail_management/message/set_flags", {
+            await this.rpc("/mail_management/message/set_flags", {
                 message_ids: [target.id],
                 flags: { seen: false },
             });
@@ -892,7 +893,7 @@ export class WebmailClient extends Component {
             return;
         }
         try {
-            await rpc("/mail_management/message/set_flags", {
+            await this.rpc("/mail_management/message/set_flags", {
                 message_ids: ids,
                 flags,
             });
@@ -950,7 +951,7 @@ export class WebmailClient extends Component {
 
     async createFolder({ mailboxId, name }) {
         try {
-            await rpc("/mail_management/folder/create", {
+            await this.rpc("/mail_management/folder/create", {
                 mailbox_id: mailboxId,
                 name,
             });
@@ -971,7 +972,7 @@ export class WebmailClient extends Component {
 
     async renameFolder({ folder, name }) {
         try {
-            await rpc("/mail_management/folder/rename", {
+            await this.rpc("/mail_management/folder/rename", {
                 folder_id: folder.id,
                 name,
             });
@@ -1018,7 +1019,7 @@ export class WebmailClient extends Component {
 
     async deleteFolder(folder) {
         try {
-            const result = await rpc("/mail_management/folder/delete", {
+            const result = await this.rpc("/mail_management/folder/delete", {
                 folder_id: folder.id,
             });
             const moved = (result && result.moved_count) || 0;
@@ -1078,7 +1079,7 @@ export class WebmailClient extends Component {
             return false;
         }
         try {
-            await rpc("/mail_management/folder/delete", {
+            await this.rpc("/mail_management/folder/delete", {
                 folder_id: folder.id,
             });
             this.notification.add(_t("Folder deleted."), { type: "info" });
@@ -1125,7 +1126,7 @@ export class WebmailClient extends Component {
         }
         const reopen = this._captureNextAfterRemoval(ids);
         try {
-            await rpc("/mail_management/message/move", {
+            await this.rpc("/mail_management/message/move", {
                 message_ids: ids,
                 folder_id: folderId,
             });
@@ -1156,7 +1157,7 @@ export class WebmailClient extends Component {
         }
         const reopen = this._captureNextAfterRemoval(ids);
         try {
-            await rpc("/mail_management/message/delete", {
+            await this.rpc("/mail_management/message/delete", {
                 message_ids: ids,
             });
             this.notification.add(_t("Message(s) deleted."), {
@@ -1223,7 +1224,7 @@ export class WebmailClient extends Component {
             // No mailbox_id → every mailbox of the CURRENT user (the
             // controller runs through request.env → per-user ir.rules);
             // per-mailbox sync failures are caught server-side.
-            await rpc("/mail_management/refresh", {});
+            await this.rpc("/mail_management/refresh", {});
             this.notification.add(_t("All mailboxes refreshed."), {
                 type: "info",
             });

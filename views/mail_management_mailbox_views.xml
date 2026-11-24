@@ -2,7 +2,7 @@
 <odoo>
     <!-- ================================================================ -->
     <!-- PR-1b-ii — read-only UI wiring: mailbox configuration views.     -->
-    <!-- Odoo 19: <list> (not <tree>), direct invisible=/readonly=/       -->
+    <!-- Odoo 19: <tree> (not <tree>), direct invisible=/readonly=/       -->
     <!-- required= attributes (no attrs=), no jQuery.                     -->
     <!-- ================================================================ -->
 
@@ -13,7 +13,7 @@
         <field name="name">mail.management.folder.list</field>
         <field name="model">mail.management.folder</field>
         <field name="arch" type="xml">
-            <list string="Folders" create="false" edit="false" delete="false">
+            <tree string="Folders" create="false" edit="false" delete="false">
                 <field name="name"/>
                 <field name="imap_name"/>
                 <field name="role"/>
@@ -22,7 +22,7 @@
                 <field name="last_uid"/>
                 <field name="last_sync" optional="hide"/>
                 <field name="mailbox_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -30,7 +30,7 @@
         <field name="name">mail.management.message.list</field>
         <field name="model">mail.management.message</field>
         <field name="arch" type="xml">
-            <list string="Messages" create="false" edit="false" delete="false">
+            <tree string="Messages" create="false" edit="false" delete="false">
                 <field name="date"/>
                 <field name="subject"/>
                 <field name="email_from"/>
@@ -39,21 +39,21 @@
                 <field name="has_attachment" optional="show"/>
                 <field name="folder_id"/>
                 <field name="mailbox_id"/>
-            </list>
+            </tree>
         </field>
     </record>
 
     <record id="action_mail_management_folder" model="ir.actions.act_window">
         <field name="name">Folders</field>
         <field name="res_model">mail.management.folder</field>
-        <field name="view_mode">list</field>
+        <field name="view_mode">tree</field>
         <field name="views" eval="[(ref('view_folder_list'), 'list')]"/>
     </record>
 
     <record id="action_mail_management_message" model="ir.actions.act_window">
         <field name="name">Messages</field>
         <field name="res_model">mail.management.message</field>
-        <field name="view_mode">list</field>
+        <field name="view_mode">tree</field>
         <field name="views" eval="[(ref('view_message_list'), 'list')]"/>
     </record>
 
@@ -64,7 +64,7 @@
         <field name="name">mail.management.mailbox.list</field>
         <field name="model">mail.management.mailbox</field>
         <field name="arch" type="xml">
-            <list string="Mailboxes" decoration-info="state == 'draft'"
+            <tree string="Mailboxes" decoration-info="state == 'draft'"
                   decoration-success="state == 'active'"
                   decoration-danger="state == 'error'">
                 <field name="name"/>
@@ -75,7 +75,7 @@
                 <field name="last_sync" optional="show"/>
                 <field name="user_id" groups="mail_management.group_mail_management_manager"/>
                 <field name="company_id" groups="base.group_multi_company"/>
-            </list>
+            </tree>
         </field>
     </record>
 
@@ -168,7 +168,7 @@
                             </page>
                         <page string="Folders" name="folders">
                             <field name="folder_ids" readonly="1">
-                                <list>
+                                <tree>
                                     <field name="name"/>
                                     <field name="imap_name"/>
                                     <field name="role"/>
@@ -176,7 +176,7 @@
                                     <field name="unread_count" string="Unread"/>
                                     <field name="last_uid"/>
                                     <field name="last_sync"/>
-                                </list>
+                                </tree>
                             </field>
                         </page>
                         <page string="Sync" name="sync">
@@ -221,7 +221,7 @@
     <record id="action_mail_management_mailbox" model="ir.actions.act_window">
         <field name="name">My Mailboxes</field>
         <field name="res_model">mail.management.mailbox</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">tree,form</field>
         <field name="search_view_id" ref="view_mailbox_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

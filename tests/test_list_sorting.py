@@ -84,7 +84,7 @@ class TestListSorting(TransactionCase):
             {
                 "name": "Sort A",
                 "login": "sort_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         Mailbox = self.env["mail.management.mailbox"]
@@ -341,7 +341,7 @@ class TestListSorting(TransactionCase):
             {
                 "name": "Sort B",
                 "login": "sort_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         with mock_request(self.env(user=user_b)):

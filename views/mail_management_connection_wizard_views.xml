@@ -28,7 +28,7 @@
                     <button name="action_open_link" type="object"
                             string="Abrir ayuda del proveedor"
                             class="btn-primary" icon="fa-external-link"
-                            invisible="not link_url"/>
+                            attrs="{'invisible': [('link_url', '=', False)]}"/>
                     <button special="cancel" string="Entendido"
                             class="btn-secondary ms-2" data-hotkey="x"/>
                 </footer>

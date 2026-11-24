@@ -59,14 +59,14 @@ class TestReadControllers(TransactionCase):
             {
                 "name": "Ctrl A",
                 "login": "ctrl_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         self.user_b = self.env["res.users"].create(
             {
                 "name": "Ctrl B",
                 "login": "ctrl_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
 

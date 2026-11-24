@@ -34,11 +34,11 @@ class TestWebmailUiWiring(TransactionCase):
         action = self.env.ref("mail_management.action_mail_management_mailbox")
         self.assertEqual(action.type, "ir.actions.act_window")
         self.assertEqual(action.res_model, "mail.management.mailbox")
-        self.assertIn("list", (action.view_mode or "").split(","))
+        self.assertIn("tree", (action.view_mode or "").split(","))
         self.assertIn("form", (action.view_mode or "").split(","))
 
         list_view = self.env.ref("mail_management.view_mailbox_list")
-        self.assertEqual(list_view.type, "list")
+        self.assertEqual(list_view.type, "tree")
         form_view = self.env.ref("mail_management.view_mailbox_form")
         self.assertEqual(form_view.type, "form")
 
@@ -83,7 +83,7 @@ class TestWebmailUiWiring(TransactionCase):
             return fh.read()
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(self._read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(self._read_manifest()["version"], "16.0.17.0.0")
 
     def test_manifest_assets_declared(self):
         assets = self._read_manifest()["assets"]

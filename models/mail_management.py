@@ -126,13 +126,22 @@ class MailManagementMailbox(models.Model):
     active = fields.Boolean(default=True)
 
     # ------------------------------------------------------------------
-    # Constraints & indexes (Odoo 19: models.Constraint / models.Index)
+    # Constraints & indexes (Odoo <=18: _sql_constraints + init() indexes;
+    # models.Constraint / models.Index only exist in Odoo 19+)
     # ------------------------------------------------------------------
-    _mailbox_uniq = models.Constraint(
-        "UNIQUE(user_id, imap_host, imap_user)",
-        "A mailbox for this (user, IMAP host, IMAP user) already exists.",
-    )
-    _mailbox_user_company_idx = models.Index("(user_id, company_id)")
+    _sql_constraints = [
+        (
+            "mailbox_uniq",
+            "unique(user_id, imap_host, imap_user)",
+            "A mailbox for this (user, IMAP host, IMAP user) already exists.",
+        ),
+    ]
+
+    def init(self):
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_mailbox_user_company_idx "
+            "ON mail_management_mailbox (user_id, company_id)"
+        )
 
     # ------------------------------------------------------------------
     # Field-parameter whitelist (password=True escape hatch — Odoo 19)
@@ -188,14 +197,21 @@ class MailManagementMailbox(models.Model):
         return super().create(vals_list)
 
     # ------------------------------------------------------------------
-    # Delete guard (design A.1 — @api.ondelete, NOT unlink override)
+    # Delete guard (design A.1). Odoo 16: @api.ondelete(at_uninstall=...)
+    # does not exist yet — module uninstall signals with the _force_unlink
+    # context flag instead (base/models/ir_model.py MODULE_UNINSTALL_FLAG).
     # ------------------------------------------------------------------
-    @api.ondelete(at_uninstall=False)
-    def _unlink_if_active(self):
-        if any(rec.state == "active" for rec in self):
-            raise UserError(
-                _("Cannot delete a mailbox in 'Active' state. Set it to Draft first.")
-            )
+    def unlink(self):
+        if not self.env.context.get("_force_unlink"):
+            for rec in self:
+                if rec.state == "active":
+                    raise UserError(
+                        _(
+                            "Cannot delete a mailbox in 'Active' state. "
+                            "Set it to Draft first."
+                        )
+                    )
+        return super().unlink()
 
     # ------------------------------------------------------------------
     # Credential plaintext accessor (design B.2, B.5)

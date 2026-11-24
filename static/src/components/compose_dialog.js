@@ -18,12 +18,13 @@
  *   data, never user-raw input).
  */
 
-import { Component, markup, onWillStart, useState } from "@odoo/owl";
+import { Component, onMounted, onWillStart, onWillUnmount, useRef, useState } from "@odoo/owl";
 import { Dialog } from "@web/core/dialog/dialog";
-import { rpc } from "@web/core/network/rpc";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
-import { Wysiwyg } from "@html_editor/wysiwyg";
+import { getWysiwygClass } from "web_editor.loader";
+import Widget from "web.Widget";
+import { session } from "@web/session";
 
 const MODE_TITLES = {
   reply: _t("Reply"),
@@ -120,7 +121,7 @@ export function replacePlainSignature(
 
 export class ComposeDialog extends Component {
   static template = "mail_management.ComposeDialog";
-  static components = { Dialog, Wysiwyg };
+  static components = { Dialog };
   static props = {
     aiDraft: { type: Object, optional: true },
     /** 'reply' | 'reply_all' | 'forward' | 'new' */
@@ -145,10 +146,24 @@ export class ComposeDialog extends Component {
 
   setup() {
     this.notification = useService("notification");
+        this.rpc = useService("rpc");
+        this.editorMountRef = useRef("editorMount");
+        onMounted(() => {
+            if (!this.isPlainEditor) {
+                this._startEditorWidget();
+            }
+        });
+        onWillUnmount(() => {
+            if (this.wysiwygWidget) {
+                this.wysiwygWidget.destroy();
+            }
+            if (this.wysiwygParent) {
+                this.wysiwygParent.destroy();
+            }
+        });
     /** @type { import("@html_editor/wysiwyg").Wysiwyg } */
     this.editorComponent = null;
     /** @type { import("@html_editor/editor").Editor } */
-    this.editor = null;
     const message = this.props.message || {};
     const isReplyAll = this.props.mode === "reply_all";
     const isNew = this.props.mode === "new";
@@ -236,21 +251,63 @@ export class ComposeDialog extends Component {
   // Wysiwyg embed (sanctioned Odoo 19 pattern — see file header)
   // ------------------------------------------------------------------
 
-  get wysiwygConfig() {
+  get wysiwygOptions() {
+    // Odoo 17: the Wysiwyg component takes an options object; unknown
+    // keys are ignored by the 17 editor bridge.
     return {
-      content: markup(this.state.bodyHtml || "<p></p>"),
       placeholder: this.placeholderLabel,
       classList: ["o_webmail_compose_editor"],
-      onChange: () => {
-        // The editor content is the single source of truth from now
-        // on; it is sanitized server-side on send.
-        this.state.bodyHtml = this.editor.getContent();
-      },
     };
   }
 
-  onLoadWysiwyg(editor) {
-    this.editor = editor;
+  async _startEditorWidget() {
+    // Odoo 16: the Wysiwyg is a legacy Widget (not an OWL component);
+    // web_editor.loader lazy-loads its assets and hands back the class.
+    const mount = this.editorMountRef.el;
+    if (!mount || this.wysiwygWidget) {
+        return;
+    }
+    const Wysiwyg = await getWysiwygClass();
+    // Odoo 16: the legacy Wysiwyg Widget needs a LEGACY parent chain
+    // (trigger_up/get_session) — OWL components do not provide one.
+    const LegacyWysiwygParent = Widget.extend({
+        _trigger_up(ev) {
+            if (ev.name === "get_session") {
+                ev.data.callback && ev.data.callback(session);
+                return;
+            }
+            this._super(ev);
+        },
+    });
+    this.wysiwygParent = new LegacyWysiwygParent();
+    this.wysiwygWidget = new Wysiwyg(this.wysiwygParent, {
+        value: this.state.bodyHtml || "",
+        placeholder: this.placeholderLabel,
+    });
+    await this.wysiwygWidget.appendTo(mount);
+  }
+
+  get editor() {
+    const w = this.wysiwygWidget;
+    const oe = w && w.odooEditor;
+    const editable =
+        oe && oe.editable && oe.editable.isConnected
+            ? oe.editable
+            : w && w.$editable && w.$editable[0] && w.$editable[0].isConnected
+              ? w.$editable[0]
+              : null;
+    if (!editable) {
+        return null;
+    }
+    return {
+      get editable() {
+        return editable;
+      },
+      get isDestroyed() {
+        return !editable.isConnected;
+      },
+      getContent: () => w.getValue(),
+    };
   }
 
   // ------------------------------------------------------------------
@@ -348,7 +405,7 @@ export class ComposeDialog extends Component {
 
   async _loadSignatures() {
     try {
-      const data = await rpc("/mail_management/signatures", {
+      const data = await this.rpc("/mail_management/signatures", {
         mailbox_id: this.props.mailboxId,
       });
       this.state.signatures = data.signatures || [];
@@ -520,7 +577,7 @@ export class ComposeDialog extends Component {
           ? this.editor.getContent()
           : this.state.bodyHtml;
       const bodyText = this.isPlainEditor ? this.state.bodyText : "";
-      const result = await rpc("/mail_management/send", {
+      const result = await this.rpc("/mail_management/send", {
         mailbox_id: this.props.mailboxId,
         to: this.state.to,
         cc: this.state.cc,

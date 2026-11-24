@@ -95,11 +95,20 @@ class MailManagementFolder(models.Model):
     # ------------------------------------------------------------------
     # Constraints & indexes
     # ------------------------------------------------------------------
-    _folder_uniq = models.Constraint(
-        "UNIQUE(mailbox_id, imap_name)",
-        "A folder with this IMAP name already exists for this mailbox.",
-    )
-    _folder_mailbox_idx = models.Index("(mailbox_id, role)")
+    _sql_constraints = [
+        (
+            "folder_uniq",
+            "unique(mailbox_id, imap_name)",
+            "A folder with this IMAP name already exists for this mailbox.",
+        ),
+    ]
+
+    def init(self):
+        # Odoo <=18: plain SQL index (models.Index is 19+).
+        self.env.cr.execute(
+            "CREATE INDEX IF NOT EXISTS mail_management_folder_mailbox_role_idx "
+            "ON mail_management_folder (mailbox_id, role)"
+        )
 
     # ------------------------------------------------------------------
     # Computed counts (design A.2) + display labels (user feedback 2026-09)
@@ -116,10 +125,10 @@ class MailManagementFolder(models.Model):
         for rec in self:
             label = self._ROLE_LABELS.get(rec.role)
             if label:
-                # env-bound translator: resolves the term against the
-                # CURRENT environment language (reads i18n/*.po lazily).
-                # The module-level _() has no env context and stays English.
-                rec.display_name = self.env._(label)
+                # Odoo <=17: no env-bound translator (env._ is 18+). The
+                # module-level _() resolves the CURRENT language from the
+                # calling frame (tools.translate inspects the env in scope).
+                rec.display_name = _(label)
                 continue
             raw = rec.name or rec.imap_name or ""
             if raw.upper().startswith("INBOX."):
@@ -169,6 +178,6 @@ class MailManagementFolder(models.Model):
         """Translated label per role for the settings mapping dropdown —
         the SERVER owns the role names so the webmail JS never declares
         duplicate msgids for them."""
-        labels = {role: self.env._(label) for role, label in self._ROLE_LABELS.items()}
-        labels["other"] = self.env._("Other")
+        labels = {role: _(label) for role, label in self._ROLE_LABELS.items()}
+        labels["other"] = _("Other")
         return labels

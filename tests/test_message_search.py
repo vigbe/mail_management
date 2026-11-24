@@ -31,6 +31,16 @@ from unittest import mock
 from odoo import fields  # type: ignore
 from odoo.modules.module import get_module_path  # type: ignore
 from odoo.tests.common import TransactionCase, tagged  # type: ignore
+from odoo import _
+
+
+def _translate(term, lang="es_CL"):
+    """Odoo 16: no env._ bound translator; the module-level _() resolves
+    the language from the CALLER FRAME — a local named ``context`` is
+    picked up by tools.translate._get_lang."""
+    context = {"lang": lang}
+    return _(term)
+
 
 
 @contextmanager
@@ -76,7 +86,7 @@ class TestMessageSearch(TransactionCase):
             {
                 "name": "Search A",
                 "login": "search_a@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         Mailbox = self.env["mail.management.mailbox"]
@@ -392,7 +402,7 @@ class TestMessageSearch(TransactionCase):
             {
                 "name": "Search B",
                 "login": "search_b@test",
-                "group_ids": [(6, 0, [group_user.id])],
+                "groups_id": [(6, 0, [group_user.id])],
             }
         )
         mailbox_b = (
@@ -555,7 +565,7 @@ class TestNewTermTranslatedEsCl(TransactionCase):
         self.env["res.lang"]._activate_lang("es_CL")
         env = self.env["mail.management.folder"].with_context(lang="es_CL").env
         self.assertEqual(
-            env._("The folder name cannot be empty."),
+            _translate("The folder name cannot be empty."),
             "El nombre de la carpeta no puede estar vacío.",
         )
 
@@ -625,4 +635,4 @@ class TestNewTermTranslatedEsCl(TransactionCase):
                 ln for ln in fh.read().splitlines() if not ln.lstrip().startswith("#")
             )
         manifest = ast.literal_eval(source)
-        self.assertEqual(manifest["version"], "19.0.17.0.0")
+        self.assertEqual(manifest["version"], "16.0.17.0.0")

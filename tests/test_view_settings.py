@@ -51,6 +51,16 @@ from odoo.addons.mail_management.tests.test_compose_send import (  # type: ignor
 from odoo.exceptions import UserError  # type: ignore
 from odoo.modules.module import get_module_path  # type: ignore
 from odoo.tests.common import TransactionCase, tagged  # type: ignore
+from odoo import _
+
+
+def _translate(term, lang="es_CL"):
+    """Odoo 16: no env._ bound translator; the module-level _() resolves
+    the language from the CALLER FRAME — a local named ``context`` is
+    picked up by tools.translate._get_lang."""
+    context = {"lang": lang}
+    return _(term)
+
 
 
 def _module_file(*parts):
@@ -79,14 +89,14 @@ def _users(env):
         {
             "name": "View Settings A",
             "login": "view_settings_a@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     user_b = env["res.users"].create(
         {
             "name": "View Settings B",
             "login": "view_settings_b@test",
-            "group_ids": [(6, 0, [group_user.id])],
+            "groups_id": [(6, 0, [group_user.id])],
         }
     )
     return user_a, user_b
@@ -672,7 +682,7 @@ class TestMessagePolicyWiring(TransactionCase):
         self.assertIn("mail_management/static/src/utils/message_policy.js", backend)
 
     def test_manifest_version_bumped(self):
-        self.assertEqual(_read_manifest()["version"], "19.0.17.0.0")
+        self.assertEqual(_read_manifest()["version"], "16.0.17.0.0")
 
 
 # ===========================================================================
@@ -776,6 +786,6 @@ class TestViewSettingsTermTranslatedEsCl(TransactionCase):
         self.env["res.lang"]._activate_lang("es_CL")
         env = self.env["mail.management.settings"].with_context(lang="es_CL").env
         self.assertEqual(
-            env._("Invalid default sort."),
+            _translate("Invalid default sort."),
             "Orden de clasificación predeterminada no válida.",
         )

@@ -1,6 +1,6 @@
 {  # noqa: B018 — Odoo manifests are a top-level dict literal (ast.literal_eval)
     "name": "Mail Management",
-    "version": "19.0.17.0.0",
+    "version": "16.0.17.0.0",
     "category": "Tools",
     "summary": "AI-powered mail management module for Odoo",
     "description": """
@@ -12,9 +12,9 @@
     "depends": [
         "base",
         "mail",
-        # PR-2c: the Wysiwyg editor component (@html_editor/wysiwyg) —
-        # already transitively present via mail, declared explicitly.
-        "html_editor",
+        # PR-2c: the Wysiwyg editor (web_editor in Odoo 16-17;
+        # renamed html_editor in 18+).
+        "web_editor",
     ],
     "data": [
         "security/security_groups.xml",

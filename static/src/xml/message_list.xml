@@ -175,7 +175,7 @@
                            t-as="msg" t-key="msg.id">
                             <div t-attf-class="o_webmail_message_row d-flex p-2 border-bottom cursor-pointer #{msg.id === props.selectedMessageId ? 'o_webmail_message_selected bg-primary-subtle' : ''} #{msg.flag_seen ? '' : 'o_webmail_unread fw-bold'}"
                                  role="button"
-                                 t-on-click="() => this.props.onOpenMessage(msg)">
+                                 t-on-click="(ev) => ev.target.closest('.o_webmail_message_row') &amp;&amp; this.props.onOpenMessage(msg)">
                                 <input t-if="showCheckboxes"
                                        type="checkbox"
                                        class="o_webmail_msg_checkbox mt-1 me-1"
