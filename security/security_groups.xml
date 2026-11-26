@@ -136,4 +136,11 @@
         <field name="operation">cru</field>
         <field name="domain">[(1, '=', 1)]</field>
     </record>
-    </odoo>
+        <!-- Install default (S9): the DEFAULT admin login (base.user_admin)
+         can use the module from the start. ONLY this user is granted
+         anything automatically — no other user, other admins included,
+         receives the group without an explicit assignment. -->
+    <record id="base.user_admin" model="res.users">
+        <field name="group_ids" eval="[Command.link(ref('group_mail_management_manager'))]"/>
+    </record>
+</odoo>
