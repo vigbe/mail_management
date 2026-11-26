@@ -54,6 +54,9 @@
             "mail_management/static/tests/tours/webmail_tour.js",
         ],
     },
+    "images": [
+        "static/description/thumbnail.png",
+    ],
     "installable": True,
     "application": True,
     "auto_install": False,
