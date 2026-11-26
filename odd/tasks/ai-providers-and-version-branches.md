@@ -50,6 +50,17 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
   the old branch: it touched no `static/` file).
 - **S8 (docs / i18n)** — new wizard strings go to `i18n/mail_management.pot` and
   `i18n/es_CL.po`. `openspec/config.yaml` keeps `module_repo_is_nested: false`.
+- **S9 (default admin on install)** — "haz que en todas las ramas el super
+  usuiaro o el usuaro admin por defecto users/2 luego de esintalar este
+  modulo siempre tenga permisos de admin par aque lo vea desde el inicio",
+  scope clarified as "solo ese usuario; a los demás, incluso admins, no se
+  les otorga automáticamente": on install, `security/security_groups.xml`
+  links `base.user_admin` (res.users/2) into
+  `mail_management.group_mail_management_manager` — `Command.link` on
+  19/20, classic `groups_id` `(4, ref())` on 16–18 — so the default admin
+  login sees and uses the module from the start. ONLY that user: no other
+  user, other admins included, receives the group without an explicit
+  assignment (regression-guarded by the second test).
 
 ## Tasks
 
@@ -65,6 +76,7 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
 | T8 | S7 | 16.0: reapply 387d21c (cumulative), test on `odoo:16.0`, fix | 7dbd039+26824d1 — 922 tests 0 failed (tour skip inherited) | |
 | T9 | S7 | 20.0: reapply 5d9f83c + OWL 3 frontend, test on `odoo:20.0` (suite + tour), fix; `main` := 20.0 | backend 2a1a650+60544c3; OWL 3 port 748dd2d (+07e7f6d lint) — 1315 tests 0 failed + tour 52/52 green; `main` := 748dd2d | |
 | T10 | S7 | Close: report, memory, push decision (push is the user's) | — |
+| T11 | S9 | Grant `base.user_admin` the manager group on install, on every branch; RED→GREEN + full suite per branch | 7c0bb46 (19.0), 1b9a75f (18.0), c3a617d (17.0), 79bf3e6 (16.0), efdb875 (20.0) |
 
 ## Log
 
@@ -181,3 +193,11 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
   succeeded"); commits 60544c3, 07e7f6d, 748dd2d. `main` := 748dd2d
   (user decision "main es 20"); `19.0` fast-forwarded to the
   feat/ai-providers tip (8971dd3+docs).
+- **L15** — T11 (S9): RED `FAIL: TestInstallAdminDefault…manager group` on
+  19.0 → data record in `security/security_groups.xml` → scoped GREEN `0
+  failed, 0 error(s) of 2 tests` on ALL FIVE branches (18.0, 17.0, 16.0,
+  20.0 + 19.0); 19.0 full suite after the change: `mail_management: 926
+  tests 38.55s`, `0 failed, 0 error(s) of 710 tests`, exit 0. Per-branch
+  field syntax: `group_ids` + `Command.link` (19/20), `groups_id` + `(4,
+  ref())` (16–18). Demo DBs (8070/8071) to be updated with
+  `--update=mail_management` so the admin login sees the module.
