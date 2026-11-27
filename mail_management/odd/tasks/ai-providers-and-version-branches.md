@@ -20,10 +20,9 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
   model, optional base URL. Parameters are module-owned:
   `mail_management.ai.provider`, `mail_management.ai.api_key_encrypted`,
   `mail_management.ai.model`, `mail_management.ai.base_url`.
-- **S3 (no legacy fallback)** — `ia_prop.gemini_api_key` and
-  `real_estate.ai_gemini_model` are no longer read anywhere in the module. A
-  missing configuration raises a `UserError` that names the wizard and
-  `mail_management.ai.*`.
+- **S3 (no legacy fallback)** — legacy parameter keys are no longer read
+  anywhere in the module. A missing configuration raises a `UserError` that
+  names the wizard and `mail_management.ai.*`.
 - **S4 (one client interface)** — every provider implements `chat(system,
   messages)` and `ask(system, user_text)` with the existing message shape
   `[{"role": "user" | "model", "text": str}]` and returns `str`. Pure Python on
@@ -99,12 +98,12 @@ each installable and green on its own `odoo:NN.0` image, with `main` = the 20.0 
   17.0 stacks 2, 18.0 and 20.0 are single commits); post-cut development
   295f94e..b3ced61 = 3 commits, 4 files (+50/−20); the 20.0 port touched no
   `static/` file. Docker Desktop 29.3.1 (24 CPUs, 8 GB VM). Recipe at
-  `_ia-prop.com/desarrollos/{Dockerfile,docker-compose.yml,odoo.conf}` (image
+  workspace `{Dockerfile,docker-compose.yml,odoo.conf}` (image
   `odoo:19.0-chrome`, `postgres:17`, addon mounted at `/mnt/extra-addons`).
 - **L5** — Existing AI seam: `models/mail_management_assistant.py:77` `_get_gemini()`
   → `GeminiClient(api_key, model)`; 5 call sites (`:169` chat, `:192` summarize,
   `:210` draft, `:248` triage, `:267` search_summary) via `chat(system, messages)`
-  / `ask(system, text)`. Bug found: the assistant reads `ia_prop.gemini_api_key`
+  / `ask(system, text)`. Bug found: the assistant reads a legacy API key parameter
   in clear while the wizard stores `mail_management.ai_gemini_key_encrypted`, so
   the key saved from the module was never used. No AI tests exist.
 - **L6** — Work happens on branch `feat/ai-providers` (cut from `main` @ 1c57710;
