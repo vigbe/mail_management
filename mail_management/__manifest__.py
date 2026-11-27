@@ -6,8 +6,10 @@
     "description": """
             Mail Management
         """,
-    "author": "victor.bastiasescobar",
+    "author": "Victor Bastías Escobar",
     "website": "https://vicbas.com",
+    "maintainer": "Victor Bastías Escobar",
+    "support": "contacto@vicbas.com",
     "license": "LGPL-3",
     "depends": [
         "base",
