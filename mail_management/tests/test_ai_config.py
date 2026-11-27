@@ -3,8 +3,8 @@
 One test per rule of the feature.  The AI configuration wizard owns the four
 ``mail_management.ai.*`` parameters (API key stored encrypted), ``custom``
 enforces model + base URL before anything is written, the assistant factory
-builds the configured provider from those parameters only (the legacy
-``ia_prop`` / ``real_estate`` values are never read), the assistant call sites
+builds the configured provider from those parameters only (unrelated legacy
+values are never read), the assistant call sites
 still go through the factory, and the new terms are translated to es_CL.
 """
 
@@ -32,10 +32,10 @@ PARAM_MODEL = "mail_management.ai.model"
 PARAM_BASE_URL = "mail_management.ai.base_url"
 NEW_PARAMS = (PARAM_PROVIDER, PARAM_KEY, PARAM_MODEL, PARAM_BASE_URL)
 
-#: Read by the previous Gemini-only implementation; must be ignored from now on.
+#: Unrelated legacy parameters; must be ignored from now on.
 LEGACY_PARAMS = (
-    "ia_prop.gemini_api_key",
-    "real_estate.ai_gemini_model",
+    "legacy.gemini_api_key",
+    "legacy.ai_gemini_model",
     "mail_management.ai_gemini_key_encrypted",
 )
 
@@ -308,8 +308,8 @@ class TestAiConfig(TransactionCase):
         self.assertIn("Configurar IA", str(caught.exception))
 
     def test_assistant_never_reads_the_legacy_parameters(self):
-        self.icp.set_str("ia_prop.gemini_api_key", "legacy-plain-key")
-        self.icp.set_str("real_estate.ai_gemini_model", "legacy-model")
+        self.icp.set_str("legacy.gemini_api_key", "legacy-plain-key")
+        self.icp.set_str("legacy.ai_gemini_model", "legacy-model")
         self.icp.set_str(
             "mail_management.ai_gemini_key_encrypted",
             FernetCrypto.encrypt("legacy-encrypted-key", key=self._master_key()),

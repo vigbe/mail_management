@@ -40,7 +40,7 @@ project:
     - tests/test_module.py             # basic scaffold tests (create/state/.unlink) — corrected this session
 
 workspace:
-  root: /Users/vigbe/Documents/Documentos - Mac Studio de Victor/work/project/_ia-prop.com/desarrollos
+  root: /Users/vigbe/Documents/Documentos - Mac Studio de Victor/work/project/_vicbas.com/odoo/_odoo_modules
   compose_file: docker-compose.yml
   odoo_conf: odoo.conf
   addons_path: /mnt/extra-addons       # ./addons is bind-mounted here
@@ -57,7 +57,7 @@ workspace:
     - "web entrypoint also runs: pip3 install --user pyjwt python-docx pdf2docx --break-system-packages (per sibling; re-confirm if IMAP libs needed)"
     - "odoo.conf confirmed this session: addons_path=/mnt/extra-addons, data_dir=/var/lib/odoo, workers=4"
     - "odoo.conf has NO test_enable flag; tests are enabled via the --test-enable CLI arg."
-    - "SHARED workspace with sibling modules (message_management_ai, chat_ia_prop, etc.) — same docker-compose, same addons path."
+    - "SHARED workspace with sibling modules (message_management_ai, etc.) — same docker-compose, same addons path."
 
 # -----------------------------------------------------------------------------
 # SDD session preferences (baked from preflight this session — DO NOT change

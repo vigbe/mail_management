@@ -149,7 +149,7 @@ decoupled and independently testable.
 | `lib/gemini_provider.py` (GeminiProvider) | **YES — reuse** | Generic Gemini REST client, ~95 lines |
 | Provider secret pattern (`ir.config_parameter` + `_get_provider_api_key()`) | **YES — reuse the pattern** | Same one-key-per-company story fits AI config; but mailbox IMAP creds are per-record (Area 3) |
 | Cron-queue + error-routing orchestration (`message.ai.message._cron_drain_pending` / `_route_processing_failure`) | **YES — reuse the pattern** | Draft/summarize/improve are async AI tasks with the same retry/dead-letter needs |
-| `lib/prompt_assembly.py` | **NO** | Real-estate catalog + qualification-marker extraction; email needs its own (draft/summarize/improve) prompts |
+| `lib/prompt_assembly.py` | **NO** | Domain-specific catalog + qualification-marker extraction; email needs its own (draft/summarize/improve) prompts |
 | `lib/whatsapp_cloud_client.py` | **NO** | WhatsApp Cloud API transport; irrelevant to email |
 | `message.ai.config` model | **COPY the shape, not the model** | Same fields (provider/model/temperature/history), but it must be a separate `mail.ai.config` (or extend) — do not couple email to a WhatsApp config |
 | `message.ai.conversation` FSM | **NO (shape only)** | States are lead-qualification specific; email threads have different lifecycle |
@@ -642,7 +642,7 @@ Defer IMAP IDLE.**
   cannot be the webmail backbone. `mail.thread` reused for AI chatter only.
 - **Q2 AI provider reuse:** **YES — reuse** `ai_provider.py` + `gemini_provider.py`
   (Odoo-free, duck-typed, unit-tested); do NOT reuse `prompt_assembly`
-  (real-estate) or the WhatsApp client; new email `prompt_assembly` + `mail.ai.config`.
+  (domain-specific) or the WhatsApp client; new email `prompt_assembly` + `mail.ai.config`.
 - **Q3 First-slice scope:** v1 = connect mailbox + folder tree + Inbox read + list +
   plain-text reply/forward + AI draft-reply/summarize. Defer: search, filters,
   move/copy, rich compose, calendar/contacts, multiple-account UX.
